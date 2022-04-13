@@ -10,6 +10,16 @@
 
 **OpenSearch** is [a community-driven, open source fork](https://aws.amazon.com/blogs/opensource/introducing-opensearch/) of [Elasticsearch](https://en.wikipedia.org/wiki/Elasticsearch) and [Kibana](https://en.wikipedia.org/wiki/Kibana) licensed under the [Apache v2.0 License](LICENSE.txt). For more information, see [opensearch.org](https://opensearch.org/).
 
+## Dashboards-Anywhere
+
+This project is dedicated to build and to provide a cloud native infrastructure for the Dashboards service. The
+infrastructure leverages Kubernetes on orchestration, lifecycle management, and extensibility. The goal is to provide a
+way to deploy a production-ready Dashboards cluster on any cloud provider, as well as on-premise data centers.
+
+There will be a web API and a command line API that are targeted to different types of use cases. Web interface provides
+an interface for better integrations with other systems and the command line API is mainly provide the ease of use for
+daily operations.
+
 ## Project Resources
 
 * [Project Website](https://opensearch.org/)
