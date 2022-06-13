@@ -2,7 +2,7 @@
 
 ## Starting a New Project
 
-The dashboards-anywhere repository hosts multi-projects, this documentation guidelines provides documentaztion guide for the developers who starting a new project. 
+The dashboards-anywhere repository hosts multi-projects, this documentation guidelines provides documentation guide for the developers who starting a new project. 
 
 From here it's recommended to follow a few patterns.
 
@@ -19,4 +19,4 @@ From here it's recommended to follow a few patterns.
 
 ## Documentation Format
 
-We suggest to use markdown file as documentation format, it can easily to use or reference by other sites.
+We suggest to use markdown file as documentation format, it can be easy to use or reference by other sites.
