@@ -2,7 +2,7 @@
 
 ## Starting a New Project
 
-The dashboards-anywhere repository hosts multi-projects, this documentation guidelines provides documentation guide for the developers who starting a new project. 
+The dashboards-anywhere repository hosts multi-projects. This documentation guidelines are for the developers who start a new project.
 
 From here it's recommended to follow a few patterns.
 
