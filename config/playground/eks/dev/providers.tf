@@ -1,3 +1,9 @@
+#
+# Terraform Provider
+#  * The required terraform version to provision the infra
+#  * The required terraform provider "aws"
+#
+
 terraform {
   required_version = ">= 0.12"
 }

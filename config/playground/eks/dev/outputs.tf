@@ -1,5 +1,8 @@
 #
-# Outputs
+# Outputs for Kubernetes connection configuration, which was used for connecting
+# to EKS cluster, the outputs was return at the end of execution
+# of 'terraform apply', you can copy the outputs to your local configuration,
+# the default config path $HOME/.kube/config
 #
 
 locals {
