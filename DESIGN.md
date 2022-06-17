@@ -44,25 +44,23 @@ there were several key features that this OS/OSD application must implement:
 
 ## Proposal
 
-To address this need, a demo website we call Playground was proposed that 
-would allow users to visit and start experimenting with OS/OSD. To meet our 
-goal of an accessible, scaleable application, the application will leverage 
-the speedy, open-source container orchestrator Kubernetes and Amazon Web 
-Service's Elastic Kubernetes Service to enable fast, reliable delivery of 
-OS/OSD to our customers.
+To address this need, a demo website we call OpenSearch Playground was 
+proposed that would allow users to visit and start experimenting with OS/OSD. 
+To meet our goal of an accessible, scaleable application, the application 
+will leverage the speedy, open-source container orchestrator Kubernetes and 
+Amazon Web Service's Elastic Kubernetes Service to enable fast, reliable 
+delivery of OS/OSD to our customers.
 
 
 # Who is Affected
 
-The need for Playground site in particular, targets all of OpenSearch's 
-customers, both existing and prospective. They will be the users who will 
-learn and be curious about OS and OSD. Because this application will be for 
-many of them a first hands-on experience, it is vital that Playground 
-delivers the optimal experience of OS and OSD. 
+The need for OpenSearch Playground site in particular, targets all of 
+OpenSearch's customers, both existing and prospective. They will be the users 
+who will learn and be curious about OS and OSD. Because this application will 
+be for many of them a first hands-on experience, it is vital that OpenSearch Playground delivers the optimal experience of OS and OSD. 
 
-Playground not only serves customers who will want to potentially utilize 
-OS and OSD but also the contributors, who want a one-stop application to 
-familiarize themselves with the site in order to start contributing or make
+OpenSearch Playground not only serves customers who will want to potentially utilize OS and OSD but also the contributors, who want a one-stop application 
+to familiarize themselves with the site in order to start contributing or make
 improvements to their existing work. Thus, the site serves a multifaceted 
 purpose and targets a diverse audience.
 
@@ -70,19 +68,14 @@ purpose and targets a diverse audience.
 # Design
 
 Leveraging the power and scale of Amazon Web Service's **(AWS)** Elastic 
-Kubernetes Service **(EKS)** as well as Route 53, Playground allows any 
-prospective users to experiment with OS and OSD. This Playground will be 
-open to all (requiring no sign-ups) as a way to showcase the robust 
+Kubernetes Service **(EKS)** as well as Route 53, OpenSearch Playground allows 
+any prospective users to experiment with OS and OSD. OpenSearch Playground will 
+be open to all (requiring no sign-ups) as a way to showcase the robust 
 capabilities of the services offered by OS/OSD via a secure https connection.
 
 ![diagram_white](https://user-images.githubusercontent.com/73027756/173409473-3cc075f3-8ce6-4eb4-95e4-df6f13eb3899.png)
 
-Creating Playground first requires the modification of the OS and OSD bundle
-configurations . OpenSearch and OpenSearch Dashboards initially require certain 
-permissions to access features, like viewing the dashboards and interacting 
-with sample data. Thus, the images were configured so that anonymous users 
-could view only the features via the enabling of settings in the `config.yml`, 
-`roles.yml`, `roles_mapping.yml`, and `opensearch_dashboards.yml`. 
+Creating OpenSearch Playground first requires the modification of the OS and OSD bundle configurations . OpenSearch and OpenSearch Dashboards initially require certain permissions to access features, like viewing the dashboards and interacting with sample data. Thus, the images were configured so that anonymous users could view only the features via the enabling of settings in the `config.yml`, `roles.yml`, `roles_mapping.yml`, and `opensearch_dashboards.yml`. 
 
 Sample change for `config.yml`:
 ```
@@ -193,6 +186,7 @@ effective way to route our users to OS/OSD.
     dependencies to run an application anywhere.
 - **Kubernetes:** A container orchestration tool to allow fast, scaleable
     deployment of containers via clusters.
+- **OpenSearch Playground:** The name for the demo site
 - **OS:** OpenSearch (not to be confused with Operating System). A search 
     and analytics suite that facilitates the ingesting, searching, 
     visualizing, and analyzing of data.
@@ -202,34 +196,30 @@ effective way to route our users to OS/OSD.
 
 # Risks
 
-The only point of consideration with Playground is its maintenance. As
-new versions of OS and OSD roll out, careful consideration must be shown as
-to the Playground's update strategy. One plan is to use GitHub Actions to 
-automatically deploy when newer versions of OS/OSD release. This release will
-follow a blue-green deployment.
+The only point of consideration with OpenSearch Playground is its maintenance. 
+As new versions of OS and OSD roll out, careful consideration must be shown as
+to OpenSearch Playground's update strategy. One plan is to use GitHub Actions 
+to automatically deploy when newer versions of OS/OSD release. This release 
+will follow a blue-green deployment.
 
 
 # Adoption Strategy
 
-Since Playground is a demo site that deploys OS/OSD, close coordination 
-should exist among the site, OS, and OSD to ensure compatibility for past 
-and future versions.
+Since OpenSearch Playground is a demo site that deploys OS/OSD, close 
+coordination should exist among the site, OS, and OSD to ensure compatibility 
+for past and future versions.
 
 
 # How this Scales
 
-Since the site uses Kubernetes and EKS, the Playground's scaleability is 
-baked into its design. That being said, future requirements would enable
+Since the site uses Kubernetes and EKS, OpenSearch Playground's scaleability 
+is baked into its design. That being said, future requirements would enable
 autoscaling of the cluster. Using several metrics, like CPU and memory
 usage among others, the cluster can add or remove nodes as necessary. 
 
 
 # Unresolved Questions and Future Features
 
-Playground is primarily an end application that allows users to experiment
-with OS and OSD. However, there are future considerations to implement such
-as support for many versions of OS, OSD, and older versions of ElasticSearch. 
-Future phases of the project include support for third party security 
-authentication, a customized landing page for blogs, and potentially allowing
-users to ingest their own data. As the OS and OSD matures, so too will the future 
-features of their Playground.
+OpenSearch Playground is primarily an end application that allows users to experiment with OS and OSD. However, there are future considerations to 
+implement such as support for many versions of OS, OSD, and older versions of ElasticSearch. Future phases of the project include support for third party security authentication, a customized landing page for blogs, and potentially allowing users to ingest their own data. As the OS and OSD matures, so too 
+will the future features of OpenSearch Playground.
