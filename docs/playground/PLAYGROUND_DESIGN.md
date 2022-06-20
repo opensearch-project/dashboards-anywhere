@@ -1,4 +1,4 @@
-[-](url) Start Date: 2022-06-09
+- Start Date: 2022-06-09
 - TTL: June 15th, 2022
 - Champion: Huy Nguyen
 - Main reviewer: Tao Liu
