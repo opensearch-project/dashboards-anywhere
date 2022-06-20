@@ -49,7 +49,10 @@ proposed that would allow users to visit and start experimenting with OS/OSD.
 To meet our goal of an accessible, scaleable application, the application 
 will leverage the speedy, open-source container orchestrator Kubernetes and 
 Amazon Web Service's Elastic Kubernetes Service to enable fast, reliable 
-delivery of OS/OSD to our customers.
+delivery of OS/OSD to our customers. Note that the scope of this project only 
+requires a read-only user that can access the site and this project is only 
+an initial phase as part of a long-term project. Details will be provided in 
+a Playgrounds (long term) issue.
 
 
 # Who is Affected
@@ -85,47 +88,17 @@ config:
       anonymous_auth_enabled: true
 ```
 
-Sample change for `roles.yml`:
+Sample change for `roles.yml` (not all roles were added for brevity):
 ```
 opendistro_security_anonymous:
   reserved: true
   cluster_permissions:
     - 'cluster_monitor'
-    - 'cluster:admin/ingest/pipeline/get'
-    - 'cluster:admin/ingest/processor/grok/get'
-    - 'cluster:admin/opendistro/ad/detector/search'
-    - 'cluster:admin/opendistro/ad/detectors/get'
-    - 'cluster:admin/opendistro/alerting/alerts/get'
-    - 'cluster:admin/opendistro/alerting/destination/email_account/get'
-    - 'cluster:admin/opendistro/alerting/destination/get'
-    - 'cluster:admin/opendistro/alerting/monitor/get'
-    - 'cluster:admin/opendistro/asynchronous_search/get'
-    - 'cluster:admin/opendistro/ism/policy/get'
-    - 'cluster:admin/opendistro/rollup/get'
-    - 'cluster:admin/opendistro/reports/definition/get'
-    - 'cluster:admin/opendistro/reports/instance/get'
-    - 'cluster:admin/opensearch/observability/get'
-    - 'cluster:admin/repository/get'
-    - 'cluster:admin/script/get'
-    - 'cluster:admin/snapshot/get'
-    - 'cluster:monitor/task/get'
     - 'cluster_composite_ops_ro'
-    - 'cluster:admin/opendistro/ad/result/search'
-    - 'cluster:admin/opendistro/ad/tasks/search'
-    - 'cluster:admin/opendistro/alerting/destination/email_account/search'
-    - 'cluster:admin/opendistro/alerting/destination/email_group/search'
-    - 'cluster:admin/opendistro/alerting/monitor/search'
-    - 'cluster:admin/opendistro/ism/policy/search'
-    - 'cluster:admin/opendistro/rollup/search'
   index_permissions:
     - index_patterns:
         - ".kibana"
-        - ".kibana-6"
-        - ".kibana_*"
         - ".opensearch_dashboards"
-        - ".opensearch_dashboards-6"
-        - ".opensearch_dashboards_*"
-        - "*"
       allowed_actions:
         - 'indices:monitor/settings/get'
         - 'indices:monitor/stats'
