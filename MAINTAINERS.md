@@ -24,6 +24,7 @@ This document explains who the maintainers are (see below), what they do in this
 | ------------------------ | --------------------------------------- | ----------- |
 | Henri Yandell            | [hyandell](https://github.com/hyandell) | Amazon      |
 | Daniel "dB." Doubrovkine | [dblock](https://github.com/dblock)     | Amazon      |
+| Huy Nguyen               | [huyaboo](https://github.com/huyaboo)   | Amazon      |
 
 ## Maintainer Responsibilities
 
