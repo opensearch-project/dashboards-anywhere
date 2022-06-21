@@ -20,10 +20,11 @@ This document explains who the maintainers are (see below), what they do in this
 
 ## Current Maintainers
 
-| Maintainer               | GitHub ID                               | Affiliation |
-| ------------------------ | --------------------------------------- | ----------- |
-| Henri Yandell            | [hyandell](https://github.com/hyandell) | Amazon      |
-| Daniel "dB." Doubrovkine | [dblock](https://github.com/dblock)     | Amazon      |
+| Maintainer               | GitHub ID                                       | Affiliation |
+| ------------------------ | ---------------------------------------         | ----------- |
+| Henri Yandell            | [hyandell](https://github.com/hyandell)         | Amazon      |
+| Daniel "dB." Doubrovkine | [dblock](https://github.com/dblock)             | Amazon      |
+| Zhongnan Su              | [zhongnansu](https://github.com/zhongnansu)     | Amazoon      |
 
 ## Maintainer Responsibilities
 
