@@ -22,8 +22,7 @@ This document explains who the maintainers are (see below), what they do in this
 
 | Maintainer               | GitHub ID                               | Affiliation |
 | ------------------------ | --------------------------------------- | ----------- |
-| Henri Yandell            | [hyandell](https://github.com/hyandell) | Amazon      |
-| Daniel "dB." Doubrovkine | [dblock](https://github.com/dblock)     | Amazon      |
+| Huan Jiang  | [seraphjiang](https://github.com/seraphjiang) | Amazon      |
 
 ## Maintainer Responsibilities
 
