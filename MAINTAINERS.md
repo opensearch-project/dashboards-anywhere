@@ -23,7 +23,6 @@ This document explains who the maintainers are (see below), what they do in this
 | Maintainer               | GitHub ID                               | Affiliation |
 | ------------------------ | --------------------------------------- | ----------- |
 | Zhongnan Su              | [zhongnansu](https://github.com/zhongnansu)     | Amazon      |
-| Kristen Tian             | [kristenTian](https://github.com/kristenTian)   | Amazon      |
 | Huan Jiang               | [seraphjiang](https://github.com/seraphjiang)   | Amazon      |
 | Kristen Tian             | [kristenTian](https://github.com/kristenTian)   | Amazon      |
 
