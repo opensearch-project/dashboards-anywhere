@@ -22,8 +22,8 @@ This document explains who the maintainers are (see below), what they do in this
 
 | Maintainer               | GitHub ID                               | Affiliation |
 | ------------------------ | --------------------------------------- | ----------- |
-| Huan Jiang  | [seraphjiang](https://github.com/seraphjiang) | Amazon      |
-
+| Zhongnan Su              | [zhongnansu](https://github.com/zhongnansu)     | Amazon      |
+| Huan Jiang               | [seraphjiang](https://github.com/seraphjiang)   | Amazon      |
 ## Maintainer Responsibilities
 
 Maintainers are active and visible members of the community, and have [maintain-level permissions on a repository](https://docs.github.com/en/organizations/managing-access-to-your-organizations-repositories/repository-permission-levels-for-an-organization). Use those privileges to serve the community and evolve code as follows.
