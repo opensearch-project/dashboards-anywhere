@@ -20,10 +20,16 @@ jobs:
           aws-region: us-east-1
 
       - name: Setp 2 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        uses: elastic-analytics/dashboards-action@demodev
+        uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
         with:
           plugins: "" # optional
           command: |
+            ls -l
             kubectl get nodes
+            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
+            helm repo update
+            helm search repo opensearch
+            helm install opensearch opensearch/opensearch -f /usr/config/playground/helm/helm-os.yaml
+            helm install dashboards opensearch/opensearch-dashboards -f /usr/config/playground/helm/helm-osd.yaml
