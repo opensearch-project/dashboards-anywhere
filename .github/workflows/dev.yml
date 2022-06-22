@@ -26,10 +26,10 @@ jobs:
         with:
           plugins: "" # optional
           command: |
-            ls -l
+            pwd
             kubectl get nodes
             helm repo add opensearch https://opensearch-project.github.io/helm-charts/
             helm repo update
             helm search repo opensearch
-            helm install opensearch opensearch/opensearch -f /usr/config/playground/helm/helm-os.yaml
-            helm install dashboards opensearch/opensearch-dashboards -f /usr/config/playground/helm/helm-osd.yaml
+            helm install opensearch opensearch/opensearch -f /home/runner/work/dashboards-anywhere/dashboards-anywhere/config/playground/helm/helm-os.yaml
+            helm install dashboards opensearch/opensearch-dashboards -f /home/runner/work/dashboards-anywhere/dashboards-anywhere/config/playground/helm/helm-osd.yaml
