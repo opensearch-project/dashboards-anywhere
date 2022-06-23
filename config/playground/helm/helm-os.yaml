@@ -772,17 +772,13 @@ securityConfig:
           reserved: true
           cluster_permissions:
             - 'cluster:admin/ingest/pipeline/get'
-            - 'cluster:admin/ingest/pipeline/simulate'
             - 'cluster:admin/ingest/processor/grok/get'
             - 'cluster:admin/opendistro/ad/detector/info'
-            - 'cluster:admin/opendistro/ad/detector/jobmanagement'
             - 'cluster:admin/opendistro/ad/detector/preview'
             - 'cluster:admin/opendistro/ad/detector/search'
             - 'cluster:admin/opendistro/ad/detector/stats'
             - 'cluster:admin/opendistro/ad/detectors/get'
-            - 'cluster:admin/opendistro/ad/detector/validate'
             - 'cluster:admin/opendistro/ad/result/search'
-            - 'cluster:admin/opendistro/ad/result/topAnomalies'
             - 'cluster:admin/opendistro/ad/tasks/search'
             - 'cluster:admin/opendistro/alerting/alerts/get'
             - 'cluster:admin/opendistro/alerting/destination/email_account/get'
@@ -792,11 +788,8 @@ securityConfig:
             - 'cluster:admin/opendistro/alerting/destination/get'
             - 'cluster:admin/opendistro/alerting/monitor/get'
             - 'cluster:admin/opendistro/alerting/monitor/search'
-            - 'cluster:admin/opendistro/ism/managedindex/change'
-            - 'cluster:admin/opendistro/ism/managedindex/explain'
             - 'cluster:admin/opendistro/ism/policy/get'
             - 'cluster:admin/opendistro/ism/policy/search'
-            - 'cluster:admin/opendistro/rollup/index'
             - 'cluster:admin/opendistro/rollup/get'
             - 'cluster:admin/opendistro/rollup/search'
             - 'cluster:admin/opendistro/rollup/explain'
@@ -805,7 +798,6 @@ securityConfig:
             - 'cluster:admin/opendistro/reports/definition/list'
             - 'cluster:admin/opendistro/reports/instance/list'
             - 'cluster:admin/opendistro/reports/instance/get'
-            - 'cluster:admin/opendistro/reports/menu/download'
             - 'cluster:admin/opendistro/notebooks/list'
             - 'cluster:admin/opendistro/notebooks/get'
             - 'cluster:admin/opensearch/ml/models/get'
@@ -820,21 +812,12 @@ securityConfig:
             - 'cluster:admin/opensearch/notifications/channels/get'
             - 'cluster:admin/opensearch/observability/get'
             - 'cluster:admin/repository/get'
-            - 'cluster:admin/repository/verify'
-            - 'cluster:admin/reroute'
             - 'cluster:admin/script/get'
             - 'cluster:admin/snapshot/get'
-            - 'cluster:admin/snapshot/restore'
             - 'cluster:admin/snapshot/status'
             - 'cluster:admin/snapshot/status*'
-            - 'cluster:admin/tasks/test'
-            - 'cluster:admin/tasks/testunblock'
             - 'cluster:monitor/allocation/explain'
-            - 'cluster:monitor/health'
-            - 'cluster:monitor/main'
-            - 'cluster:monitor/nodes/hot_threads'
             - 'cluster:monitor/nodes/info'
-            - 'cluster:monitor/nodes/liveness'
             - 'cluster:monitor/nodes/stats'
             - 'cluster:monitor/nodes/usage'
             - 'cluster:monitor/remote/info'
@@ -866,8 +849,6 @@ securityConfig:
               - 'opensearch_dashboards_sample_data_ecommerce'
               allowed_actions:
                 - "read"
-                - "manage"
-                - "index"
             - index_patterns:
               - '*'
               allowed_actions:
