@@ -6,7 +6,7 @@
 # Declare variables to be passed into your templates.
 
 opensearchHosts: "https://opensearch-cluster-master:9200"
-replicaCount: 1
+replicaCount: 3
 
 image:
   repository: "opensearchproject/opensearch-dashboards"
@@ -33,14 +33,27 @@ rbac:
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
 # the X-Pack license
-secretMounts: []
+secretMounts: 
+ - name: test-secret
+   secretName: test-secret
+   path: /usr/share/dashboards/secrets
 #  - name: certs
 #    secretName: dashboard-certs
 #    path: /usr/share/dashboards/certs
 
 podAnnotations: {}
 
-extraEnvs: []
+extraEnvs: 
+ - name: USERNAME
+   valueFrom: 
+     secretKeyRef:
+       name: test-secret
+       key: username
+ - name: PASSWORD
+   valueFrom:
+     secretKeyRef:
+       name: test-secret
+       key: password
 #  - name: "NODE_OPTIONS"
 #    value: "--max-old-space-size=1800"
 
@@ -69,14 +82,14 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1000
 
-config: 
+config:
   # Default OpenSearch Dashboards configuration from docker image of Dashboards
   opensearch_dashboards.yml: |
     opensearch_security.auth.anonymous_auth_enabled: true
     opensearch.hosts: [https://localhost:9200]
     opensearch.ssl.verificationMode: none
-    opensearch.username: kibanaserver
-    opensearch.password: kibanaserver
+    opensearch.username: "${USERNAME}"
+    opensearch.password: "${PASSWORD}"
     opensearch.requestHeadersWhitelist: [authorization, securitytenant]
     
     opensearch_security.multitenancy.enabled: true
@@ -84,7 +97,7 @@ config:
     opensearch_security.readonly_mode.roles: [kibana_read_only]
     # Use this setting if you are running opensearch-dashboards without https
     opensearch_security.cookie.secure: false
-    server.host: '0.0.0.0'
+  #   server.host: '0.0.0.0'
   #   server:
   #     name: dashboards
   #     host: 0.0.0.0
