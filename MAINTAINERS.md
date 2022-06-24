@@ -20,14 +20,11 @@ This document explains who the maintainers are (see below), what they do in this
 
 ## Current Maintainers
 
-| Maintainer               | GitHub ID                                         | Affiliation |
-|--------------------------|---------------------------------------------------|-------------|
-| Henri Yandell            | [ hyandell ]( https://github.com/hyandell )       | Amazon      |
-| Daniel "dB." Doubrovkine | [ dblock ]( https://github.com/dblock )           | Amazon      |
-| Huy Nguyen               | [ huyaboo ]( https://github.com/huyaboo )         | Amazon      |
-| Zhongnan Su              | [ zhongnansu ]( https://github.com/zhongnansu )   | Amazon      |
-| Huan Jiang               | [ seraphjiang ]( https://github.com/seraphjiang ) | Amazon      |
-| Kristen Tian             | [ kristenTian ]( https://github.com/kristenTian ) | Amazon      |
+| Maintainer               | GitHub ID                               | Affiliation |
+| ------------------------ | --------------------------------------- | ----------- |
+| Zhongnan Su              | [zhongnansu](https://github.com/zhongnansu)     | Amazon      |
+| Huan Jiang               | [seraphjiang](https://github.com/seraphjiang)   | Amazon      |
+| Kristen Tian             | [kristenTian](https://github.com/kristenTian)   | Amazon      |
 
 ## Maintainer Responsibilities
 
