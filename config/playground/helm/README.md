@@ -16,8 +16,8 @@ These two files will be needed to setup a custom OS and OSD cluster.
 Before you deploy OS/OSD using Helm, make sure you have done the following:
 
 - Install and setup a [Kubernetes cluster](https://kubernetes.io/docs/setup/)
+- (Optional): If using Amazon Web Service's (AWS) Elastic Kubernetes Service (EKS) to setup the cluster, install and configure the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) with an [account](https://aws.amazon.com/free) and [credentials](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html)
 - Install [Helm](https://helm.sh/docs/intro/install/)
-- (Optional): If using Amazon Web Service's (AWS) Elastic Kubernetes Service (EKS), install and configure the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) with an [account](https://aws.amazon.com/free) and [credentials](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html)
 
 ## Deploy OS/OSD Using Helm
 
@@ -25,7 +25,9 @@ To deploy the cluster with custom configurations, follow the below steps:
 
 - Change directory into the config directory:
 
-```cd config/playground/helm/{dev/prod}```
+```
+cd config/playground/helm/{dev/prod}
+```
 
 - Install OpenSearch Helm charts:
 
@@ -43,27 +45,29 @@ opensearch/opensearch           	2.1.0        	2.0.1      	A Helm chart for Open
 opensearch/opensearch-dashboards	2.1.0        	2.0.1      	A Helm chart for OpenSearch Dashboards
 ```
 
-- Create a secret containing the username and password that allows OSD to connect with OSD:
+- Create a secret containing the username and password that allows OSD to connect with OS (Note: If you change `test-secret` to a custom name, you will need to change `test-secret` to your custom name under `secretMounts` and `extraEnvs` in `helm-opensearch-dashboards.yaml`):
 
 ```
 kubectl create secret generic test-secret --from-literal='username=<your username>' --from-literal='password=<your password>'
 ```
 
-- Install OpenSearch using `helm-opensearch.yaml`:
+- Install OpenSearch using `helm-opensearch.yaml` (Note: the `<deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
 
 ```
-helm install <package name> opensearch/opensearch -f helm-opensearch.yaml
+helm install <deployment name> opensearch/opensearch -f helm-opensearch.yaml
 ```
 
-- Install OpenSearch Dashboards using `helm-opensearch-dashboards.yaml`:
+- Install OpenSearch Dashboards using `helm-opensearch-dashboards.yaml` (Note: the `<deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
 
 ```
-helm install d opensearch/opensearch-dashboards -f helm-opensearch-dashboards.yaml
+helm install <deployment name> opensearch/opensearch-dashboards -f helm-opensearch-dashboards.yaml
 ```
 
 - To track progress of your pods, run the following command:
 
-```kubectl get pods```
+```
+kubectl get pods
+```
 
 ## Test and Run Deployment
 
@@ -84,4 +88,6 @@ opensearch-cluster-master-2               1/1     Running   0          2d22h
 
 - Then, `port-forward` one of them and navigate to your [localhost](http://localhost:5601/) (for this example, `<opensearch dashboards name>` was used):
 
-```kubectl port-forward <opensearch dashboards name> 5601```
+```
+kubectl port-forward <opensearch dashboards name> 5601
+```
