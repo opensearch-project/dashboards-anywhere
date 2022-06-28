@@ -62,7 +62,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Step 1 - Prod - Configure AWS Credentials
-        if: ${{ env.helm_config_change == 'prod'}}
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
@@ -70,7 +69,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION_PROD }}
 
       - name: Step 2 - Prod - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        if: ${{ env.helm_config_change == 'prod' }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
