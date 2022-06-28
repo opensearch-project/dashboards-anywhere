@@ -83,7 +83,7 @@ jobs:
             kubectl get nodes
 
   OS-OSD-All-Deployment:
-    if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true'}} && ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
+    if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' && needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
     runs-on: ubuntu-latest
 
     needs: Pre-Deployment
