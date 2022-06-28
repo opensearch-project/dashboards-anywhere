@@ -81,3 +81,49 @@ jobs:
             helm repo update
             helm search repo opensearch
             kubectl get nodes
+
+  OS-OSD-All-Deployment:
+    if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true'}} && ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
+    runs-on: ubuntu-latest
+
+    needs: Pre-Deployment
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Step 1 - Dev - Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ secrets.AWS_REGION_DEV }}
+
+      - name: Step 2 - Dev - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
+        with:
+          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
+          command: |
+            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
+            helm repo update
+            helm search repo opensearch
+            kubectl get nodes
+
+      - name: Step 3 - Prod - Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ${{ secrets.AWS_REGION_PROD }}
+
+      - name: Step 4 - Prod - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
+        with:
+          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
+          command: |
+            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
+            helm repo update
+            helm search repo opensearch
+            kubectl get nodes
