@@ -1,5 +1,5 @@
-name: Deploy OS and OSD
-description: This workflow was used for deploying the latest OpenSearch and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
+# This workflow was used for deploying the latest version of OpenSearch and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
+name: Deploy OpenSearch and OpenSearch Dashboards 
 
 on:
   push:
