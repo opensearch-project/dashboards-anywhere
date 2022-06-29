@@ -84,6 +84,8 @@ jobs:
             helm repo update
             helm search repo opensearch
             kubectl get nodes
+            helm install opensearch opensearch/opensearch -f config/playground/helm/prod/helm-opensearch.yaml
+            helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/prod/helm-opensearch-dashboards.yaml
 
   OS-OSD-All-Deployment:
     if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' && needs.Pre-Deployment.outputs.config_change_prod == 'true'}}

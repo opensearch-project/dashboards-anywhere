@@ -126,9 +126,6 @@ ingress:
             serviceName: chart-example.local
             servicePort: 80
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources:
   requests:
