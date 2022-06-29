@@ -107,7 +107,6 @@ service:
   labels: {}
   annotations: {}
   loadBalancerSourceRanges: []
-  # 0.0.0.0/0
   httpPortName: http
 
 ingress:

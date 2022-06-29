@@ -143,8 +143,11 @@ jobs:
             repository: elastic-analytics/opensearch-dashboards-functional-test
             ref: playground
 
-        - name: Install dependencies for function test
+        - name: Step 0 - Install dependencies for function test
           run: |
             npm install
             npm install -g yarn
+
+        - name: Step 1 - Install dependencies for function test
+          run: |
             yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
