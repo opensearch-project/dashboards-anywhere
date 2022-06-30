@@ -673,6 +673,7 @@ securityConfig:
         opendistro_security_anonymous_roles:
           reserved: true
           cluster_permissions:
+            - 'cluster:monitor/health'
             - 'cluster:admin/ingest/pipeline/get'
             - 'cluster:admin/ingest/processor/grok/get'
             - 'cluster:admin/opendistro/ad/detector/info'
@@ -761,6 +762,7 @@ securityConfig:
                 - "indices:admin/get"
                 - "indices:admin/aliases/exists*"
                 - "indices:admin/aliases/get*"
+                - "indices:admin/mappings/get"
                 - "indices:data/read/scroll"
                 - "indices:monitor/settings/get"
                 - "indices:monitor/stats"
