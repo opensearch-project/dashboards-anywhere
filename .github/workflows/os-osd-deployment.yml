@@ -153,10 +153,9 @@ jobs:
 
         - name: Step 1 - Check If OSD is Up
           run: |
-            sleep 15s
-            curl -XGET -k -u '${{secrets.OSD_USER}}:{{secrets.OSD_USER_PASSWORD}}' 'https://preview.opensearch.oss.aws.dev/api/status' > $HOME/osd-response.json
+            sleep 10s
+            curl -XGET -k -u '${{secrets.OSD_USER}}:${{secrets.OSD_USER_PASSWORD}}' 'https://preview.opensearch.oss.aws.dev/api/status' > $HOME/osd-response.json
             echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
-            echo $OSD_STATUS
 
         - name: Step 2 - Run Function Test
           if: ${{ env.OSD_STATUS == 'green'}}
