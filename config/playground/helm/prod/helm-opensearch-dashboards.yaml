@@ -47,8 +47,6 @@ extraEnvs: []
 envFrom: []
 
 extraVolumes: []
-  # - name: extras
-  #   emptyDir: {}
 
 extraVolumeMounts: []
   # - name: extras
