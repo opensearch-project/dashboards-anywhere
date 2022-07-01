@@ -26,7 +26,7 @@ majorVersion: "7"
 
 # Allows you to add any config files in {{ .Values.opensearchHome }}/config
 opensearchHome: /usr/share/opensearch
-# such as opensearch.yml and log4j2.properties
+# such as opensearch.yml
 config:
   opensearch.yml: |
     cluster.name: opensearch-cluster
