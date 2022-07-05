@@ -10,7 +10,6 @@ replicaCount: 2
 
 image:
   repository: "opensearchproject/opensearch-dashboards"
-  # override image tag, which is .Chart.AppVersion by default
   tag: ""
   pullPolicy: "IfNotPresent"
 
