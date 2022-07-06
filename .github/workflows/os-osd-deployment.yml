@@ -163,7 +163,7 @@ jobs:
             yarn cypress run --spec "cypress/integration/playground/dashboards/*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
   OSD-Functional-Test-AD:
-      needs: OS-OSD-Prod-Deployment
+      needs: [OS-OSD-Prod-Deployment,OSD-Functional-Test-OSD]
       runs-on: ubuntu-latest
       steps:
         - name: Checkout function test repo
@@ -190,7 +190,7 @@ jobs:
 
 
   OSD-Functional-Test-Alert:
-      needs: OS-OSD-Prod-Deployment
+      needs: [OS-OSD-Prod-Deployment,OSD-Functional-Test-OSD]
       runs-on: ubuntu-latest
       steps:
         - name: Checkout function test repo
@@ -218,7 +218,7 @@ jobs:
 
 
   OSD-Functional-Test-Notifications:
-      needs: OS-OSD-Prod-Deployment
+      needs: [OS-OSD-Prod-Deployment,OSD-Functional-Test-OSD]
       runs-on: ubuntu-latest
       steps:
         - name: Checkout function test repo
