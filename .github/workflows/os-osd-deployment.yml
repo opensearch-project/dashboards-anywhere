@@ -178,7 +178,6 @@ jobs:
             npm install -g yarn
 
         - name: Step 1 - Run Function Test For AD
-          if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
@@ -199,7 +198,6 @@ jobs:
             npm install -g yarn
 
         - name: Step 1 - Run Function Test For Alert
-          if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
@@ -220,7 +218,6 @@ jobs:
             npm install -g yarn
 
         - name: Step 1 - Run Function Test For Alert
-          if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
@@ -241,6 +238,5 @@ jobs:
             npm install -g yarn
 
         - name: Step 1 - Run Function Test For Reports
-          if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
