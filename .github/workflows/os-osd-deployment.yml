@@ -177,13 +177,7 @@ jobs:
             npm install
             npm install -g yarn
 
-        - name: Step 1 - Check If OSD is Up
-          run: |
-            sleep 30s
-            curl -XGET -k -u '${{secrets.OSD_USER}}:${{secrets.OSD_USER_PASSWORD}}' 'https://preview.opensearch.oss.aws.dev/api/status' > $HOME/osd-response.json
-            echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
-
-        - name: Step 2 - Run Function Test For AD
+        - name: Step 1 - Run Function Test For AD
           if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
@@ -204,14 +198,7 @@ jobs:
             npm install
             npm install -g yarn
 
-        - name: Step 1 - Check If OSD is Up
-          run: |
-            sleep 30s
-            curl -XGET -k -u '${{secrets.OSD_USER}}:${{secrets.OSD_USER_PASSWORD}}' 'https://preview.opensearch.oss.aws.dev/api/status' > $HOME/osd-response.json
-            echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
-
-
-        - name: Step 2 - Run Function Test For Alert
+        - name: Step 1 - Run Function Test For Alert
           if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
@@ -232,14 +219,28 @@ jobs:
             npm install
             npm install -g yarn
 
-        - name: Step 1 - Check If OSD is Up
-          run: |
-            sleep 30s
-            curl -XGET -k -u '${{secrets.OSD_USER}}:${{secrets.OSD_USER_PASSWORD}}' 'https://preview.opensearch.oss.aws.dev/api/status' > $HOME/osd-response.json
-            echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
-
-
-        - name: Step 2 - Run Function Test For Alert
+        - name: Step 1 - Run Function Test For Alert
           if: ${{ env.OSD_STATUS == 'green'}}
           run: |
             yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+
+
+  OSD-Functional-Test-Reports:
+      needs: [OS-OSD-Prod-Deployment,OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For Reports
+          if: ${{ env.OSD_STATUS == 'green'}}
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=https://preview.opensearch.oss.aws.dev" --env "openSearchUrl=https://preview.opensearch.oss.aws.dev,SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
