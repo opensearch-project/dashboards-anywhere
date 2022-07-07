@@ -9,47 +9,144 @@ on:
 
 jobs:
   OSD-Functional-Test-OSD:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: OSD
-      test-command: yarn cypress run --spec "cypress/integration/playground/dashboards/*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Check If OSD is Up
+          run: |
+            sleep 30s
+            curl -XGET -k -u '${{secrets.OSD_USER}}:${{secrets.OSD_USER_PASSWORD}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
+            echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
+
+        - name: Step 2 - Run Function Test For OSD
+          if: ${{ env.OSD_STATUS == 'green'}}
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/dashboards/*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
   OSD-Functional-Test-AD:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: AD
-      test-command: yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      needs: [OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For AD
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
 
   OSD-Functional-Test-Alert:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: Alert
-      test-command: yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      needs: [OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For Alert
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
 
   OSD-Functional-Test-Notifications:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: Notifications
-      test-command: yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      needs: [OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For Alert
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+
 
   OSD-Functional-Test-Reports:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: Reports
-      test-command: yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      needs: [OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For Reports
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
   OSD-Functional-Test-Observability:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: Observability
-      test-command: yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      needs: [OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
+
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For Observability
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
 
 
   OSD-Functional-Test-IndexMan:
-    uses: ./.github/workflows/reusable-function-test-template.yml
-    with:
-      test-name: IndexMan
-      test-command: yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+      needs: [OSD-Functional-Test-OSD]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout function test repo
+          uses: actions/checkout@v3
+          with:
+            repository: elastic-analytics/opensearch-dashboards-functional-test
+            ref: playground
 
+        - name: Step 0 - Install dependencies for function test
+          run: |
+            npm install
+            npm install -g yarn
+
+        - name: Step 1 - Run Function Test For Index Management
+          run: |
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
