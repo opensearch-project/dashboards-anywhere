@@ -1,0 +1,63 @@
+name: OpenSearch Dashboards Function Tests Template
+on:
+  workflow_call:
+    inputs:
+      test-name:
+        required: true
+        type: string
+      test-command:
+        required: true
+        type: string
+jobs:
+  tests:
+    name: Run Cypress function tests for ${{ inputs.test-name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout cypress-test
+        uses: actions/checkout@v2
+        with:
+          repository: elastic-analytics/opensearch-dashboards-functional-test
+          ref: playground
+          path: cypress-test
+      - name: Get package version
+        working-directory: cypress-test
+        run: |
+          echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
+      - name: Get Cypress version
+        id: cypress_version
+        run: |
+          echo "::set-output name=cypress_version::$(cat ./cypress-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+      - name: Cache Cypress
+        id: cache-cypress
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+        env:
+          CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
+      - run: npx cypress cache list
+      - run: npx cypress cache path
+      - name: Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: cypress-test
+          command: ${{ inputs.test-command }}
+      # Screenshots are only captured on failure, will change this once we do visual regression tests
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress-test/cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress-test/cypress/videos
+      # Test reports was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-results
+          path: cypress-test/cypress/results
