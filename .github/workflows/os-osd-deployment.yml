@@ -138,12 +138,12 @@ jobs:
 
   OSD-Functional-Test-Dev:
         needs: OS-OSD-Dev-Deployment
-        uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-functiontest.yml@featureaction
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
 
   OSD-Functional-Test-Prod:
         needs: OS-OSD-Prod-Deployment
-        uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-functiontest.yml@featureaction
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://preview.opensearch.oss.aws.dev
