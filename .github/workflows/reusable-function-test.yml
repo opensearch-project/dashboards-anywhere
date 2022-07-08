@@ -6,6 +6,11 @@ on:
       endpoint:
         required: true
         type: string
+    secrets:
+      osd-user:
+        required: true
+      osd-user-password:
+        required: true
 
 jobs:
   OSD-Functional-Test-OSD:
@@ -25,13 +30,13 @@ jobs:
         - name: Step 1 - Check If OSD is Up
           run: |
             sleep 30s
-            curl -XGET -k -u '${{secrets.OSD_USER}}:${{secrets.OSD_USER_PASSWORD}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
+            curl -XGET -k -u '${{secrets.osd-user}}:${{secrets.osd-user-password}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
             echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
 
         - name: Step 2 - Run Function Test For OSD
           if: ${{ env.OSD_STATUS == 'green'}}
           run: |
-            yarn cypress run --spec "cypress/integration/playground/dashboards/*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/dashboards/*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
   OSD-Functional-Test-AD:
       needs: [OSD-Functional-Test-OSD]
@@ -50,7 +55,7 @@ jobs:
 
         - name: Step 1 - Run Function Test For AD
           run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
 
   OSD-Functional-Test-Alert:
@@ -70,7 +75,7 @@ jobs:
 
         - name: Step 1 - Run Function Test For Alert
           run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
 
   OSD-Functional-Test-Notifications:
@@ -90,7 +95,7 @@ jobs:
 
         - name: Step 1 - Run Function Test For Alert
           run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
 
   OSD-Functional-Test-Reports:
@@ -110,7 +115,7 @@ jobs:
 
         - name: Step 1 - Run Function Test For Reports
           run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
   OSD-Functional-Test-Observability:
       needs: [OSD-Functional-Test-OSD]
@@ -129,7 +134,7 @@ jobs:
 
         - name: Step 1 - Run Function Test For Observability
           run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
 
   OSD-Functional-Test-IndexMan:
@@ -149,4 +154,4 @@ jobs:
 
         - name: Step 1 - Run Function Test For Index Management
           run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.OSD_USER}},password=${{secrets.OSD_USER_PASSWORD}}"
+            yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"

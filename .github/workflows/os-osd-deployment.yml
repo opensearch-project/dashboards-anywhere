@@ -60,9 +60,13 @@ jobs:
         uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
+          osd-user: ${{secrets.OSD_USER}}
+          osd-user-password: ${{secrets.OSD_USER_PASSWORD}}
 
   OSD-Functional-Test-Prod:
         needs: OS-OSD-Prod-Deployment
         uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.org
+          osd-user: ${{secrets.OSD_USER}}
+          osd-user-password: ${{secrets.OSD_USER_PASSWORD}}
