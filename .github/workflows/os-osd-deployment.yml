@@ -35,7 +35,7 @@ jobs:
   OS-OSD-Dev-Deployment:
     needs: Pre-Deployment
     if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
-    uses:  opensearch-project/dashboards-anywhere/.github/workflows/reusable-deployment.yml@featureaction
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@featureaction
     with:
       helm-repo: $helm-repo
       deploy-env: dev
@@ -48,7 +48,7 @@ jobs:
   OS-OSD-Prod-Deployment:
     needs: Pre-Deployment
     if: ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
-    uses:  opensearch-project/dashboards-anywhere/.github/workflows/reusable-deployment.yml@featureaction
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@featureaction
     with:
       helm-repo: $helm-repo
       deploy-env: prod
@@ -60,7 +60,7 @@ jobs:
 
   OSD-Functional-Test-Dev:
         needs: OS-OSD-Dev-Deployment
-        uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/function-tests-template.yml@featureaction
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
         secrets:
@@ -69,7 +69,7 @@ jobs:
 
   OSD-Functional-Test-Prod:
         needs: OS-OSD-Prod-Deployment
-        uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/function-tests-template.yml@featureaction
         with:
           endpoint: https://playground.opensearch.org
         secrets:
