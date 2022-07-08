@@ -15,7 +15,7 @@ roles:
   - remote_cluster_client
 
 replicas: 3
-minimumMasterNodes: 1
+minimumMasterNodes: 2
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
 majorVersion: "7"
@@ -688,6 +688,7 @@ securityConfig:
             - 'cluster:admin/opendistro/alerting/monitor/search'
             - 'cluster:admin/opendistro/ism/policy/get'
             - 'cluster:admin/opendistro/ism/policy/search'
+            - 'cluster:admin/opendistro/ism/managedindex/explain'
             - 'cluster:admin/opendistro/rollup/get'
             - 'cluster:admin/opendistro/rollup/search'
             - 'cluster:admin/opendistro/rollup/explain'
@@ -698,6 +699,7 @@ securityConfig:
             - 'cluster:admin/opendistro/reports/instance/get'
             - 'cluster:admin/opendistro/notebooks/list'
             - 'cluster:admin/opendistro/notebooks/get'
+            - 'cluster:admin/opendistro/transform/get_transforms'
             - 'cluster:admin/opensearch/ml/models/get'
             - 'cluster:admin/opensearch/ml/models/search'
             - 'cluster:admin/opensearch/ml/predict'
@@ -709,6 +711,7 @@ securityConfig:
             - 'cluster:admin/opensearch/notifications/features'
             - 'cluster:admin/opensearch/notifications/channels/get'
             - 'cluster:admin/opensearch/observability/get'
+            - 'cluster:admin/opensearch/snapshot_management/policy/search'
             - 'cluster:admin/repository/get'
             - 'cluster:admin/script/get'
             - 'cluster:admin/snapshot/get'
