@@ -6,6 +6,9 @@ on:
       helm-repo:
         required: true
         type: string
+      deploy-env:
+        required: true
+        type: string
     secrets:
       access-key-id:
         required: true
@@ -24,14 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Step 1 - Dev - Configure AWS Credentials
+      - name: Step 1 - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.access-key-id }}
           aws-secret-access-key: ${{ secrets.secret-access-key }}
           aws-region: ${{ secrets.region }}
 
-      - name: Step 2 - Dev - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+      - name: Step 2 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -43,3 +46,9 @@ jobs:
             helm repo add opensearch ${{ inputs.helm-repo }}
             helm repo update
             helm search repo opensearch
+            kubectl get nodes
+            helm uninstall opensearch --namespace default
+            helm uninstall dashboards --namespace default
+            kubectl delete pvc --all
+            helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
+            helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml

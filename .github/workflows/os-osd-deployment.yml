@@ -58,9 +58,11 @@ jobs:
         uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
+          deploy-env: dev
 
   OSD-Functional-Test-Prod:
         needs: OS-OSD-Prod-Deployment
         uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.org
+          deploy-env: prod
