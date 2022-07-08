@@ -35,6 +35,7 @@ jobs:
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/reusable-deployment.yml@featureaction
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: dev
     secrets:
       access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
       secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
@@ -47,6 +48,7 @@ jobs:
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/reusable-deployment.yml@featureaction
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: prod
     secrets:
       access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
       secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
@@ -58,11 +60,9 @@ jobs:
         uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
-          deploy-env: dev
 
   OSD-Functional-Test-Prod:
         needs: OS-OSD-Prod-Deployment
         uses: opensearch-project/dashboards-anywhere/.github/workflows/reusable-function-test.yml@featureaction
         with:
           endpoint: https://playground.opensearch.org
-          deploy-env: prod
