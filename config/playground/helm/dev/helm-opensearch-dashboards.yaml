@@ -82,6 +82,8 @@ config:
     # Use this setting if you are running opensearch-dashboards without https
     opensearch_security.cookie.secure: false
     server.host: '0.0.0.0'
+    # Use the consolidated menu and global header bar
+    opensearchDashboards.branding.useExpandedHeader: false
 
 priorityClassName: ""
 
