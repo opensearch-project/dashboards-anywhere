@@ -25,8 +25,6 @@ INDEX_BODY = {
 HOST = os.environ.get("HOST")
 PORT = 9200
 AUTH = (os.environ.get("SAMPLE_DATA_USERNAME"), os.environ.get("SAMPLE_DATA_PASSWORD"))
-CA_CERTS_PATH = DIR_PATH.replace('utils/sample_data_ingestor/tests', '')
-CA_CERTS_PATH += 'config/root-ca.pem'
 
 # Establish connection with OS
 client = OpenSearch(
@@ -34,10 +32,9 @@ client = OpenSearch(
     http_compress = True,
     http_auth = AUTH,
     use_ssl = True,
-    verify_certs = True,
+    verify_certs = False,
     ssl_assert_hostname = False,
-    ssl_show_warn = False,
-    ca_certs = CA_CERTS_PATH
+    ssl_show_warn = False
 )
 
 
