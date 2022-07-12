@@ -14,6 +14,8 @@ on:
 
 env:
   # TODO: merge all the changes to OpenSearch-Project's function repo.
+  # Issue for tracking this todo work.
+  # https://github.com/opensearch-project/dashboards-anywhere/issues/46
   function-repo: elastic-analytics/opensearch-dashboards-functional-test
   function-branch: playground
 
