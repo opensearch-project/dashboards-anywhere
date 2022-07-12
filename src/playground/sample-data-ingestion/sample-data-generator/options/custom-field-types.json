@@ -1,8 +1,0 @@
-{
-    "__comment__": "Define custom field types that map to a Faker attribute",
-    "float": "pyfloat",
-    "double": "pyfloat",
-    "integer": "random_int",
-    "date detection string": "boolean",
-    "numeric detection string": "boolean"
-}
