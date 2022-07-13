@@ -2,13 +2,13 @@
 
 ## Summary
 
-This document provides the guidance for the useage of GitHub actions.
+This document provides the guidance for the usage of GitHub actions.
 
-The current workflows folder contains one deployment workflow(os-osd-deployment.yml) and two reusable workflows(deployment-template.yml and function-tests-template.yml). os-osd-deployment workflow will call deployment-template and function-test-template with required inputs and secrets for the deployment and tests.
+The current workflows folder contains one deployment workflow(os-osd-deployment.yml) and two reusable workflows(deployment-template.yml and functional-test-template.yml). os-osd-deployment workflow will call deployment-template and functional-test-template with required inputs and secrets for the deployment and tests.
 
 - os-osd-deployment.yml
 - deployment-template.yml
-- function-tests-template.yml
+- functional-test-template.yml
 
 ## Prerequisites
 
@@ -31,8 +31,8 @@ The current workflows folder contains one deployment workflow(os-osd-deployment.
 >> - secrets: region, it is cluster region.
 >> - secrets: kube-config, it is client kube configuration which was used to connect to EKS cluster.
 
-> function-tests-template.yml:
->> This is a reusable function tests workflows for OpeanSearch Dashboards. The required inputs and secrets as following:
+> functional-test-template.yml:
+>> This is a reusable functional test workflows for OpeanSearch Dashboards. The required inputs and secrets as following:
 >> - inputs: endpoint, the OpenSearch Dashboard endpoint.
 >> - secrets: osd-user, the write access user of OpenSearch Dashboards.
 >> - secrets: osd-user-password, the write access user's password for OpenSearch Dashboards.
