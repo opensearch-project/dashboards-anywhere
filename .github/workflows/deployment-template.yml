@@ -1,4 +1,4 @@
-name: OpenSearch and Dashboards Deployment Template
+name: OpenSearch and OpenSearch Dashboards Deployment Template
 
 on:
   workflow_call:
