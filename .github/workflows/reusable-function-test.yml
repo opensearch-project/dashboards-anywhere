@@ -1,4 +1,4 @@
-name: OpenSearch Dashboards Function Tests
+name: OpenSearch Dashboards functional Tests
 
 on:
   workflow_call:
@@ -16,13 +16,13 @@ jobs:
   OSD-Functional-Test-OSD:
       runs-on: ubuntu-latest
       steps:
-        - name: Checkout function test repo
+        - name: Checkout functional test repo
           uses: actions/checkout@v3
           with:
             repository: elastic-analytics/opensearch-dashboards-functional-test
             ref: playground
 
-        - name: Step 0 - Install dependencies for function test
+        - name: Step 0 - Install dependencies for functional test
           run: |
             npm install
             npm install -g yarn
@@ -38,120 +38,49 @@ jobs:
           run: |
             yarn cypress run --spec "cypress/integration/playground/dashboards/*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
-  OSD-Functional-Test-AD:
-      needs: [OSD-Functional-Test-OSD]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout function test repo
-          uses: actions/checkout@v3
-          with:
-            repository: elastic-analytics/opensearch-dashboards-functional-test
-            ref: playground
+  Plugins:
+    runs-on: ubuntu-latest
+    needs: OSD-Functional-Test-OSD
+    strategy:
+      matrix: 
+        run: ['OSD-Functional-Test-AD', 'OSD-Functional-Test-Alert', 'OSD-Functional-Test-Notifications', 'OSD-Functional-Test-Reports', 'OSD-Functional-Test-Observability', 'OSD-Functional-Test-IndexMan']
+    steps:
+    - run: echo Run ${{ matrix.run }}
+    - name: Checkout function test repo
+      uses: actions/checkout@v3
+      with:
+        repository: elastic-analytics/opensearch-dashboards-functional-test
+        ref: playground
+    - name: Install dependencies for functional test
+      run: |
+        npm install
+        npm install -g yarn
+    - name: Run Functional Test For AD
+      if:  ${{ matrix.run == 'OSD-Functional-Test-AD' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
-        - name: Step 0 - Install dependencies for function test
-          run: |
-            npm install
-            npm install -g yarn
+    - name: Run Functional Test For Alert
+      if:  ${{ matrix.run == 'OSD-Functional-Test-Alert' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
-        - name: Step 1 - Run Function Test For AD
-          run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_ad*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
+    - name: Run Functional Test For Notifications
+      if:  ${{ matrix.run == 'OSD-Functional-Test-Notifications' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
+    - name: Run Functional Test For Reports
+      if:  ${{ matrix.run == 'OSD-Functional-Test-Reports' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
-  OSD-Functional-Test-Alert:
-      needs: [OSD-Functional-Test-OSD]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout function test repo
-          uses: actions/checkout@v3
-          with:
-            repository: elastic-analytics/opensearch-dashboards-functional-test
-            ref: playground
+    - name: Run Functional Test For Observability
+      if:  ${{ matrix.run == 'OSD-Functional-Test-Observability' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
-        - name: Step 0 - Install dependencies for function test
-          run: |
-            npm install
-            npm install -g yarn
-
-        - name: Step 1 - Run Function Test For Alert
-          run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_alert*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
-
-
-  OSD-Functional-Test-Notifications:
-      needs: [OSD-Functional-Test-OSD]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout function test repo
-          uses: actions/checkout@v3
-          with:
-            repository: elastic-analytics/opensearch-dashboards-functional-test
-            ref: playground
-
-        - name: Step 0 - Install dependencies for function test
-          run: |
-            npm install
-            npm install -g yarn
-
-        - name: Step 1 - Run Function Test For Alert
-          run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_notifications*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
-
-
-  OSD-Functional-Test-Reports:
-      needs: [OSD-Functional-Test-OSD]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout function test repo
-          uses: actions/checkout@v3
-          with:
-            repository: elastic-analytics/opensearch-dashboards-functional-test
-            ref: playground
-
-        - name: Step 0 - Install dependencies for function test
-          run: |
-            npm install
-            npm install -g yarn
-
-        - name: Step 1 - Run Function Test For Reports
-          run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_reports*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
-
-  OSD-Functional-Test-Observability:
-      needs: [OSD-Functional-Test-OSD]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout function test repo
-          uses: actions/checkout@v3
-          with:
-            repository: elastic-analytics/opensearch-dashboards-functional-test
-            ref: playground
-
-        - name: Step 0 - Install dependencies for function test
-          run: |
-            npm install
-            npm install -g yarn
-
-        - name: Step 1 - Run Function Test For Observability
-          run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
-
-
-  OSD-Functional-Test-IndexMan:
-      needs: [OSD-Functional-Test-OSD]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout function test repo
-          uses: actions/checkout@v3
-          with:
-            repository: elastic-analytics/opensearch-dashboards-functional-test
-            ref: playground
-
-        - name: Step 0 - Install dependencies for function test
-          run: |
-            npm install
-            npm install -g yarn
-
-        - name: Step 1 - Run Function Test For Index Management
-          run: |
-            yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
+    - name: Run Functional Test For Index management
+      if:  ${{ matrix.run == 'OSD-Functional-Test-IndexMan' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
