@@ -42,6 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: OSD-Functional-Test-OSD
     strategy:
+      fail-fast: false
       matrix: 
         run: ['OSD-Functional-Test-AD', 'OSD-Functional-Test-Alert', 'OSD-Functional-Test-Notifications', 'OSD-Functional-Test-Reports', 'OSD-Functional-Test-Observability', 'OSD-Functional-Test-IndexMan']
     steps:
