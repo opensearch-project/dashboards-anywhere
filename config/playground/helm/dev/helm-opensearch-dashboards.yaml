@@ -6,7 +6,7 @@
 # Declare variables to be passed into your templates.
 
 opensearchHosts: "https://opensearch-cluster-master:9200"
-replicaCount: 1
+replicaCount: 2
 
 image:
   repository: "opensearchproject/opensearch-dashboards"

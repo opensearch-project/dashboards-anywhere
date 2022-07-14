@@ -14,7 +14,7 @@ roles:
   - data
   - remote_cluster_client
 
-replicas: 3
+replicas: 6
 minimumMasterNodes: 2
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
