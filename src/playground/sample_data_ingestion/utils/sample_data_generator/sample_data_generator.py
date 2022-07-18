@@ -14,7 +14,7 @@ import os
 Function that generates fake values for given fields
 This is based off of the Faker library 
 """
-def choose_field(kind, args=None):
+def choose_field(kind, args = None):
     fake = Faker()
     
     # "custom-field-types.json" defines what enumerated types return in Faker
@@ -22,16 +22,19 @@ def choose_field(kind, args=None):
     dir_path += "/options/custom-field-types.json"
     with open(dir_path, "r") as f:
         existing_types = json.load(f)
-
+    
     # Null: A null type returns nothing
     if kind == "null":
         return None
-
+    
     # If the user used a data type defined in "data-types.json", it will be executed
     elif kind in existing_types:
         try:
             field_types = getattr(fake, existing_types[kind])
             if args:
+                # If the user specifies a map for key word arguments, the function unpacks them
+                if len(args) == 1 and type(args[0]) is dict:
+                    return field_types(**args[0])
                 return field_types(*args)
             return field_types()
         except Exception as e:
@@ -60,13 +63,17 @@ def choose_field(kind, args=None):
                         list.append(val)
                 return list
             # User specifies a range of possible array lengths
-            else:
+            elif args[1] == "integer":
+                # Length: a randomly generated integer used for the array length to generate
                 length = choose_field(args[1], tuple(args[2]))
                 for i in range(length):
                     val = choose_field(args[0], args[3:])
                     if val:
                         list.append(val)
                 return list
+            # Input error
+            else:
+                raise TypeError("Array size is not configured correctly; check to make sure that args[1] is an integer or a string \"integer\"")
         except Exception as e:
             print(e)
             print("Invalid Array")
@@ -90,6 +97,9 @@ def choose_field(kind, args=None):
         try:
             field_types = getattr(fake, kind)
             if args:
+                # If the user specifies a map for key word arguments, the function unpacks them
+                if len(args) == 1 and type(args[0]) is dict:
+                    return field_types(**args[0])
                 return field_types(*args)
             return field_types()
         except Exception as e:
@@ -101,23 +111,29 @@ def choose_field(kind, args=None):
 """
 Function to generate data
 Returns a JSON object or a list of JSON objects if a JSON  or CSV file was provided
+Supported inputs:
+    - NDJSON File, zipped or unzipped
+    - CSV File, zipped or unzipped
+    - Index Mapping (as a JSON string or dict)
+        - Note: only explicit mapping is supported and the tool will not support fields within fields
+    - JSON "short-hand": {<Field name>: <Field type>}
+        - Ex: {"Zip_Code": "zipcode", "Address": "address"}
 Format: Paste in your mapping value {"properties": {<properties values>}}
-        Alternatively, pass in a JSON string or string in the form:
-          {<Field>: <Field Type>} 
-        If you provide arguments, the <Field Type> should be a list:
-          {<Field>: [<Field Type>, *args]}
+    Alternatively, pass in a JSON string or string in the form:
+        {<Field>: <Field Type>} 
+    If you provide arguments, the <Field Type> should be a list:
+        {<Field>: [<Field Type>, *args]}
 """
-def generate_data(input, mappings=True):
+def generate_data(input, mappings = True):
     data_entry = {}
 
     if type(input) is str and "." in input:
-        name = input
+        name = input.split(".gz")[0]
         # Unzips file if necessary
         if ".gz" in input:
             with gzip.open(input, 'rb') as fin:
                 with open(input.split(".gz")[0], 'wb') as fout:
                     copyfileobj(fin, fout)
-            name = input.split(".gz")[0]
 
     # If a JSON file was provided
     if type(input) is str and ".json" in input:

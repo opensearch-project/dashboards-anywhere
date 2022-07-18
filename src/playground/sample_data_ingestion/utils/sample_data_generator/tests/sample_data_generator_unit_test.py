@@ -64,7 +64,7 @@ jinput4_invalid = {
 
 
 # Testing each function of generator.py
-def test__valid_choose_field():
+def test_valid_choose_field():
         # Tests for correct type returned with minimum required arguments
         assert generator.choose_field("null") == None
         assert type(generator.choose_field("float")) is float
@@ -143,7 +143,7 @@ def test_invalid_choose_field():
                 generator.choose_field("keyword", "zipcode_in_state", "TX")
 
 
-def test__valid_generate_data():
+def test_valid_generate_data():
         # Tests whether each field is indeed populated and contains everything
         test_1 = json.loads(generator.generate_data(jinput, False))
         assert len(test_1) == 3
