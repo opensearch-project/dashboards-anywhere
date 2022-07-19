@@ -5,36 +5,38 @@ import json
 import pytest
 from datetime import date
 from types import NoneType
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Adds parent directory sample_data_generator to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import sample_data_generator as generator
 
 
 # Sample inputs (valid)
-jinput = {
+valid_json_shorthand = {
         "year": "year",
         "random number": "integer",
         "email": "email",
         }
 
-jinput2 = {"properties": {
+valid_json_mapping = {"properties": {
         "first name":    { "type" : ["first_name"]},
         "last name":     { "type" : "last_name"},
         "companies":{ "type" : ["array", "company", 5] }
         }}
 
-jinput3 = json.dumps({
+valid_json_string_shorthand = json.dumps({
         "year": "year",
         "addresses": ["array", "address", "integer", [1, 3]],
         "director": "name"
         })
 
-jinput4 = json.dumps({"properties": {
+valid_json_string_mapping = json.dumps({"properties": {
         "year":    { "type" : ["year"]},
         "addresses":     { "type" : ["array", "address", "integer", (1, 3)] },
         "director":{ "type" : "name" }
         }})
 
-jinput5 = json.dumps({"properties": {
+valid_json_string_mapping_two = json.dumps({"properties": {
         "year":    { "type" : ["year"]},
         "integers":     { "type" : ["array", "integer", "integer", (1, 3), 5, 10] },
         "director":{ "type" : "name" }
@@ -42,21 +44,21 @@ jinput5 = json.dumps({"properties": {
 
 
 # Sample inputs (invalid)
-jinput_invalid = {
+invalid_json_shorthand = {
         "year": "year",
         "random number": "integer",
         "email": "emaiz",
         }
 
-jinput2_invalid = {}
+invalid_empty_json = {}
 
-jinput3_invalid = {
+invalid_json_shorthand_with_array = {
         "year": ["year", 5],
         "addresses": ["array", "address", "integer", [1, 3]],
         "director": "name"
         }
 
-jinput4_invalid = {
+invalid_json_field_type = {
         "year": "y",
         "addresses": ["array", "address", "5", [1, 3]],
         "director": ["integer", 6, 5]
@@ -145,27 +147,27 @@ def test_invalid_choose_field():
 
 def test_valid_generate_data():
         # Tests whether each field is indeed populated and contains everything
-        test_1 = json.loads(generator.generate_data(jinput, False))
+        test_1 = json.loads(generator.generate_data(valid_json_shorthand, False))
         assert len(test_1) == 3
         for field in test_1:
                 assert test_1[field] != None
 
-        test_2 = json.loads(generator.generate_data(jinput2))
+        test_2 = json.loads(generator.generate_data(valid_json_mapping))
         assert len(test_2) == 3
         for field in test_2:
                 assert test_2[field] != None        
 
-        test_3 = json.loads(generator.generate_data(jinput3, False))
+        test_3 = json.loads(generator.generate_data(valid_json_string_shorthand, False))
         assert len(test_3) == 3
         for field in test_3:
                 assert test_3[field] != None
 
-        test_4 = json.loads(generator.generate_data(jinput4))
+        test_4 = json.loads(generator.generate_data(valid_json_string_mapping))
         assert len(test_4) == 3
         for field in test_4:
                 assert test_4[field] != None
 
-        test_5 = json.loads(generator.generate_data(jinput5))
+        test_5 = json.loads(generator.generate_data(valid_json_string_mapping_two))
         assert len(test_5) == 3
         for field in test_5:
                 assert test_5[field] != None
@@ -205,32 +207,34 @@ def test_valid_generate_data():
 
 def test_invalid_generate_data():
         # Test_s of garbage/invalid inputs
-        test_1 = json.loads(generator.generate_data(jinput_invalid, False))
+        test_1 = json.loads(generator.generate_data(invalid_json_shorthand, False))
         assert len(test_1) == 3
         assert type(test_1["year"]) is str
         assert type(test_1["random number"]) is int
         assert test_1["email"] == None
-        test_2 = json.loads(generator.generate_data(jinput2_invalid))
-        assert test_2 == {}
-        test_3 = json.loads(generator.generate_data(jinput2_invalid, False))
+        with pytest.raises(TypeError):
+                test_2 = json.loads(generator.generate_data(invalid_empty_json))
+                assert test_2 == {}
+        test_3 = json.loads(generator.generate_data(invalid_empty_json, False))
         assert test_3 == {}
-        test_4 = json.loads(generator.generate_data(jinput3_invalid, False))
+        test_4 = json.loads(generator.generate_data(invalid_json_shorthand_with_array, False))
         assert len(test_4) == 3
         assert test_4["year"] == None
         assert type(test_4["addresses"]) is list
         for val in test_4["addresses"]:
                 assert type(val) is str
         assert type(test_4["director"]) is str
-        test_5 = json.loads(generator.generate_data(jinput4_invalid, False))
+        test_5 = json.loads(generator.generate_data(invalid_json_field_type, False))
         assert len(test_5) == 3
         for val in test_5:
                 assert type(test_5[val]) is NoneType
 
         # Test_s for invalid parameters
         with pytest.raises(TypeError):
-                generator.generate_data(jinput5, False)
-        assert json.loads(generator.generate_data(jinput3)) == {}
+                generator.generate_data(valid_json_string_mapping_two, False)
+        with pytest.raises(TypeError):
+                json.loads(generator.generate_data(valid_json_string_shorthand))
         with pytest.raises(FileNotFoundError):
                 generator.generate_data("aaaa.json")
-        with pytest.raises(json.decoder.JSONDecodeError):
-                generator.generate_data("gsf.pdf")
+        with pytest.raises(TypeError):
+                assert generator.generate_data("gsf.pdf") == 1

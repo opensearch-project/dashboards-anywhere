@@ -1,4 +1,3 @@
-# Faker==13.13.0
 from faker import Faker
 
 # Standard libraries
@@ -10,24 +9,33 @@ import csv
 import os
 
 
-"""
-Function that generates fake values for given fields
-This is based off of the Faker library 
-"""
 def choose_field(kind, args = None):
+    """
+    Function that generates fake values for given fields
+    This is based off of the Faker library 
+
+    Arguments: 
+        - kind: The "type" of data being generated
+        - args: An array of arguments to pass on to Faker
+
+    Returns:
+        - A generated value from Faker (could be a string, integer, float, etc.)
+
+    Raises:
+        - TypeError : Array size is not configured correctly; check to make sure that args[1] is an integer or a string \"integer\"
+    """
     fake = Faker()
-    
+
     # "custom-field-types.json" defines what enumerated types return in Faker
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    dir_path += "/options/custom-field-types.json"
-    with open(dir_path, "r") as f:
+    #   - E.g.: "integer" will correspond to Faker's "random_int" attribute
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "options/custom-field-types.json"), "r") as f:
         existing_types = json.load(f)
     
     # Null: A null type returns nothing
     if kind == "null":
         return None
     
-    # If the user used a data type defined in "data-types.json", it will be executed
+    # If the user used a data type defined in "custom-field-types.json", it will be executed
     elif kind in existing_types:
         try:
             field_types = getattr(fake, existing_types[kind])
@@ -35,22 +43,22 @@ def choose_field(kind, args = None):
                 # If the user specifies a map for key word arguments, the function unpacks them
                 if len(args) == 1 and type(args[0]) is dict:
                     return field_types(**args[0])
+                
+                # If args isn't a map, it will be unpacked as a list/tuple
                 return field_types(*args)
             return field_types()
         except Exception as e:
             print(e)
-            print("Invalid data type")
+            print("Invalid data type for a user defined data type; check arguments again")
             return None
 
     # Array: An array type returns an array of field values
     #   There are 2 types: {"type": ["array", <field type>, <int>, *args]}
     #                      {"type": ["array", <field type>, "integer", (min, max), *args]}
-    elif kind == "array":
-        if not args or len(args) < 2:
-            print("Invalid Array: array must specify type and number")
-            return None
+    elif kind == "array" and args and len(args) >= 2:
         if type(args[1]) is not int and len(args) < 3:
             print("Invalid Array: if you want a random array length, specify a tuple of ranges")
+            return None
         try:
             list = []
             length = 0
@@ -100,6 +108,8 @@ def choose_field(kind, args = None):
                 # If the user specifies a map for key word arguments, the function unpacks them
                 if len(args) == 1 and type(args[0]) is dict:
                     return field_types(**args[0])
+
+                # If args isn't a map, it will be unpacked as a list/tuple
                 return field_types(*args)
             return field_types()
         except Exception as e:
@@ -108,24 +118,37 @@ def choose_field(kind, args = None):
             return None
 
 
-"""
-Function to generate data
-Returns a JSON object or a list of JSON objects if a JSON  or CSV file was provided
-Supported inputs:
-    - NDJSON File, zipped or unzipped
-    - CSV File, zipped or unzipped
-    - Index Mapping (as a JSON string or dict)
-        - Note: only explicit mapping is supported and the tool will not support fields within fields
-    - JSON "short-hand": {<Field name>: <Field type>}
-        - Ex: {"Zip_Code": "zipcode", "Address": "address"}
-Format: Paste in your mapping value {"properties": {<properties values>}}
-    Alternatively, pass in a JSON string or string in the form:
-        {<Field>: <Field Type>} 
-    If you provide arguments, the <Field Type> should be a list:
-        {<Field>: [<Field Type>, *args]}
-"""
 def generate_data(input, mappings = True):
+    """
+    Function to generate data
+    Returns a JSON object or a list of JSON objects if a JSON  or CSV file was provided
+
+    Arguments:
+        - input: See below
+            - NDJSON File, zipped or unzipped
+            - CSV File, zipped or unzipped
+            - Index Mapping (as a JSON string or dict)
+                - Note: only explicit mapping is supported and the tool will not support fields within fields
+            - JSON "short-hand": {<Field name>: <Field type>}
+                - Ex: {"Zip_Code": "zipcode", "Address": "address"}
+            - Format for generating data: 
+                - Paste in your mapping value {"properties": {<properties values>}}
+                - Alternatively, pass in a JSON string or string in the form:
+                    {<Field>: <Field Type>} 
+                - If you provide arguments, the <Field Type> should be a list:
+                    {<Field>: [<Field Type>, *args]}
+        - mappings: A boolean value representing whether the template is a mapping or a short-hand template
+
+    Returns:
+        - A JSON string of one generated entry
+
+    Raises: 
+        - TypeError: Input is not a mapping
+        - TypeError: File not supported or could not be found
+    """
     data_entry = {}
+
+    name = None
 
     if type(input) is str and "." in input:
         name = input.split(".gz")[0]
@@ -135,37 +158,40 @@ def generate_data(input, mappings = True):
                 with open(input.split(".gz")[0], 'wb') as fout:
                     copyfileobj(fin, fout)
 
-    # If a JSON file was provided
-    if type(input) is str and ".json" in input:
-        JSON_list = []
-        with open(name, 'r') as f:
-            for line in f:
-                JSON_list.append(generate_data(line, "properties" in line))
-        
-        # Deletes unzipped file
-        if name != input:
-            os.remove(name)
-        return JSON_list
+        # If a JSON file was provided
+        if name and ".json" in name:
+            JSON_list = []
+            with open(name, 'r') as f:
+                for line in f:
+                    JSON_list.append(generate_data(line, "properties" in line))
+            
+            # Deletes unzipped file
+            if name != input:
+                os.remove(name)
+            return JSON_list
 
-    # If a CSV file was provided
-    elif type(input) is str and ".csv" in input:
-        CSV_list = []
-        with open(name, "r") as f:
-            reader = csv.reader(f)
-            fields = next(reader)
-            for row in reader:
-                entry_dict = {}
-                for i in range(len(fields)):
-                    entry_dict[fields[i]] = row[i]
-                    # Entries with arguments
-                    if "," in entry_dict[fields[i]]:
-                        entry_dict[fields[i]] = literal_eval(entry_dict[fields[i]])
-                CSV_list.append(generate_data(entry_dict, False))
+        # If a CSV file was provided
+        elif name and ".csv" in name:
+            CSV_list = []
+            with open(name, "r") as f:
+                reader = csv.reader(f)
+                fields = next(reader)
+                for row in reader:
+                    entry_dict = {}
+                    for i in range(len(fields)):
+                        entry_dict[fields[i]] = row[i]
+                        # Entries with arguments
+                        if "," in entry_dict[fields[i]]:
+                            entry_dict[fields[i]] = literal_eval(entry_dict[fields[i]])
+                    CSV_list.append(generate_data(entry_dict, False))
+            
+            # Deletes unzipped file
+            if name != input:
+                os.remove(name)
+            return CSV_list
         
-        # Deletes unzipped file
-        if name != input:
-            os.remove(name)
-        return CSV_list
+        else:
+            raise TypeError("File not supported or could not be found")
 
     # If mappings was provided as the argument
     elif mappings and (type(input) is dict or json or str):
@@ -187,7 +213,7 @@ def generate_data(input, mappings = True):
             print("Invalid: dynamic not supported")
             raise TypeError("Input is not a mapping")
     
-    # If you wanted a regular JSON format
+    # If you wanted a JSON "short-hand" format
     elif not mappings and (type(input) is dict or json or str):
         # Accepts either dicts or JSON strings
         if type(input) is str:
