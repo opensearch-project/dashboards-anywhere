@@ -74,20 +74,20 @@ def generate_data_trend(
     dataset = []
 
     for i in range(number):
-        entry = generate_data(input, mapping)
+        entry = generate_data(input, mapping) 
+        milliseconds = int(current_date.strftime("%s")) * 1000
         # If entry came from an input file, load data to the dataset list
         if type(entry) is list:
             for element in entry:
                 element = loads(element)
                 element[feature] = generate_noise(element[feature], anomaly_percentage, avg_min, avg_max, abs_min, abs_max)
-                element[timestamp] = int(current_date.strftime("%s")) * 1000
+                element[timestamp] = milliseconds
                 dataset.append(element)
         else:
             entry = loads(entry)
             entry[feature] = generate_noise(entry[feature], anomaly_percentage, avg_min, avg_max, abs_min, abs_max)
         
             # Update timestamp with current time
-            milliseconds = current_date.strftime("%s") * 1000
             entry[timestamp] = milliseconds
             dataset.append(dumps(entry))
         # Increment current date
@@ -144,6 +144,7 @@ def ingest(client,
     dataset = []
     initial_time = None
 
+    # If the user provides their own data
     if file_provided:
         name = template
         # Unzips file 
@@ -176,6 +177,8 @@ def ingest(client,
         # Removes zipped file
         if template != name:
             remove(name)
+
+    # If anomalies wanted to be generated
     elif anomaly_percentage:
         dataset = generate_data_trend(input = template, 
             feature = feature, 
@@ -190,16 +193,21 @@ def ingest(client,
             minutes = minutes,
             current_date = current_date
         )
-
     else:
          # Generates the specified number of documents
         for i in range(number):
             entry = generate_data(template, mapping)
             if type(entry) is list:
                 for element in entry:
+                    if timestamp:
+                        element[timestamp] = current_date
                     dataset.append(element)
             else:
-                dataset.append(generate_data(template, mapping))
+                entry = generate_data(template, mapping)
+                if timestamp:
+                    entry[timestamp] = current_date
+                dataset.append(entry)
+            current_date += timedelta(minutes = minutes)
 
 
     # Calls BULK API to ingest documents of size "chunk"
