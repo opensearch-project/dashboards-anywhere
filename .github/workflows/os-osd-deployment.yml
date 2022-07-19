@@ -110,7 +110,7 @@ jobs:
             helm repo update
             helm search repo opensearch
             kubectl get nodes
-            
+
       - name: Step 3 - Prod - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
