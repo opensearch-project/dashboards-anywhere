@@ -27,6 +27,7 @@ jobs:
               - 'config/playground/helm/dev/**'
             prod:
               - 'config/playground/helm/prod/**'
+
   OS-OSD-Dev-Deployment:
     if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true'}}
     runs-on: ubuntu-latest
@@ -55,6 +56,7 @@ jobs:
             helm repo update
             helm search repo opensearch
             kubectl get nodes
+
   OS-OSD-Prod-Deployment:
     if: ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
     runs-on: ubuntu-latest
@@ -81,6 +83,7 @@ jobs:
             helm repo update
             helm search repo opensearch
             kubectl get nodes
+
   OS-OSD-All-Deployment:
     if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' && needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
     runs-on: ubuntu-latest
@@ -107,6 +110,7 @@ jobs:
             helm repo update
             helm search repo opensearch
             kubectl get nodes
+            
       - name: Step 3 - Prod - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
