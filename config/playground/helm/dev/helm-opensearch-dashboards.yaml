@@ -6,7 +6,7 @@
 # Declare variables to be passed into your templates.
 
 opensearchHosts: "https://opensearch-cluster-leader:9200"
-replicaCount: 3
+replicaCount: 2
 
 image:
   repository: "opensearchproject/opensearch-dashboards"
@@ -34,8 +34,8 @@ rbac:
 # This is useful for mounting certificates for security and for mounting
 # the X-Pack license
 secretMounts: 
- - name: test-secret
-   secretName: test-secret
+ - name: opensearch-deployment-secret
+   secretName: opensearch-deployment-secret
    path: /usr/share/dashboards/secrets
 #  - name: certs
 #    secretName: dashboard-certs
@@ -47,12 +47,12 @@ extraEnvs:
  - name: USERNAME
    valueFrom: 
      secretKeyRef:
-       name: test-secret
+       name: opensearch-deployment-secret
        key: username
  - name: PASSWORD
    valueFrom:
      secretKeyRef:
-       name: test-secret
+       name: opensearch-deployment-secret
        key: password
 #  - name: "NODE_OPTIONS"
 #    value: "--max-old-space-size=1800"
@@ -164,11 +164,11 @@ ingress:
 
 resources:
   requests:
-    cpu: "100m"
-    memory: "512M"
+    cpu: "500m"
+    memory: "4Gi"
   limits:
-    cpu: "100m"
-    memory: "512M"
+    cpu: "500m"
+    memory: "4Gi"
 
 autoscaling:
   # This requires metrics server to be installed, to install use kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml

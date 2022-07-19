@@ -131,8 +131,8 @@ opensearchJavaOpts: "-Xmx512M -Xms512M"
 
 resources:
   requests:
-    cpu: "1000m"
-    memory: "100Mi"
+    cpu: "500m"
+    memory: "4Gi"
 
 initResources: {}
 #  limits:
@@ -555,51 +555,14 @@ securityConfig:
         opendistro_security_anonymous:
           reserved: true
           cluster_permissions:
-            # Confirmed read-only roles
-            - 'cluster_composite_ops_ro'
-            - 'cluster:admin/opendistro/alerting/alerts/get'
-            - 'cluster:admin/opendistro/alerting/destination/get'
-            - 'cluster:admin/opendistro/alerting/monitor/get'
-            - 'cluster:admin/opendistro/alerting/monitor/search'
-            - 'cluster:admin/opensearch/alerting/findings/get'
-            - 'cluster:admin/opendistro/ad/detector/info'
-            - 'cluster:admin/opendistro/ad/detector/search'
-            - 'cluster:admin/opendistro/ad/detectors/get'
-            - 'cluster:admin/opendistro/ad/result/search'
-            - 'cluster:admin/opendistro/ad/tasks/search'
-            - 'cluster:admin/opendistro/ad/detector/validate'
-            - 'cluster:admin/opendistro/ad/result/topAnomalies'
-            - 'cluster:admin/opendistro/notebooks/list'
-            - 'cluster:admin/opendistro/notebooks/get'
-            - 'cluster:admin/opensearch/observability/get'
-            - 'cluster:admin/opendistro/reports/instance/list'
-            - 'cluster:admin/opendistro/reports/instance/get'
-            - 'cluster:admin/opendistro/reports/menu/download'
-            - 'cluster:admin/opendistro/reports/definition/get'
-            - 'cluster:admin/opendistro/reports/definition/list'
-            - 'cluster:admin/opendistro/reports/instance/list'
-            - 'cluster:admin/opendistro/reports/instance/get'
-            - 'cluster:admin/opendistro/reports/menu/download'
-            - 'cluster:admin/opendistro/asynchronous_search/get'
-            - 'cluster:admin/opensearch/ml/stats/nodes'
-            - 'cluster:admin/opensearch/ml/models/get'
-            - 'cluster:admin/opensearch/ml/models/search'
-            - 'cluster:admin/opensearch/ml/tasks/get'
-            - 'cluster:admin/opensearch/ml/tasks/search'
-            - 'cluster:admin/opensearch/notifications/configs/get'
-            - 'cluster:admin/opensearch/notifications/features'
-            - 'cluster:admin/opensearch/notifications/channels/get'
-
             # For using _cat/indices
             - 'cluster:monitor/state'
             - 'cluster:monitor/health'
-
             # To enable read access to ISM
             - cluster:admin/opendistro/ism/policy/search
             - cluster:admin/opendistro/ism/managedindex/explain
             - cluster:admin/opendistro/rollup/search
             - cluster:admin/opendistro/transform/get_transforms
-
           index_permissions:
             - index_patterns:
                 - ".kibana"
@@ -616,7 +579,6 @@ securityConfig:
                 - 'indices:monitor/stats'
                 - 'indices:data/read*'
                 - 'indices:admin/get'
-
           tenant_permissions:
             - tenant_patterns:
               - '*'
@@ -888,6 +850,7 @@ securityConfig:
           reserved: false
           backend_roles:
           - "readall"
+          - "opendistro_security_anonymous_backendrole"
         
         manage_snapshots:
           reserved: false
