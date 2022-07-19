@@ -1,0 +1,36 @@
+{
+    "name": "cpu-usage-detector",
+    "description": "Monitors cpu usage every 10 minutes",
+    "time_field": "date",
+    "indices": [
+      "test-index"
+    ],
+    "feature_attributes": [
+      {
+        "feature_name": "average_cpu_usage",
+        "feature_enabled": true,
+        "aggregation_query": {
+          "test": {
+            "avg": {
+              "field": "average_cpu_usage"
+            }
+          }
+        }
+      }
+    ],
+    "filter_query": {
+      "match_all": {}
+    },
+    "detection_interval": {
+      "period": {
+        "interval": 10,
+        "unit": "Minutes"
+      }
+    },
+    "window_delay": {
+      "period": {
+        "interval": 1,
+        "unit": "Minutes"
+      }
+    }
+}

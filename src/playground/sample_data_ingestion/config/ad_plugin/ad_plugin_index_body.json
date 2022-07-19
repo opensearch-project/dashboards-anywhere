@@ -1,0 +1,13 @@
+{
+    "settings": {
+        "index": {
+            "number_of_shards": 4
+        }
+    },
+    "mappings": {
+        "properties": {
+            "date": {"type": "date"},
+            "average_cpu_usage": {"type": "integer"}
+        }
+    }
+}
