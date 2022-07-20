@@ -2,16 +2,18 @@
 from opensearchpy import OpenSearch
 
 # Standard libraries
-from json import dumps, loads
+from json import loads, load
 import pytest
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Adds the directory "/sample_data_ingestion" to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from sample_data_ingestor import ingest
 
 # Constants
 INDEX_NAME = "ingest-test"
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+DIR_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 INDEX_BODY = {
   'settings': {
     'index': {
@@ -26,6 +28,7 @@ HOST = os.environ.get("HOST")
 PORT = 9200
 AUTH = (os.environ.get("SAMPLE_DATA_USERNAME"), os.environ.get("SAMPLE_DATA_PASSWORD"))
 
+
 # Establish connection with OS
 client = OpenSearch(
     hosts = [{'host': HOST, 'port': PORT}],
@@ -39,40 +42,21 @@ client = OpenSearch(
 
 
 # Sample inputs (valid)
-jinput = {
-        "year": "year",
-        "random number": "integer",
-        "email": "email",
-        }
+valid_test_inputs = {}
+with open(DIR_PATH + "/test-files/valid-template-inputs.json", "r") as f:
+    valid_test_inputs = load(f)
 
-jinput2 = {"properties": {
-        "first name":    { "type" : ["first_name"]},
-        "last name":     { "type" : "last_name"},
-        "companies":{ "type" : ["array", "company", 5] }
-        }}
+jinput = valid_test_inputs["jinput"]
 
-jinput3 = dumps({
-        "year": "year",
-        "addresses": ["array", "address", "integer", [1, 3]],
-        "director": "name"
-        })
+jinput2 = valid_test_inputs["jinput2"]
 
-jinput4 = dumps({"properties": {
-        "year":    { "type" : ["year"]},
-        "addresses":     { "type" : ["array", "address", "integer", (1, 3)] },
-        "director":{ "type" : "name" }
-        }})
+jinput3 = valid_test_inputs["jinput3"]
 
-jinput5 = dumps({"properties": {
-        "year":    { "type" : ["year"]},
-        "integers":     { "type" : ["array", "integer", "integer", (1, 3), 5, 10] },
-        "director":{ "type" : "name" }
-        }})
+jinput4 = valid_test_inputs["jinput4"]
 
-jinput6 = {
-        "date": "unix_time",
-        "average cpu usage": ["integer", 20, 30]
-}
+jinput5 = valid_test_inputs["jinput5"]
+
+jinput6 = valid_test_inputs["jinput6"]
 
 
 # Sample index for testing 
