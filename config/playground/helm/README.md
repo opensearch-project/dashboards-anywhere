@@ -41,20 +41,22 @@ helm repo update
 ```
 $ helm search repo opensearch
 NAME                            	CHART VERSION	APP VERSION	DESCRIPTION                           
-opensearch/opensearch           	2.1.0        	2.0.1      	A Helm chart for OpenSearch           
-opensearch/opensearch-dashboards	2.1.0        	2.0.1      	A Helm chart for OpenSearch Dashboards
+opensearch/opensearch           	2.3.0        	2.1.0      	A Helm chart for OpenSearch           
+opensearch/opensearch-dashboards	2.2.1        	2.1.0      	A Helm chart for OpenSearch Dashboards
 ```
 
-- Install OpenSearch using `helm-opensearch.yaml` (Note: the `<deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
+- Note: `CHART` and `APP` versions may change. At the time of writing, these are the latest versions of each helm chart. It is recommended that you use the latest Helm Chart version.
+
+- Install OpenSearch using `helm-opensearch.yaml` (Note: the `<opensearch deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
 
 ```
-helm install <deployment name> opensearch/opensearch -f helm-opensearch.yaml
+helm install <opensearch deployment name> opensearch/opensearch -f helm-opensearch.yaml
 ```
 
-- Install OpenSearch Dashboards using `helm-opensearch-dashboards.yaml` (Note: the `<deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
+- Install OpenSearch Dashboards using `helm-opensearch-dashboards.yaml` (Note: the `<dashboards deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
 
 ```
-helm install <deployment name> opensearch/opensearch-dashboards -f helm-opensearch-dashboards.yaml
+helm install <dashboards deployment name> opensearch/opensearch-dashboards -f helm-opensearch-dashboards.yaml
 ```
 
 - To track progress of your pods, run the following command:
@@ -80,10 +82,12 @@ opensearch-cluster-leader-1               1/1     Running   0          2d22h
 opensearch-cluster-leader-2               1/1     Running   0          2d22h
 ~~~
 
-- Note: Depending on the amount of replicas, the output above may be slightly different
+- Note: Depending on the amount of replicas that you specify, the output above may be slightly different
 
 - Then, `port-forward` one of them and navigate to your [localhost](http://localhost:5601/) (for this example, `<opensearch dashboards name>` was used):
 
 ```
 kubectl port-forward <opensearch dashboards name> 5601
 ```
+
+- Note: `<opensearch dashboards name>` should be follow the naming convention `<dashboards deployment name>-opensearch-dashboards-<randomly generated string>`.
