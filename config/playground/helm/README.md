@@ -45,12 +45,6 @@ opensearch/opensearch           	2.1.0        	2.0.1      	A Helm chart for Open
 opensearch/opensearch-dashboards	2.1.0        	2.0.1      	A Helm chart for OpenSearch Dashboards
 ```
 
-- Create a secret containing the username and password that allows OSD to connect with OS (Note: If you change `test-secret` to a custom name, you will need to change `test-secret` to your custom name under `secretMounts` and `extraEnvs` in `helm-opensearch-dashboards.yaml`):
-
-```
-kubectl create secret generic test-secret --from-literal='username=<your username>' --from-literal='password=<your password>'
-```
-
 - Install OpenSearch using `helm-opensearch.yaml` (Note: the `<deployment name>` can be anything; the name is used to identify the helm installation when `$ helm list` is ran):
 
 ```
@@ -81,10 +75,12 @@ NAME                                      READY   STATUS    RESTARTS   AGE
 <opensearch dashboards name>              1/1     Running   0          2d22h
 <opensearch dashboards name 2>            1/1     Running   0          2d22h
 <opensearch dashboards name 3>            1/1     Running   0          2d22h
-opensearch-cluster-master-0               1/1     Running   0          2d22h
-opensearch-cluster-master-1               1/1     Running   0          2d22h
-opensearch-cluster-master-2               1/1     Running   0          2d22h
+opensearch-cluster-leader-0               1/1     Running   0          2d22h
+opensearch-cluster-leader-1               1/1     Running   0          2d22h
+opensearch-cluster-leader-2               1/1     Running   0          2d22h
 ~~~
+
+- Note: Depending on the amount of replicas, the output above may be slightly different
 
 - Then, `port-forward` one of them and navigate to your [localhost](http://localhost:5601/) (for this example, `<opensearch dashboards name>` was used):
 
