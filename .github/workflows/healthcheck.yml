@@ -1,0 +1,41 @@
+on:
+  schedule:
+    # Run every 5 minutes.
+    - cron:  '* * * * *'
+
+name: Check for changes of OpenSearch Dashboards status
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Use cURL to fetch the given URL, saving the response to `data.json`
+      - name: Fetch data
+        run: curl -XGET -k -u '${{secrets.osd-user}}:${{secrets.osd-user-password}}' 'https://playground.opensearch.oss.aws.dev/api/status' -o data.json
+
+      # Optionally, use `jq` to pull one or more fields from the JSON to include in the SMS message
+      - name: Parse data
+        id: parse_data
+        run: echo '::set-output name=OSD_STATUS::'$(jq -r '.status.overall.state' data.json)
+          
+      # Compare the response to the previous run, using a hash of the response as the cache key
+      - name: Fetch Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: data.json
+          key: ${{ hashFiles('data.json') }}
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      
+      # If there was not a cache hit (meaning the response changed), create state.txt
+      # and upload it to artifact with timestamp
+      - name: Upload status file to artifact if data has changed
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          path: state.txt
+        run: echo ${{ steps.date.outputs.date }} dev failed > state.txt
