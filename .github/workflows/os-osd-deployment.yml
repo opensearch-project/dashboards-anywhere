@@ -37,7 +37,7 @@ jobs:
     if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/reusable-deployment.yml@featureaction
     with:
-      helm-repo: ${{ env.helm-repo }}
+      helm-repo: "${{ env.helm-repo }}"
       deploy-env: dev
     secrets:
       access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
@@ -50,7 +50,7 @@ jobs:
     if: ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/reusable-deployment.yml@featureaction
     with:
-      helm-repo: ${{ env.helm-repo }}
+      helm-repo: "${{ env.helm-repo }}"
       deploy-env: prod
     secrets:
       access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
