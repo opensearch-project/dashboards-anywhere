@@ -1,10 +1,10 @@
 ---
 clusterName: "opensearch-cluster"
-nodeGroup: "master"
+nodeGroup: "leader"
 
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
-masterService: "opensearch-cluster-master"
+masterService: "opensearch-cluster-leader"
 
 # OpenSearch roles that will be applied to this nodeGroup
 # These will be set as environment variable "node.roles". E.g. node.roles=master,ingest,data,remote_cluster_client
@@ -14,7 +14,7 @@ roles:
   - data
   - remote_cluster_client
 
-replicas: 6
+replicas: 5
 minimumMasterNodes: 2
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
@@ -665,68 +665,26 @@ securityConfig:
                 - 'indices_monitor'
         
         # Anonymous access role
-        opendistro_security_anonymous_roles:
+        opendistro_security_anonymous_role:
           reserved: true
           cluster_permissions:
-            - 'cluster:monitor/health'
-            - 'cluster:admin/ingest/pipeline/get'
-            - 'cluster:admin/ingest/processor/grok/get'
-            - 'cluster:admin/opendistro/ad/detector/info'
-            - 'cluster:admin/opendistro/ad/detector/preview'
-            - 'cluster:admin/opendistro/ad/detector/search'
-            - 'cluster:admin/opendistro/ad/detector/stats'
-            - 'cluster:admin/opendistro/ad/detectors/get'
-            - 'cluster:admin/opendistro/ad/result/search'
-            - 'cluster:admin/opendistro/ad/tasks/search'
-            - 'cluster:admin/opendistro/alerting/alerts/get'
-            - 'cluster:admin/opendistro/alerting/destination/email_account/get'
-            - 'cluster:admin/opendistro/alerting/destination/email_account/search'
-            - 'cluster:admin/opendistro/alerting/destination/email_group/get'
-            - 'cluster:admin/opendistro/alerting/destination/email_group/search'
-            - 'cluster:admin/opendistro/alerting/destination/get'
-            - 'cluster:admin/opendistro/alerting/monitor/get'
-            - 'cluster:admin/opendistro/alerting/monitor/search'
-            - 'cluster:admin/opendistro/ism/policy/get'
-            - 'cluster:admin/opendistro/ism/policy/search'
-            - 'cluster:admin/opendistro/ism/managedindex/explain'
-            - 'cluster:admin/opendistro/rollup/get'
-            - 'cluster:admin/opendistro/rollup/search'
-            - 'cluster:admin/opendistro/rollup/explain'
-            - 'cluster:admin/opendistro/reports/definition/on_demand'
-            - 'cluster:admin/opendistro/reports/definition/get'
-            - 'cluster:admin/opendistro/reports/definition/list'
-            - 'cluster:admin/opendistro/reports/instance/list'
-            - 'cluster:admin/opendistro/reports/instance/get'
-            - 'cluster:admin/opendistro/notebooks/list'
-            - 'cluster:admin/opendistro/notebooks/get'
-            - 'cluster:admin/opendistro/transform/get_transforms'
-            - 'cluster:admin/opensearch/ml/models/get'
-            - 'cluster:admin/opensearch/ml/models/search'
-            - 'cluster:admin/opensearch/ml/predict'
-            - 'cluster:admin/opensearch/ml/tasks/get'
-            - 'cluster:admin/opensearch/ml/tasks/search'
-            - 'cluster:admin/opensearch/ml/train'
-            - 'cluster:admin/opensearch/ml/trainAndPredict'
-            - 'cluster:admin/opensearch/notifications/configs/get'
-            - 'cluster:admin/opensearch/notifications/features'
-            - 'cluster:admin/opensearch/notifications/channels/get'
-            - 'cluster:admin/opensearch/observability/get'
-            - 'cluster:admin/opensearch/snapshot_management/policy/search'
-            - 'cluster:admin/repository/get'
-            - 'cluster:admin/script/get'
-            - 'cluster:admin/snapshot/get'
-            - 'cluster:admin/snapshot/status'
-            - 'cluster:admin/snapshot/status*'
-            - 'cluster:monitor/allocation/explain'
-            - 'cluster:monitor/nodes/info'
-            - 'cluster:monitor/nodes/stats'
-            - 'cluster:monitor/nodes/usage'
-            - 'cluster:monitor/remote/info'
+            # For using _cat/indices
             - 'cluster:monitor/state'
-            - 'cluster:monitor/stats'
-            - 'cluster:monitor/task'
-            - 'cluster:monitor/task/get'
-            - 'cluster:monitor/tasks/list'
+            - 'cluster:monitor/health'
+            # To enable read access to ISM
+            - cluster:admin/opendistro/ism/policy/search
+            - cluster:admin/opendistro/ism/managedindex/explain
+            - cluster:admin/opendistro/rollup/search
+            - cluster:admin/opendistro/transform/get_transforms
+            # To enable read access to Snapshots
+            - cluster:admin/repository/get
+            - cluster:admin/opensearch/snapshot_management/policy/search
+            # To enable read access to various ISM Jobs
+            - cluster:admin/opendistro/rollup/explain
+            - cluster:admin/opendistro/ism/policy/get
+            - cluster:admin/opendistro/rollup/get
+            - cluster:admin/opendistro/transform/explain
+            - cluster:admin/opendistro/transform/get
           index_permissions:
             - index_patterns:
               - ".kibana"
@@ -776,6 +734,46 @@ securityConfig:
 
         # Define your roles mapping here
 
+        opendistro_security_anonymous_role:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        alerting_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+        
+        anomaly_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        notebooks_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        observability_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        reports_instances_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        reports_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        asynchronous_search_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        ml_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        notifications_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
         ## Demo roles mapping
 
         all_access:
@@ -816,10 +814,6 @@ securityConfig:
           users:
           - "kibanaserver"
 
-        opendistro_security_anonymous_roles:
-          reserved: true
-          users:
-          - "opendistro_security_anonymous"
       action_groups.yml: |
         _meta:
           type: "actiongroups"

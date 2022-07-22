@@ -5,11 +5,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-opensearchHosts: "https://opensearch-cluster-master:9200"
+opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
   repository: "opensearchproject/opensearch-dashboards"
+  # override image tag, which is .Chart.AppVersion by default
   tag: ""
   pullPolicy: "IfNotPresent"
 
@@ -18,12 +19,12 @@ nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created.
+  # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account.
+  # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template.
+  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 rbac:
@@ -46,6 +47,8 @@ extraEnvs: []
 envFrom: []
 
 extraVolumes: []
+  # - name: extras
+  #   emptyDir: {}
 
 extraVolumeMounts: []
   # - name: extras
@@ -74,7 +77,6 @@ config:
     opensearch.username: kibanaserver
     opensearch.password: kibanaserver
     opensearch.requestHeadersWhitelist: [authorization, securitytenant]
-
     opensearch_security.auth.anonymous_auth_enabled: true
     opensearch_security.multitenancy.enabled: false
     opensearch_security.multitenancy.tenants.preferred: [Global, Private]
@@ -84,7 +86,7 @@ config:
     server.host: '0.0.0.0'
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
-
+ 
 priorityClassName: ""
 
 opensearchAccount:
@@ -95,6 +97,10 @@ opensearchAccount:
 labels: {}
 
 hostAliases: []
+# - ip: "127.0.0.1"
+#   hostnames:
+#   - "foo.local"
+#   - "bar.local"
 
 serverHost: "0.0.0.0"
 
@@ -106,11 +112,12 @@ service:
   labels: {}
   annotations: {}
   loadBalancerSourceRanges: []
+  # 0.0.0.0/0
   httpPortName: http
 
 ingress:
   enabled: false
-  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName.
+  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
   # ingressClassName: nginx
   annotations: {}
@@ -124,6 +131,9 @@ ingress:
             serviceName: chart-example.local
             servicePort: 80
   tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources:
   requests:
@@ -150,4 +160,30 @@ tolerations: []
 
 affinity: {}
 
+# -- Array of extra K8s manifests to deploy
 extraObjects: []
+  # - apiVersion: secrets-store.csi.x-k8s.io/v1
+  #   kind: SecretProviderClass
+  #   metadata:
+  #     name: argocd-secrets-store
+  #   spec:
+  #     provider: aws
+  #     parameters:
+  #       objects: |
+  #         - objectName: "argocd"
+  #           objectType: "secretsmanager"
+  #           jmesPath:
+  #               - path: "client_id"
+  #                 objectAlias: "client_id"
+  #               - path: "client_secret"
+  #                 objectAlias: "client_secret"
+  #     secretObjects:
+  #     - data:
+  #       - key: client_id
+  #         objectName: client_id
+  #       - key: client_secret
+  #         objectName: client_secret
+  #       secretName: argocd-secrets-store
+  #       type: Opaque
+  #       labels:
+  #         app.kubernetes.io/part-of: argocd
