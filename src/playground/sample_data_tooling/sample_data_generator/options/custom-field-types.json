@@ -4,6 +4,5 @@
     "double": "pyfloat",
     "integer": "random_int",
     "date detection string": "boolean",
-    "numeric detection string": "boolean",
-    "money": "pydecimal"
+    "numeric detection string": "boolean"
 }

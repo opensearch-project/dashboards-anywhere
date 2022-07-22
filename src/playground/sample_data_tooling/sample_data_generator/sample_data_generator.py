@@ -114,7 +114,7 @@ def choose_field(kind, args = None):
             return field_types()
         except Exception as e:
             print(e)
-            print("Invalid data type")
+            print("Invalid data type; check data type name or argument list")
             return None
 
 
@@ -147,8 +147,6 @@ def generate_data(input, mappings = True):
         - TypeError: File not supported or could not be found
     """
     data_entry = {}
-
-    name = None
 
     if type(input) is str and "." in input:
         name = input.split(".gz")[0]
@@ -231,4 +229,4 @@ def generate_data(input, mappings = True):
         print("Invalid argument")
         return json.dumps(data_entry)
     
-    return json.dumps(data_entry)
+    return json.dumps(data_entry, default = str)
