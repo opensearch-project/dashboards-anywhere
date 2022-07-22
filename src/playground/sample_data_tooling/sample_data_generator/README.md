@@ -113,7 +113,7 @@ Additionally, this tool requires some familiarization of Faker methods and optio
             >>> generate_data(user_career_data_template, False)
             '{"name": "Andrew Lucas", "job-title": "Gaffer", "employer": "Marquez-Ferguson", "zip-codes": ["79461", "77810"]}'
             ~~~ 
-            `zip-codes` is a special type of value. Since we want an array of different TX zip codes, we have to specify some arguments. See [An Aside on Arrays and Keywords](### An Aside on Arrays and Keywords) for more information.
+            `zip-codes` is a special type of value. Since we want an array of different TX zip codes, we have to specify some arguments. See [An Aside on Arrays and Keywords](#an-aside-on-arrays-and-keywords) for more information.
 
             - `NDJSON filename`: The filename/filename path, zipped or unzipped, for the NDJSON file. A filename can specify multiple data templates and `generate_data()` will return a list of the documents generated.
 
