@@ -118,13 +118,13 @@ def choose_field(kind, args = None):
             return None
 
 
-def generate_data(input, mappings = True):
+def generate_data(data_template, mappings = True):
     """
     Function to generate data
     Returns a JSON object or a list of JSON objects if a JSON  or CSV file was provided
 
     Arguments:
-        - input: See below
+        - data_template: See below
             - NDJSON File, zipped or unzipped
             - CSV File, zipped or unzipped
             - Index Mapping (as a JSON string or dict)
@@ -148,12 +148,12 @@ def generate_data(input, mappings = True):
     """
     data_entry = {}
 
-    if type(input) is str and "." in input:
-        name = input.split(".gz")[0]
+    if type(data_template) is str and "." in data_template:
+        name = data_template.split(".gz")[0]
         # Unzips file if necessary
-        if ".gz" in input:
-            with gzip.open(input, 'rb') as fin:
-                with open(input.split(".gz")[0], 'wb') as fout:
+        if ".gz" in data_template:
+            with gzip.open(data_template, 'rb') as fin:
+                with open(data_template.split(".gz")[0], 'wb') as fout:
                     copyfileobj(fin, fout)
 
         # If a JSON file was provided
@@ -164,7 +164,7 @@ def generate_data(input, mappings = True):
                     JSON_list.append(generate_data(line, "properties" in line))
             
             # Deletes unzipped file
-            if name != input:
+            if name != data_template:
                 os.remove(name)
             return JSON_list
 
@@ -184,7 +184,7 @@ def generate_data(input, mappings = True):
                     CSV_list.append(generate_data(entry_dict, False))
             
             # Deletes unzipped file
-            if name != input:
+            if name != data_template:
                 os.remove(name)
             return CSV_list
         
@@ -192,37 +192,37 @@ def generate_data(input, mappings = True):
             raise TypeError("File not supported or could not be found")
 
     # If mappings was provided as the argument
-    elif mappings and (type(input) is dict or json or str):
+    elif mappings and (type(data_template) is dict or json or str):
         # Accepts either dicts or JSON strings
-        if type(input) is str:
-            input = json.loads(input)
-        if "properties" in input:
-            for attribute in input["properties"]:
+        if type(data_template) is str:
+            data_template = json.loads(data_template)
+        if "properties" in data_template:
+            for attribute in data_template["properties"]:
                 # Field with arguments
-                if type(input["properties"][attribute]) is dict and type(input["properties"][attribute]["type"]) is list:
-                    data_entry[attribute] = choose_field(input["properties"][attribute]["type"][0], input["properties"][attribute]["type"][1:])
+                if type(data_template["properties"][attribute]) is dict and type(data_template["properties"][attribute]["type"]) is list:
+                    data_entry[attribute] = choose_field(data_template["properties"][attribute]["type"][0], data_template["properties"][attribute]["type"][1:])
                 # Field with default arguments
-                elif type(input["properties"][attribute]) is dict and type(input["properties"][attribute]["type"]) is not list:
-                    data_entry[attribute] = choose_field(input["properties"][attribute]["type"])
+                elif type(data_template["properties"][attribute]) is dict and type(data_template["properties"][attribute]["type"]) is not list:
+                    data_entry[attribute] = choose_field(data_template["properties"][attribute]["type"])
                 else:
                     print("Invalid: dynamic not supported")
-                    data_entry[attribute] = input["properties"][attribute]
+                    data_entry[attribute] = data_template["properties"][attribute]
         else:
             print("Invalid: dynamic not supported")
             raise TypeError("Input is not a mapping")
     
     # If you wanted a JSON "short-hand" format
-    elif not mappings and (type(input) is dict or json or str):
+    elif not mappings and (type(data_template) is dict or json or str):
         # Accepts either dicts or JSON strings
-        if type(input) is str:
-            input = json.loads(input)
-        for field in input:
+        if type(data_template) is str:
+            data_template = json.loads(data_template)
+        for field in data_template:
             # Field with arguments
-            if type(input[field]) is list:
-                data_entry[field] = choose_field(input[field][0], input[field][1:])
+            if type(data_template[field]) is list:
+                data_entry[field] = choose_field(data_template[field][0], data_template[field][1:])
             # Field without arguments
             else:
-                data_entry[field] = choose_field(input[field])
+                data_entry[field] = choose_field(data_template[field])
     
     # No arguments provided
     else:

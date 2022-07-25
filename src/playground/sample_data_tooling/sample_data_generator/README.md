@@ -66,8 +66,8 @@ Additionally, this tool requires some familiarization of Faker methods and optio
         - Depending on the data type you specify, `choose_field()` may generate `int`, `float`, `string`, `dicts`, and more
 - `generate_data()`: Given an input type (listed below) and a mapping flag, the function generates a document in the specified format
     - **Arguments:**
-        - `mapping` (boolean): Whether or not the `input` is a JSON string/dict [mapping](https://opensearch.org/docs/latest/opensearch/mappings/). Currently, only explicit mapping is supported. This value is `True` by default.
-        - `input` (JSON string, dictionary, string): The data template of the document to be generated. There are four types of input:
+        - `mapping` (boolean): Whether or not the `data_template` is a JSON string/dict [mapping](https://opensearch.org/docs/latest/opensearch/mappings/). Currently, only explicit mapping is supported. This value is `True` by default.
+        - `data_template` (JSON string, dictionary, string): The data template of the document to be generated. There are four types of input:
             - `JSON string/dict mapping`: A mapping of the document to be generated. This format allows for users who specify an [explicit mapping](https://opensearch.org/docs/latest/opensearch/mappings/) for their index settings to then just copy the `mappings` value as an argument to `generate_data()`. `mapping` must be set to `True`.
 
             For this example, say we want to generate bike data, like for instance, prices (between $100 and $1000) and manufacturers. The data template, then, would be as shown below:
@@ -184,4 +184,4 @@ Additionally, this tool requires some familiarization of Faker methods and optio
             ~~~
             Where `*args` is the same `args` argument as `choose_field()`. `*args` can be left blank.
     - **Returns:**
-        - A JSON string representing the document just created. If the `input` argument was a NDJSON or CSV file, a list of JSON string(s) would be returned.
+        - A JSON string representing the document just created. If the `data_template` argument was a NDJSON or CSV file, a list of JSON string(s) would be returned.
