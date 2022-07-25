@@ -1,11 +1,11 @@
 {
-    "jinput": {
+    "valid_json_shorthand": {
         "year": "year",
         "random number": "integer",
         "email": "email"
     },
 
-    "jinput2": {
+    "valid_json_mapping": {
         "properties": {
             "first name":    { "type" : ["first_name"]},
             "last name":     { "type" : "last_name"},
@@ -13,13 +13,13 @@
         }
     },
 
-    "jinput3": {
+    "valid_json_array_shorthand": {
         "year": "year",
         "addresses": ["array", "address", "integer", [1, 3]],
         "director": "name"
     },
 
-    "jinput4": {
+    "valid_json_array_mapping": {
         "properties": {
             "year":    { "type" : ["year"]},
             "addresses":     { "type" : ["array", "address", "integer", [1, 3]] },
@@ -27,7 +27,7 @@
         }
     },
 
-    "jinput5": {
+    "valid_json_array_mapping_args": {
         "properties": {
             "year":    { "type" : ["year"]},
             "integers":     { "type" : ["array", "integer", "integer", [1, 3], 5, 10] },
@@ -35,7 +35,7 @@
         }
     },
 
-    "jinput6": {
+    "valid_json_shorthand_data_trend": {
         "date": "unix_time",
         "average cpu usage": ["integer", 20, 30]
     }
