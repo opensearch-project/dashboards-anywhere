@@ -26,6 +26,16 @@ def choose_field(kind, args = None):
     """
     fake = Faker()
 
+    # This Faker class uses only the Standard Provided data types.
+    # To use Community Providers, visit:
+    # https://faker.readthedocs.io/en/master/communityproviders.html
+    # to install them on your environment
+    # 
+    # Example code snippet using the Education Provider:
+    # 
+    # from faker_education import SchoolProvider
+    # fake.add_provider(SchoolProvider)
+
     # "custom-field-types.json" defines what enumerated types return in Faker
     #   - E.g.: "integer" will correspond to Faker's "random_int" attribute
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "options/custom-field-types.json"), "r") as f:
