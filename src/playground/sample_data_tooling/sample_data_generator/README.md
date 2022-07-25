@@ -10,7 +10,7 @@ Additionally, this tool requires some familiarization of Faker methods and optio
 
 Having datasets on hand to test OS features is painful. Wouldn't it be nice to have a tool that just generates documents of *almost* every data type imaginable?
 
-This tool can help. Using the power of [Faker](https://faker.readthedocs.io), this tooling provides a way for users to generate documents for use as sample data given a user-defined data template. If a data type is in Faker, then it can be generated.
+This generation tool can help. Using the power of [Faker](https://faker.readthedocs.io), the tooling in this directory provides a way for users to generate documents for use as sample data given a user-defined data template. If a data type is in Faker, then it can be generated.
 
 ## Methods
 
