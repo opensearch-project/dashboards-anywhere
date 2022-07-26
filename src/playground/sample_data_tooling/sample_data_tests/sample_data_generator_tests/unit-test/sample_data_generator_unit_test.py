@@ -84,7 +84,7 @@ def test_valid_choose_field():
         assert type(ssn) is str and "-" == ssn[3] and "-" == ssn[6]
 
         # 4 array tests:
-        #       - test_array_: A fixed length array with default field values
+        #       - test_array_1: A fixed length array with default field values
         #       - test_array_2: A fixed length array with arguments for field values
         #       - test_array_3: A random length array with default field values
         #       - test_array_4: A random length array with arguments for field values
