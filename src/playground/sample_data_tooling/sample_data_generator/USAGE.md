@@ -32,19 +32,20 @@ generate_data(senior_template)
 
 ## Example: Car auction prices
 
-In this example, a sports car auction website may want to keep track of all auctions, including car make and model, date of auction, and winning price. Assume they have existing statistics to determine that the average final bid "trend" is around $20,000 to $40,000. Thus, the data template might look like below:
+In this example, a sports car auction website may want to keep track of all auctions, including car make, car model, car year, date of auction, and winning final bid price. Assume they have existing statistics to determine that the average final bid "trend" is around $20,000 to $40,000. Thus, the data template might look like below:
 ```
 car_template = {
-    "make": "company",
-    "model": "first_name",
+    "make": "vehicle_make",
+    "model": "vehicle_model",
+    "year": "vehicle_year",
     "auction_date": ["date_between", "-10y"],
     "final_winning_bid": ["float", {"right_digits": 2, "min_value": 20000, "max_value": 40000}]
 }
 generate_data(car_template, False)
 
-'{"make": "Bailey, Gay and Ritter", "model": "Taylor", "auction_date": "2013-01-16", "final_winning_bid": 24037.1}'
+'{"make": "Mitsubishi", "model": "Aerostar Cargo", "year": "2002", "auction_date": "2014-03-27", "final_winning_bid": 39238.29}'
 ```
-Now, in order to get more car-specific statistics, such as body style, see [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to install and get a list of more industry-specific data types.
+This data was made using the [`faker_vehicle`](https://pypi.org/project/faker-vehicle/) community provider. See [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to install and get a list of more industry-specific data types.
 
 **Note:** In real life, car auctions can have volatility; some auctions may go for huge amounts of money. Some auctions may have a bidding war, the car may be in a rare color or have low miles on the odometer. In the example above, we implicitly defined a trend that tended to occur with auction outcomes (which were outcomes between $20k and $40k). However, in order to throw anomalies in the data, such as higher-than-average final bid prices, see the ingestion tool, wherein the tool provides support for anomaly generation.
 

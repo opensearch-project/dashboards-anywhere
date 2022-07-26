@@ -209,7 +209,7 @@ def test_valid_generate_data():
 
 
 def test_invalid_generate_data():
-        # Test_s of garbage/invalid inputs
+        # Tests of garbage/invalid inputs
         test_1 = json.loads(generator.generate_data(invalid_json_shorthand, False))
         assert len(test_1) == 3
         assert type(test_1["year"]) is str

@@ -6,7 +6,18 @@ Before using this tool, make sure the required libraries as listed in `requireme
 
 Additionally, this tool requires some familiarization of Faker methods and optional arguments to both use this tool and find all supported data types.
 
-Note: this tooling uses only the [Standard Providers](https://faker.readthedocs.io/en/master/providers.html). Depending on use case, there are other [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to provide more specific data types. To use them, you would need to install them on their corresponding sites. Navigate to `sample_data_generator/sample_data_generator.py` to modify the Faker instance to add desired community providers. 
+**Note:** this tooling comes with the following providers: 
+- [Standard Provider](https://faker.readthedocs.io/en/master/providers.html)
+- [Credit Score](https://pypi.org/project/faker-credit-score/)
+- [Education](https://pypi.org/project/faker_education/)
+- [Microservices](https://pypi.org/project/faker-microservice/)
+- [Music](https://pypi.org/project/faker_music/)
+- [Markdown Posts](https://pypi.org/project/mdgen/)
+- [Vehicles](https://pypi.org/project/faker-vehicle/)
+- [Web Data](https://pypi.org/project/faker_web/)
+- [Wi-Fi ESSIDs](https://pypi.org/project/faker-wifi-essid/)
+
+Depending on use case, there are other [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to provide more specific data types. To use them, you would need to install them on their corresponding sites. Navigate to `sample_data_generator/sample_data_generator.py` to modify the Faker instance to add desired community providers. 
 
 ## Overview
 

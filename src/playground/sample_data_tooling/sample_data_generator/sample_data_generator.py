@@ -1,3 +1,12 @@
+from faker_airtravel import AirTravelProvider
+from faker_credit_score import CreditScore
+from faker_education import SchoolProvider
+from faker_vehicle import VehicleProvider
+from mdgen import MarkdownPostProvider
+from faker_wifi_essid import WifiESSID
+from faker_music import MusicProvider
+from faker_web import WebProvider
+import faker_microservice
 from faker import Faker
 
 # Standard libraries
@@ -26,15 +35,28 @@ def choose_field(kind, args = None):
     """
     fake = Faker()
 
-    # This Faker class uses only the Standard Provided data types.
-    # To use Community Providers, visit:
+    # Adding Community Providers to Faker
+    fake.add_provider(AirTravelProvider)
+    fake.add_provider(CreditScore)
+    fake.add_provider(SchoolProvider)
+    fake.add_provider(faker_microservice.Provider)
+    fake.add_provider(MarkdownPostProvider)
+    fake.add_provider(MusicProvider)
+    fake.add_provider(VehicleProvider)
+    fake.add_provider(WebProvider)
+    fake.add_provider(WifiESSID)
+
+    # This Faker class uses only the Standard Provider and some Community Providers.
+    # To see more about Community Providers, visit:
     # https://faker.readthedocs.io/en/master/communityproviders.html
-    # to install them on your environment
+    # and follow instructions there to install them on your environment
     # 
-    # Example code snippet using the Education Provider:
+    # Example code snippet using the Biology Provider:
     # 
-    # from faker_education import SchoolProvider
-    # fake.add_provider(SchoolProvider)
+    # from faker_biology.physiology import CellType, Organ, Organelle
+    # fake.add_provider(CellType)
+    # fake.add_provider(Organ)
+    # fake.add_provider(Organelle)
 
     # "custom-field-types.json" defines what enumerated types return in Faker
     #   - E.g.: "integer" will correspond to Faker's "random_int" attribute
