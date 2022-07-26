@@ -9,7 +9,7 @@ import gzip
 import sys
 import csv
 
-# Adds parent directory "/sample_data_ingestion" to sys.path
+# Adds parent directory "/sample_data_tooling" to sys.path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from sample_data_generator.sample_data_generator import generate_data
 from sample_data_plugins.ad_plugin_data_config.data_trend_functions import AverageTrend
@@ -135,7 +135,15 @@ def ingest_validation(client = None,
         raise TypeError("anomaly_detection_trend should be a list of config dicts")
 
 
-def build_request_body(index_name, file_provided, timestamp, minutes, chunk, chunk_index, current_index, dataset, max_bulk_size):
+def build_request_body(index_name, 
+    file_provided, 
+    timestamp, 
+    minutes, 
+    chunk, 
+    current_index, 
+    dataset, 
+    max_bulk_size
+):
     """
     Function that constructs the request body for BULK API call
 
@@ -153,7 +161,6 @@ def build_request_body(index_name, file_provided, timestamp, minutes, chunk, chu
         - A tuple containing the request body and the current index to look at
     
     Raises:
-        - ValueError: chunk_index should be a positive index position
         - ValueError: current_index should be a positive index position
         - TypeError: dataset is a list of documents to ingest
     """
@@ -167,18 +174,17 @@ def build_request_body(index_name, file_provided, timestamp, minutes, chunk, chu
         max_bulk_size = max_bulk_size
     )
     # Validates function specific input
-    if type(chunk_index) is not int or (type(chunk_index) is int and chunk_index < 0):
-        raise ValueError("chunk_index should be a positive index position")
     if type(current_index) is not int or (type(current_index) is int and current_index < 0):
         raise ValueError("current_index should be a positive index position")
     if type(dataset) is not list:
         raise TypeError("dataset is a list of documents to ingest")
 
+    start_index = current_index
     one_week_ago = datetime.now() - timedelta(days = 7)
     add_to_request = []
     request_body = []
     current_body_size = sys.getsizeof(request_body)
-    while current_index < min(chunk_index + chunk, len(dataset)):
+    while current_index < min(start_index + chunk, len(dataset)):
         # Adds the index name
         index_name_body = {"index": {"_index": index_name}}
 
@@ -275,12 +281,10 @@ def ingest(client,
             # For each feature needing a trend, modify that specific field value to fit a trend
             for desired_trend in anomaly_detection_trend:
                 if desired_trend["data_trend"] == "AverageTrend":
-                    changed_entry = AverageTrend( 
-                        feature = desired_trend["feature"], 
+                    changed_entry = AverageTrend(  
                         timestamp = timestamp, 
                         entry = entry,
                         feature_trend = desired_trend, 
-                        minutes = minutes,
                         current_date = current_date
                     )
                     entry = changed_entry.generate_data_trend()
@@ -309,16 +313,14 @@ def ingest(client,
                 dataset.append(entry)
             current_date += timedelta(minutes = minutes)
 
-
     # Calls BULK API to ingest documents of size "chunk"
     i = 0
     while i < len(dataset):
-        j = i
 
         # Build request body
-        request_building = build_request_body(index_name, file_provided, timestamp, minutes, chunk, chunk_index = i, current_index = j, dataset = dataset, max_bulk_size = max_bulk_size)
+        request_building = build_request_body(index_name, file_provided, timestamp, minutes, chunk, current_index = i, dataset = dataset, max_bulk_size = max_bulk_size)
         request_body = request_building[0]
-        j = request_building[1]
+        i = request_building[1]
 
         # Validates that request_body is both a list and that it is of even length
         if type(request_body) is not list:
@@ -329,6 +331,5 @@ def ingest(client,
         response = client.bulk(body = request_body)
         print("\nAdding documents:")
         print(response)
-        i += (j - i)
         
     return dataset

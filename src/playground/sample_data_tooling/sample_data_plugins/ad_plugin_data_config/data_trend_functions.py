@@ -1,46 +1,14 @@
 from datetime import datetime, timedelta
-from random import randint
 from json import loads, dumps
+from ast import literal_eval
+from random import randint
 import sys
 import os
+
+# Adds the folder sample_data_tooling to the sys path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from sample_data_plugins.ad_plugin_data_config.data_trend_interface import DataTrend
 from sample_data_generator.sample_data_generator import choose_field
-
-
-class DataTrend():
-    """
-    Generic Class that generates data based on a generic trend
-
-    Arguments;
-        - feature: The field that will be used to test anomalies
-        - timestamp: The field name that contains timestamps
-        - minutes: The time interval for each data point (e.g. if minutes = 2, this tool will generate entries with timestamps that are 2 minutes apart from one another)
-        - current_date: The date at which entries are generated
-
-    Raises: 
-        - TypeError: Variable \"feature\" must be a string
-        - TypeError: timestamp is the field name that contains the timestamp, not the actual unix timestamp
-        - ValueError: minutes must be an integer >= 0
-        - TypeError: current_date is a datetime object
-    """
-    def __init__(self, 
-        feature, 
-        timestamp, 
-        minutes, 
-        current_date
-    ):
-        if type(feature) is not str:
-            raise TypeError("Variable \"feature\" must be a string")
-        if type(timestamp) is not str:
-            raise TypeError("timestamp is the field name that contains the timestamp, not the actual unix timestamp")
-        if type(minutes) is not int or (type(minutes) is int and minutes < 0):
-            raise ValueError("minutes must be an integer >= 0")
-        if type(current_date) is not datetime:
-            raise TypeError("current_date is a datetime object")
-        self.feature = feature
-        self.timestamp = timestamp
-        self.minutes = minutes
-        self.current_date = current_date
 
 
 class AverageTrend(DataTrend):
@@ -65,25 +33,27 @@ class AverageTrend(DataTrend):
             - abs_min: The lowest possible value, which can be an anomaly
             - abs_max: The highest possible value, which can be an anomaly
             - anomaly_percentage: How often an anomaly occurs (minimum non-zero percentage: 0.001, maximum: 1)
+            - other_args: Any other arguments required for the field with anomalies
         - entry: The document to have one of its field values potentially change
     
     Raises:
         - ValueError: Invalid values for number ranges
         - ValueError: Invalid anomaly percentage: it should be between 0 and 1, inclusive
         - TypeError: Invalid anomaly_detection_trend: anomaly_detection_trend should be a list, not a dict
+        - ValueError: Invalid entry: if entry is a string, entry should only be a JSON string
+        - TypeError: Invalid entry: entry should only be a string, list, or dict
+        - ValueError: Invalid entry: entry is empty
+        - TypeError: Invalid other_args: other_args should be a dict
     """
     def __init__(self,
-        feature, 
         timestamp, 
         feature_trend,
-        entry, 
-        minutes = 2,
+        entry,
         current_date = (datetime.today() - timedelta(days = 7))
     ):
         super().__init__( 
-            feature, 
+            feature_trend["feature"], 
             timestamp,
-            minutes, 
             current_date
         )
         # Unpacking values from anomaly_detection_trend
@@ -92,15 +62,32 @@ class AverageTrend(DataTrend):
         self.abs_min = feature_trend["abs_min"]
         self.abs_max = feature_trend["abs_max"]
         self.anomaly_percentage = feature_trend["anomaly_percentage"]
+        self.other_args = {}
+        if "other_args" in feature_trend:
+            self.other_args = feature_trend["other_args"]
         self.entry = entry
 
          # Input validation
+        if type(self.other_args) is not dict:
+            raise TypeError("Invalid other_args: other_args should be a dict")
         if self.avg_min < self.abs_min or self.avg_max > self.abs_max or self.avg_min > self.avg_max or self.abs_min > self.abs_max:
             raise ValueError("Invalid values for number ranges")
         if self.anomaly_percentage < 0 or self.anomaly_percentage > 1:
             raise ValueError("Invalid anomaly percentage: it should be between 0 and 1, inclusive")
         if not feature_trend or (type(feature_trend) is not dict):
             raise TypeError("Invalid anomaly_detection_trend: anomaly_detection_trend should be a dict, not a list")
+        if entry:
+            if type(entry) is str:
+                try:
+                    test = loads(entry)
+                except:
+                    raise ValueError("Invalid entry: if entry is a string, entry should only be a JSON string")
+            elif type(entry) is dict or type(entry) is list:
+                pass
+            else:
+                raise TypeError("Invalid entry: entry should only be a string, list, or dict")
+        else:
+            raise ValueError("Invalid entry: entry is empty")
     
     def generate_noise(self, initial_value):
         """
@@ -132,12 +119,18 @@ class AverageTrend(DataTrend):
             kind = None
             if type(initial_value) is int:
                 kind = "integer"
+                if not min_or_max:
+                    new_value = choose_field(kind, [self.avg_max, self.abs_max])
+                else:
+                    new_value = choose_field(kind, [self.abs_min, self.avg_min])
             else:
-                kind = type(initial_value)
-            if not min_or_max:
-                new_value = choose_field(kind, [self.avg_max, self.abs_max])
-            else:
-                new_value = choose_field(kind, [self.abs_min, self.avg_min])
+                kind = str(type(initial_value)).split("\'")[1]
+                if not min_or_max:
+                    self.other_args.update({"min_value": self.avg_max, "max_value": self.abs_max})
+                    new_value = choose_field(kind, [self.other_args])
+                else:
+                    self.other_args.update({"min_value": self.abs_min, "max_value": self.avg_min})
+                    new_value = choose_field(kind, [self.other_args])
         return new_value
 
     def generate_data_trend(self):
@@ -162,7 +155,8 @@ class AverageTrend(DataTrend):
                 element = dumps(element)
                 data_entry.append(element)
         else:
-            entry = loads(entry)
+            if type(entry) is str:
+                entry = loads(entry)
             entry[self.feature] = self.generate_noise(entry[self.feature])
         
             # Update timestamp with current time

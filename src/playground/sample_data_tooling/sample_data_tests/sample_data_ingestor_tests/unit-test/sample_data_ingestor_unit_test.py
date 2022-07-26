@@ -22,22 +22,20 @@ INDEX_BODY = {
 }
 
 
-# Configurations for connection (NEED TO CHANGE)
-HOST = os.environ.get("HOST")
-PORT = 9200
-AUTH = (os.environ.get("SAMPLE_DATA_USERNAME"), os.environ.get("SAMPLE_DATA_PASSWORD"))
+# Serializer class that returns nothing; used to mock API call
+class DummySerializer():
+    def dumps(self):
+        return ""
 
+# Transport class that makes a mock API call
+class DummyTransport(object):
+    def __init__(self, hosts, responses=None, **kwargs):
+        self.serializer = DummySerializer
+    def perform_request(self, method, url, params=None, headers=None, body=None):
+        return None
 
-# Establish connection with OS
-client = OpenSearch(
-    hosts = [{'host': HOST, 'port': PORT}],
-    http_compress = True,
-    http_auth = AUTH,
-    use_ssl = True,
-    verify_certs = False,
-    ssl_assert_hostname = False,
-    ssl_show_warn = False
-)
+# OpenSearch client object that will mock API calls
+client = OpenSearch(transport_class = DummyTransport)
 
 
 # Sample inputs (valid)
@@ -99,8 +97,8 @@ def test_build_request_body():
     with open(DIR_PATH + "/test-files/ecommerce.json", "r") as f:
         for line in f:
             dataset.append(line)
-    assert len(build_request_body(index_name = "test", file_provided = False, timestamp = None, minutes = 0, chunk = 5, chunk_index = 0, current_index = 0, dataset = dataset, max_bulk_size = 100)[0]) < 10
-    assert len(build_request_body(index_name = "test", file_provided = False, timestamp = None, minutes = 0, chunk = 5, chunk_index = 0, current_index = 0, dataset = dataset, max_bulk_size = 100000000)[0]) == 10
+    assert len(build_request_body(index_name = "test", file_provided = False, timestamp = None, minutes = 0, chunk = 5, current_index = 0, dataset = dataset, max_bulk_size = 100)[0]) < 10
+    assert len(build_request_body(index_name = "test", file_provided = False, timestamp = None, minutes = 0, chunk = 5, current_index = 0, dataset = dataset, max_bulk_size = 100000000)[0]) == 10
 
 
 def test_invalid_ingest():
