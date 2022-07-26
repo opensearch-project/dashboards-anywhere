@@ -41,8 +41,8 @@ car_template = {
     "auction_date": ["date_between", "-10y"],
     "final_winning_bid": ["float", {"right_digits": 2, "min_value": 20000, "max_value": 40000}]
 }
-generate_data(car_template, False)
 
+generate_data(car_template, False)
 '{"make": "Mitsubishi", "model": "Aerostar Cargo", "year": "2002", "auction_date": "2014-03-27", "final_winning_bid": 39238.29}'
 ```
 This data was made using the [`faker_vehicle`](https://pypi.org/project/faker-vehicle/) community provider. See [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to install and get a list of more industry-specific data types.
