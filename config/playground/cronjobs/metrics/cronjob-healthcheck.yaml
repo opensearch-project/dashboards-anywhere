@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: healthcheck-cronjob
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        spec:
+          containers:
+          - name: healthcheck-cronjob
+            image: curlimages/curl:latest
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - 'curl
+              -H "Content-Type: application/json"
+              https://localhost:5601/api/status'
+          restartPolicy: Never
