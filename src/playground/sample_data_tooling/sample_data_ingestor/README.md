@@ -107,6 +107,8 @@ For visual learners, if plotted on a time graph, it looks something like this (w
 
 While the data trend only supports a straight-line average trend such as the example above, there is support for users to define their own functions. `AverageTrend` for example is a class that implements the abstract class `DataTrend`. If other users wanted to generate a tangent trend function, for instance, they might create a new class `TangentTrend` from `DataTrend`. 
 
+To see more, visit `sample_data_plugins/ad_plugin_data_config/README.md` for more info.
+
 ### Customizing Trend Functions (for Anomaly Detection)
 
 `DataTrend` is a class defined in `sample_data_plugins/ad_plugin_data_config/data_trend_interface.py`. 

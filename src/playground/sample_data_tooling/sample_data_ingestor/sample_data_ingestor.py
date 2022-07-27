@@ -156,6 +156,7 @@ def build_request_body(index_name,
         - current_date: The date at which entries are generated
         - dataset: The list containing the data to ingest
         - max_bulk_size: The max amount in bytes of a bulk call
+        - current_index: The index representing the current document in dataset to look at
 
     Returns:
         - A tuple containing the request body and the current index to look at
