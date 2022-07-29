@@ -64,6 +64,14 @@ class AnomalyDetection(Plugin):
         except Exception as e:
             print(e)
             raise ConnectionError("Anomaly plugin failed to be created; check plugin and/or client configurations")
+        
+        # Sample response
+        # {
+        #     "_id": "VEHKTXwBwf_U8gjUXY2s",
+        #     "_version": 1,
+        #     "_seq_no": 5,
+        #     "anomaly_detector": {"<configurations of the detector>"}
+        # }
         print(response.text)
         
         try:
@@ -97,6 +105,22 @@ class AnomalyDetection(Plugin):
         except Exception as e:
             print(e)
             raise ConnectionError("Anomaly plugin failed to be deleted; review the client configurations")
+
+        # Sample response
+        # {
+        #     "_index": ".opensearch-anomaly-detectors",
+        #     "_id": "70TxTXwBjd8s6RK4j1Pj",
+        #     "_version": 2,
+        #     "result": "deleted",
+        #     "forced_refresh": true,
+        #     "_shards": {
+        #         "total": 2,
+        #         "successful": 2,
+        #         "failed": 0
+        #     },
+        #     "_seq_no": 9,
+        #     "_primary_term": 1
+        # }
         print(response.text)
 
         return response.json()
@@ -148,6 +172,14 @@ class AnomalyDetection(Plugin):
             except Exception as e:
                 print(e)
                 raise ConnectionError("Anomaly plugin detector job failed to start; check the client configurations")
+
+            # Sample response
+            # {
+            #     "_id": "f9DsTXwB6HknB84SoRTY",
+            #     "_version": 1,
+            #     "_seq_no": 958,
+            #     "_primary_term": 1
+            # }
             print(response.text)
 
         return response.json()
@@ -182,6 +214,14 @@ class AnomalyDetection(Plugin):
         except Exception as e:
             print(e)
             raise ConnectionError("Anomaly plugin detector job failed to stop; check the client configurations")
+
+        # Sample response
+        # {
+        #     "_id": "f9DsTXwB6HknB84SoRTY",
+        #     "_version": 0,
+        #     "_seq_no": 0,
+        #     "_primary_term": 0
+        # }
         print(response.text)
 
         return response.json()
