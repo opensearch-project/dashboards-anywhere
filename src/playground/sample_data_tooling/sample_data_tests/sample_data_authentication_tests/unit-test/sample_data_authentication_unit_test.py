@@ -1,3 +1,8 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from types import new_class
 import pytest
 import sys

@@ -1,3 +1,8 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from opensearchpy import OpenSearch
 from json import load
 import pytest 

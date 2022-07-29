@@ -1,3 +1,8 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 def validate_filename(filename):
     """
     Validates that the filename is a string and that the file is a json or csv file

@@ -1,3 +1,9 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+ 
+
 class Authentication:
     """
     Abstract class for returning headers. Nothing is defined here but there should be only one method: get_auth()

@@ -1,3 +1,8 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from datetime import datetime, timedelta
 from requests import request
 from time import mktime

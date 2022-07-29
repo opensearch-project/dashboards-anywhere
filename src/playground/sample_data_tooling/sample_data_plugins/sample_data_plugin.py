@@ -1,3 +1,8 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from json import dumps, load, loads
 from shutil import copyfileobj
 from os import path, remove
