@@ -37,14 +37,14 @@ class SampleDataIndex:
             raise TypeError("Invalid index_body: index_body should be a dict defined in the config JSON file")
         if client and (not isinstance(client, OpenSearch)):
             raise TypeError("client should be an OpenSearch Python client object")
-        
+
         self.index_name = index_name
         self.index_body = index_body
         self.client = client
-    
+
     def create_index(self):
         """
-        Checks if an index exists; if not, the index is created using the OpenSearch Python client 
+        Checks if an index exists; if not, the index is created using the OpenSearch Python client
         (client is defined in the startup/refresh jobs)
 
         Raises:
@@ -60,14 +60,14 @@ class SampleDataIndex:
             print("The index %s was successfully created" % (self.index_name))
         else:
             print("The index %s exists already" % (self.index_name))
-        
+
     def delete_index(self):
         """
-        Checks if an index exists; if it does, the index is deleted using the OpenSearch Python client 
+        Checks if an index exists; if it does, the index is deleted using the OpenSearch Python client
         (client is defined in the startup/refresh jobs)
 
         Raises:
-            - ConnectionError: Index failed to be deleted; check the index name and/or client configurations    
+            - ConnectionError: Index failed to be deleted; check the index name and/or client configurations
         """
         if self.client.indices.exists(index = self.index_name):
             try:

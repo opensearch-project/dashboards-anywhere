@@ -22,7 +22,7 @@ class BasicAuthentication(Authentication):
     """
     def __init__(self, username:str, password:str):
         self.__auth = username + ":" + password
-    
+
     def get_auth(self) -> dict:
         """
         Function that returns the headers with authentication for use with the plugin

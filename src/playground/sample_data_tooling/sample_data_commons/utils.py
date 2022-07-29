@@ -9,7 +9,7 @@ def validate_filename(filename):
 
     Arguments:
         - filename: The object to validate
-    
+
     Raises:
         - TypeError: filename should be a string
         - ValueError: filename must be a .json or .csv file

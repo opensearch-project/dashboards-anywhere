@@ -33,7 +33,7 @@ def test_valid_Plugin():
 def test_invalid_Plugin():
     sample_file_path = os.path.join(SAMPLE_FILE_PATH_DIRECTORY, "test-files/sample_data_payload.json")
     new_auth = BasicAuthentication("admin", "admin")
-    
+
     # Bad arguments
     with pytest.raises(TypeError):
         bad_plugin = Plugin({"bad": "index"}, sample_file_path, "https:localhost/", new_auth)
@@ -47,7 +47,7 @@ def test_invalid_Plugin():
     with pytest.raises(TypeError):
         bad_plugin = Plugin("bad-index", sample_file_path,  "https:localhost/", ["auth"])
         bad_plugin.unzip()
-    
+
     # Bad arguments for convert_payload()
     with pytest.raises(TypeError):
         bad_plugin = Plugin("test_index", sample_file_path, "https://localhost", new_auth)

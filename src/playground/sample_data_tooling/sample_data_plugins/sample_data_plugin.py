@@ -12,7 +12,7 @@ import sys
 # Adds parent directory "/sample_data_tooling" to sys.path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from sample_data_authentication.sample_data_authentication import Authentication
-from sample_data_commons.validate_filename import validate_filename
+from sample_data_commons.utils import validate_filename
 
 
 class Plugin:
@@ -43,15 +43,15 @@ class Plugin:
             raise TypeError("Invalid payload: payload needs to be a dict, JSON string, or filename string")
         if not isinstance(auth, Authentication):
             raise TypeError("Invalid auth: auth needs to be an Authentication instance")
-        
+
         self.index_name = index_name
         self.id = None
         self.payload = payload
-        
+
         # Convert to JSON string if necessary
         if type(self.payload) is dict:
             self.payload = dumps(self.payload)
-        
+
         # Add authentication headers
         try:
             self.headers = auth.get_auth()
@@ -64,7 +64,7 @@ class Plugin:
         if self.base_url.endswith("/"):
           self.base_url = self.base_url[:-1]
         self.url = self.base_url + ":9200/"
-    
+
     def unzip(self) -> str:
         """
         Utility function wherein if payload is a zipped config filename, unzip it and return unzipped filename
@@ -75,7 +75,7 @@ class Plugin:
         Raises:
             - TypeError: Payload is not a .json file
         """
-        
+
         # Input validation
         validate_filename(self.payload)
         if ".json" not in self.payload:
@@ -85,7 +85,7 @@ class Plugin:
         if type(self.payload) is str and ".gz" not in self.payload:
             print("Payload is already unzipped")
             return self.payload
-        
+
         # Unzip contents and and copy the zipped contents to a new unzipped file
         with gzip.open(self.payload, 'rt') as fin:
             with open(self.payload.split(".gz")[0], 'wb') as fout:
@@ -105,7 +105,7 @@ class Plugin:
         Returns:
             - A payload converted to a dict
 
-        Raises: 
+        Raises:
             - TypeError: Invalid plugin_config_directory_name: plugin_config_directory_name should be a string
             - TypeError: Invalid payload string: payload should be a filename string or a JSON string
             - TypeError: payload can only be a dict, a string filename, or a JSON string
@@ -118,7 +118,7 @@ class Plugin:
             raise TypeError("Invalid plugin_config_directory_name: plugin_config_directory_name should be a string")
         if type(payload) is not str and type(payload) is not dict:
             raise TypeError("payload can only be a dict, a string filename, or a JSON string")
-        
+
         # If payload is a JSON string, try to load it as a dict
         if type(payload) is str and ".json" not in payload:
             try:
@@ -151,7 +151,7 @@ class Plugin:
             except Exception as e:
                 print(e)
                 raise TypeError("Invalid payload string: payload should be a filename string or a JSON string")
-        
+
         # Input validation to ensure payload can only be a dict (in case payload wasn't a string or dict before)
         if type(payload) is not dict:
             raise TypeError("Invalid payload: payload can be a dict or a string only")

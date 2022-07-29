@@ -3,7 +3,6 @@ Copyright OpenSearch Contributors
 SPDX-License-Identifier: Apache-2.0
 """
 
-from types import new_class
 import pytest
 import sys
 import os
@@ -27,7 +26,7 @@ def test_invalid_BasicAuthentication():
     # Bad username argument
     with pytest.raises(TypeError):
         bad_auth = BasicAuthentication(1, "Bad")
-    
+
     # Bad password argument
     with pytest.raises(TypeError):
         bad_auth = BasicAuthentication("Bad", {})

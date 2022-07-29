@@ -23,7 +23,7 @@ def test_valid_AnomalyDetection(requests_mock):
     new_auth = BasicAuthentication("admin", "admin")
     new_ad_plugin = AnomalyDetection("test_index", sample_file_path, "https://localhost", new_auth)
     assert new_ad_plugin.url == "https://localhost:9200/_plugins/_anomaly_detection/"
-    
+
     # What sample mock requests would look like
     requests_mock.post("https://localhost:9200/_plugins/_anomaly_detection/detectors", json = {"_id": "111", "response": "detector created"})
     requests_mock.delete("https://localhost:9200/_plugins/_anomaly_detection/detectors/111", json = {"response": "detector deleted"})
@@ -44,7 +44,7 @@ def test_valid_AnomalyDetection(requests_mock):
 def test_invalid_AnomalyDetection(requests_mock):
     sample_file_path = os.path.join(SAMPLE_FILE_PATH_DIRECTORY, "test-files/sample_data_ad_payload.json")
     new_auth = BasicAuthentication("admin", "admin")
-    
+
     # Testing bad inputs (for arguments specific to AnomalyDetection)
     with pytest.raises(TypeError):
         bad_ad_plugin = AnomalyDetection("bad-index", sample_file_path, "https://localhost", new_auth, target_index=["BAD"])
@@ -53,7 +53,7 @@ def test_invalid_AnomalyDetection(requests_mock):
 
     # Testing bad request calls
     bad_ad_plugin = AnomalyDetection("test_index", sample_file_path, "https://localhost", new_auth)
-    
+
     # What sample mock requests would look like
     # Assume the detector with id "111" already exists
     requests_mock.post("https://localhost:9200/_plugins/_anomaly_detection/detectors", json = {"error": "detector already exists"})

@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 from opensearchpy import OpenSearch
 from json import load
-import pytest 
+import pytest
 import sys
 import os
 
@@ -62,12 +62,12 @@ def test_invalid_Index():
     with pytest.raises(TypeError):
         bad_index = SampleDataIndex(5, {}, client)
         bad_index.create_index()
-    
+
     # Bad client argument
     with pytest.raises(TypeError):
         bad_index = SampleDataIndex("name", {}, "client")
         bad_index.delete_index()
-    
+
     # Bad index_body argument
     with pytest.raises(TypeError):
         bad_index = SampleDataIndex("name", "body", client)
