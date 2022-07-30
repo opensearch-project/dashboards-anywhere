@@ -1,0 +1,7 @@
+{
+    "valid_json_shorthand": {
+        "year": "year",
+        "random number": "integer",
+        "email": "email"
+    }
+}
