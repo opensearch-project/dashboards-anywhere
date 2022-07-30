@@ -3,17 +3,17 @@ from datetime import datetime
 class DataTrend():
     """
     Abstract Class that generates data based on a generic trend. The idea with the DataTrend class is that
-    this class mutates an existing document, and it does not generate a new dataset. This is because in the 
-    ingest() function, it is already generating random documents. What DataTrend does is that it modifies each 
+    this class mutates an existing document, and it does not generate a new dataset. This is because in the
+    ingest() function, it is already generating random documents. What DataTrend does is that it modifies each
     document such that the one specific field (or multiple) now possesses a data trend with anomalies. Since this
-    class cannot generate multiple documents, some form of implementation is necessary to "plot" data. This could 
-    be something such as defining a delta between data points. 
-    
-    For example, if you wanted a linear regression, say y = 7x, when defining implementing generate_data_trend, as 
+    class cannot generate multiple documents, some form of implementation is necessary to "plot" data. This could
+    be something such as defining a delta between data points.
+
+    For example, if you wanted a linear regression, say y = 7x, when defining implementing generate_data_trend, as
     you are generating documents, you could have a "new_value" argument set to 7 times the previous document's value
-    (in order to get this previous value, you could return a tuple containing the new value and document generated). 
+    (in order to get this previous value, you could return a tuple containing the new value and document generated).
     To add a bit of noise so that the data trend isn't a perfect line, you could also have an argument "data_range"
-    such that the actual data generated falls between new_value +- data_range. To generate anomalies, implement 
+    such that the actual data generated falls between new_value +- data_range. To generate anomalies, implement
     generate_noise() such that the data generated could become far above or below the "new_value"
 
     Methods:
@@ -25,14 +25,14 @@ class DataTrend():
         - timestamp: The field name that contains timestamps
         - current_date: The date at which entries are generated
 
-    Raises: 
+    Raises:
         - TypeError: Variable \"feature\" must be a string
         - TypeError: timestamp is the field name that contains the timestamp, not the actual unix timestamp
         - TypeError: current_date is a datetime object
     """
-    def __init__(self, 
-        feature, 
-        timestamp, 
+    def __init__(self,
+        feature,
+        timestamp,
         current_date
     ):
 
@@ -43,7 +43,7 @@ class DataTrend():
             raise TypeError("timestamp is the field name that contains the timestamp, not the actual unix timestamp")
         if type(current_date) is not datetime:
             raise TypeError("current_date is a datetime object")
-        
+
         self.feature = feature
         self.timestamp = timestamp
         self.current_date = current_date
@@ -51,7 +51,7 @@ class DataTrend():
     def generate_noise(self):
         """
         This function should be used to generate anomalies. Whether trend data was generated before calling this
-        or not, in order to generate anomalies, a document must have an existing value. This function should either leave the 
+        or not, in order to generate anomalies, a document must have an existing value. This function should either leave the
         existing value as is or mutate it with an outlier.
         """
         pass

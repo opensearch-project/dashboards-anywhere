@@ -12,13 +12,13 @@ car_template = {
 }
 ```
 
-This would be template to use. For the purposes of this example, the `index_name` might be named `"car_auction_data"`. Since `car_template` is a JSON "Short-hand" (again, see the `sample_data_generator/README.md` for more information), `mapping = False`. The `car_template` is data we want to generate, not read from, so `file_provided = False`. `chunk` can be any number but because we are only generating a day's worth of data, a good chunk size might be something easily divisible, like `chunk = 10`. The `timestamp = "auction_date"`. For the purposes of this example, we can assume `minutes = 30` as that could be the average amount of time an auction takes. Since `minutes` are defined, `number` should be the total amount of minutes per day divided by `minutes` or 1440/30 or `number = 48` (in my startup and refresh jobs, this is automatically configured). As for `current_date`, let's set the date to Jun 8, 2020 (which was the real launch date for a car auction website). As for `max_bulk_size`, which is the maximum request body byte size, let's leave it unchanged at 100000 bytes since we already defined `chunk`. 
+This would be template to use. For the purposes of this example, the `index_name` might be named `"car_auction_data"`. Since `car_template` is a JSON "Short-hand" (again, see the `sample_data_generator/README.md` for more information), `mapping = False`. The `car_template` is data we want to generate, not read from, so `file_provided = False`. `chunk` can be any number but because we are only generating a day's worth of data, a good chunk size might be something easily divisible, like `chunk = 10`. The `timestamp = "auction_date"`. For the purposes of this example, we can assume `minutes = 30` as that could be the average amount of time an auction takes. Since `minutes` are defined, `number` should be the total amount of minutes per day divided by `minutes` or 1440/30 or `number = 48` (in my startup and refresh jobs, this is automatically configured). As for `current_date`, let's set the date to Jun 8, 2020 (which was the real launch date for a car auction website). As for `max_bulk_size`, which is the maximum request body byte size, let's leave it unchanged at 100000 bytes since we already defined `chunk`.
 
 Finally, `anomaly_detection_trend` should have a list of payloads as we want to simulate a trend using `AverageTrend`. Now, to use `AverageTrend`, it requires the following arguments:
 - `timestamp`: we defined this earlier so its still `"auction_date"`
 - `feature_trend`: These are the configurations specific to `AverageTrend`:
     - `feature`: This is the field which we want to generate data trend. In our case, `feature = final_winning_bid`
-    - `avg_min`: This should be $20000 (`avg_min = 20000`) as that is the average minimum winning bid price. 
+    - `avg_min`: This should be $20000 (`avg_min = 20000`) as that is the average minimum winning bid price.
     - `avg_max`: Same logic as for `avg_min`; `avg_max = 40000`
     - `abs_min`: This is the absolute lowest a bid can go, which in this case is $0 (`abs_min = 0`)
     - `abs_max`: This is the absolute max a bid can go, which we cap the price off at say $150000 (`abs_max = 150000`)
@@ -34,7 +34,7 @@ from datetime import datetime
 from json import loads
 
 # See OpenSearch Python client for reference on using the OpenSearch Python client object
- 
+
 # Dummy Serializer to make mock API calls
 class DummySerializer():
     def dumps(self):
@@ -53,10 +53,10 @@ client = OpenSearch(transport_class = DummyTransport)
 feature_trend = {
     "data_trend": "AverageTrend",
     "feature" : "final_winning_bid",
-    "anomaly_percentage" : 0.01, 
-    "avg_min" : 20000, 
+    "anomaly_percentage" : 0.01,
+    "avg_min" : 20000,
     "avg_max" : 40000,
-    "abs_min" : 0, 
+    "abs_min" : 0,
     "abs_max" : 150000,
     "other_args": {"right_digits": 2}
 }

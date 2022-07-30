@@ -35,7 +35,7 @@ class AverageTrend(DataTrend):
             - anomaly_percentage: How often an anomaly occurs (minimum non-zero percentage: 0.001, maximum: 1)
             - other_args: Any other arguments required for the field with anomalies
         - entry: The document to have one of its field values potentially change
-    
+
     Raises:
         - ValueError: Invalid values for number ranges
         - ValueError: Invalid anomaly percentage: it should be between 0 and 1, inclusive
@@ -46,13 +46,13 @@ class AverageTrend(DataTrend):
         - TypeError: Invalid other_args: other_args should be a dict
     """
     def __init__(self,
-        timestamp, 
+        timestamp,
         feature_trend,
         entry,
         current_date = (datetime.today() - timedelta(days = 7))
     ):
-        super().__init__( 
-            feature_trend["feature"], 
+        super().__init__(
+            feature_trend["feature"],
             timestamp,
             current_date
         )
@@ -88,11 +88,11 @@ class AverageTrend(DataTrend):
                 raise TypeError("Invalid entry: entry should only be a string, list, or dict")
         else:
             raise ValueError("Invalid entry: entry is empty")
-    
+
     def generate_noise(self, initial_value):
         """
         Function that generates random noise in the data trend (used for Anomaly Detection)
-        
+
         Arguments:
             - initial_value: A numeric value (int, float, etc.) to potentially throw an anomaly
 
@@ -158,7 +158,7 @@ class AverageTrend(DataTrend):
             if type(entry) is str:
                 entry = loads(entry)
             entry[self.feature] = self.generate_noise(entry[self.feature])
-        
+
             # Update timestamp with current time
             entry[self.timestamp] = milliseconds
             data_entry = dumps(entry)

@@ -2,13 +2,13 @@
 
 ## Pre-requisites:
 
-Before using this tool, make sure the required libraries as listed in `requirements.txt` are downloaded. Because this tool requires the `OpenSearch Python client`, OpenSearch (OS) and OpenSearch Dashboards (OSD) must already be configured. Installations for OS can be found [here](https://opensearch.org/docs/latest/opensearch/install/index/) while installations for OSD can be found [here](https://opensearch.org/docs/latest/dashboards/install/index/). 
+Before using this tool, make sure the required libraries as listed in `requirements.txt` are downloaded. Because this tool requires the `OpenSearch Python client`, OpenSearch (OS) and OpenSearch Dashboards (OSD) must already be configured. Installations for OS can be found [here](https://opensearch.org/docs/latest/opensearch/install/index/) while installations for OSD can be found [here](https://opensearch.org/docs/latest/dashboards/install/index/).
 
 ## Overview
 
-Assuming data is on hand (if data needs to be generated see the `sample_data_generator` directory), now what? Ingest it, of course! 
+Assuming data is on hand (if data needs to be generated see the `sample_data_generator` directory), now what? Ingest it, of course!
 
-This tool handles the ingestion of documents into a desired index name. Given a data template (or user provided data file), this tool will either generate the data or simply read from the data file and ingest them into an index with the `BULK` API. 
+This tool handles the ingestion of documents into a desired index name. Given a data template (or user provided data file), this tool will either generate the data or simply read from the data file and ingest them into an index with the `BULK` API.
 
 ## Methods
 
@@ -67,18 +67,18 @@ This tool handles the ingestion of documents into a desired index name. Given a 
 Sometimes data cannot be generated entirely randomly. For certain types of data, such as log data, there is a need to simulate a trend. While this can be accomplished for numeric data by specifying a "min" and "max" range, this may not cover the case when irregularities, or anomalies, occur. In this case, data being generated needs to not only simulate a trend but also model anomalies. This tool provides support for this (and support for users to define their own trend).
 
 ```
-data_template = { 
-    date = "unix_time", 
+data_template = {
+    date = "unix_time",
     average_cpu_usage = ["integer", 20, 30]
 }
 
 anomaly_data_config = {
     "data_trend": "AverageTrend",
     "feature" : "average_cpu_usage",
-    "anomaly_percentage" : 0.001, 
-    "avg_min" : 20, 
+    "anomaly_percentage" : 0.001,
+    "avg_min" : 20,
     "avg_max" : 30,
-    "abs_min" : 0, 
+    "abs_min" : 0,
     "abs_max" : 100
 }
 ```
@@ -95,7 +95,7 @@ For visual learners, if plotted on a time graph, it looks something like this (w
 
                  *
 
-                 
+
 
 30                           *
         --------- ------- --- ------
@@ -105,13 +105,13 @@ For visual learners, if plotted on a time graph, it looks something like this (w
 0
 ```
 
-While the data trend only supports a straight-line average trend such as the example above, there is support for users to define their own functions. `AverageTrend` for example is a class that implements the abstract class `DataTrend`. If other users wanted to generate a tangent trend function, for instance, they might create a new class `TangentTrend` from `DataTrend`. 
+While the data trend only supports a straight-line average trend such as the example above, there is support for users to define their own functions. `AverageTrend` for example is a class that implements the abstract class `DataTrend`. If other users wanted to generate a tangent trend function, for instance, they might create a new class `TangentTrend` from `DataTrend`.
 
 To see more, visit `sample_data_plugins/ad_plugin_data_config/README.md` for more info.
 
 ### Customizing Trend Functions (for Anomaly Detection)
 
-`DataTrend` is a class defined in `sample_data_plugins/ad_plugin_data_config/data_trend_interface.py`. 
+`DataTrend` is a class defined in `sample_data_plugins/ad_plugin_data_config/data_trend_interface.py`.
 
 `DataTrend` takes in three arguments for initialization:
 - `feature` (string): The name of the field to generate a data trend
@@ -122,6 +122,6 @@ To see more, visit `sample_data_plugins/ad_plugin_data_config/README.md` for mor
 - `generate_noise()`: Function that would mutate an existing document value so that an anomaly may be generated
 - `generate_data_trend()`: Function that would mutate an existing the value of `feature` field to fit a user-defined trend
 
-Keep in mind that `DataTrend` is designed such that it *does not generate documents*. Rather it's designed such that the values of existing documents will be changed to fit a trend. This means that `DataTrend` methods should return a single changed document, not newly generated documents. 
+Keep in mind that `DataTrend` is designed such that it *does not generate documents*. Rather it's designed such that the values of existing documents will be changed to fit a trend. This means that `DataTrend` methods should return a single changed document, not newly generated documents.
 
 Thus, to generate a trend, one possible idea would be to pass in some sort of `delta` argument (not defined in `DataTrend`), which adds the `delta` between a previously generated value and a new one. For example, consider the linear regression `y = 7x`. To generate such a regression, having the `delta` argument set to 7 times the previous value would generate the line. To add some noise to the line, there could be another argument `margin`, which would make each new value `+- margin`, resulting in a trend, but not a perfect line.

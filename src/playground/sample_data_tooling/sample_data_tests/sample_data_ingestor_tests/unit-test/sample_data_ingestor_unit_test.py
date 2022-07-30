@@ -56,7 +56,7 @@ valid_json_array_mapping_args = valid_test_inputs["valid_json_array_mapping_args
 valid_json_shorthand_data_trend = valid_test_inputs["valid_json_shorthand_data_trend"]
 
 
-# Sample index for testing 
+# Sample index for testing
 if not client.indices.exists(index = INDEX_NAME):
     client.indices.create(index = INDEX_NAME, body = INDEX_BODY)
 
@@ -67,20 +67,20 @@ def test_valid_ingest():
     assert len(ingest(client, data_template = valid_json_mapping, index_name = INDEX_NAME)) == 6
     path = str(DIR_PATH + "/test-files/csv-format-test-zipped.csv.gz")
     assert len(ingest(client, data_template = path, index_name = INDEX_NAME)) == 12
-    path = str(DIR_PATH + "/test-files/ecommerce.json")
+    path = str(DIR_PATH + "/test-files/ecommerce.ndjson")
     assert len(ingest(client, file_provided = True, data_template = path, index_name = INDEX_NAME)) == 50
 
     # Tests for various arguments
     assert len(ingest(client, data_template = valid_json_array_shorthand, mapping = False, index_name = INDEX_NAME, number = 8)) == 8
-    
+
     # Test for trending data
     anomaly_detection_trend =  [{
             "data_trend": "AverageTrend",
             "feature" : "average cpu usage",
-            "anomaly_percentage" : 0.001, 
-            "avg_min" : 20, 
+            "anomaly_percentage" : 0.001,
+            "avg_min" : 20,
             "avg_max" : 30,
-            "abs_min" : 0, 
+            "abs_min" : 0,
             "abs_max" : 100
         }]
     trend_test = ingest(client = client, data_template = valid_json_shorthand_data_trend, mapping = False, index_name = INDEX_NAME, number = 120, chunk = 10, timestamp = "date", anomaly_detection_trend = anomaly_detection_trend)
@@ -94,7 +94,7 @@ def test_valid_ingest():
 
 def test_build_request_body():
     dataset = []
-    with open(DIR_PATH + "/test-files/ecommerce.json", "r") as f:
+    with open(DIR_PATH + "/test-files/ecommerce.ndjson", "r") as f:
         for line in f:
             dataset.append(line)
     assert len(build_request_body(index_name = "test", file_provided = False, timestamp = None, minutes = 0, chunk = 5, current_index = 0, dataset = dataset, max_bulk_size = 100)[0]) < 10
@@ -109,10 +109,10 @@ def test_invalid_ingest():
     anomaly_detection_trend =  [{
             "data_trend": "AverageTrend",
             "feature" : "average cpu usage",
-            "anomaly_percentage" : 0.001, 
-            "avg_min" : 20, 
+            "anomaly_percentage" : 0.001,
+            "avg_min" : 20,
             "avg_max" : -1,
-            "abs_min" : 0, 
+            "abs_min" : 0,
             "abs_max" : 200
         }]
     with pytest.raises(ValueError):

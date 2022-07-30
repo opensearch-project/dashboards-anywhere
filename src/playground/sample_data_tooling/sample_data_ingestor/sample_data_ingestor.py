@@ -12,10 +12,11 @@ import csv
 # Adds parent directory "/sample_data_tooling" to sys.path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from sample_data_generator.sample_data_generator import generate_data
-from sample_data_plugins.ad_plugin_data_config.data_trend_functions import AverageTrend
+from sample_data_plugins.ad_plugin_data_config.average_trend_class import AverageTrend
+from sample_data_commons.utils import validate_filename
 
 
-def ingest_from_user_data(filename):
+def ingest_from_user_data(filename:str) -> list:
     """
     Utility function that loads user provided data to a list
 
@@ -26,17 +27,15 @@ def ingest_from_user_data(filename):
         - A list of data loaded from the file
 
     Raises:
-        - TypeError: Filename is not a string or is not a valid filename
         - ValueError: .json and .csv files are only supported
     """
 
     # Input validation
-    if type(filename) is not str or (type(filename) is str and "." not in filename):
-        raise TypeError("Filename is not a string or is not a valid filename")
+    validate_filename(filename)
     name = filename.split(".gz")[0]
     dataset = []
 
-    # Unzips file 
+    # Unzips file
     if ".gz" in name:
         with gzip.open(name, 'rt') as fin:
                 with open(name.split(".gz")[0], 'wb') as fout:
@@ -51,14 +50,14 @@ def ingest_from_user_data(filename):
                 for i in range(len(fields)):
                     entry[fields[i]] = row[i]
                 dataset.append(entry)
-    # Reads from JSON 
-    elif ".json" in name:
+    # Reads from JSON
+    elif ".json" in name or ".ndjson" in name:
         with open(name, "r") as f:
             for line in f:
                 dataset.append(loads(line))
     else:
-        raise ValueError(".json and .csv files are only supported")
-    
+        raise ValueError(".json, .ndjson, and .csv files are only supported")
+
     # Removes unzipped file
     if filename != name:
         remove(name)
@@ -66,18 +65,18 @@ def ingest_from_user_data(filename):
     return dataset
 
 
-def ingest_validation(client = None, 
+def ingest_validation(client:OpenSearch = None,
     data_template = None,
-    index_name = None,
-    file_provided = None,  
-    mapping = None,  
-    number = None, 
-    chunk = None, 
-    timestamp = None,
-    minutes = None,
-    current_date = None,
-    max_bulk_size = None,
-    anomaly_detection_trend = None
+    index_name:str = None,
+    file_provided:bool = None,
+    mapping:bool = None,
+    number:int = None,
+    chunk:int = None,
+    timestamp:str = None,
+    minutes:int = None,
+    current_date:datetime = None,
+    max_bulk_size:int = None,
+    anomaly_detection_trend:list = None
 ):
     """
     Function that raises errors for improper arguments
@@ -135,19 +134,19 @@ def ingest_validation(client = None,
         raise TypeError("anomaly_detection_trend should be a list of config dicts")
 
 
-def build_request_body(index_name, 
-    file_provided, 
-    timestamp, 
-    minutes, 
-    chunk, 
-    current_index, 
-    dataset, 
-    max_bulk_size
-):
+def build_request_body(index_name:str,
+    file_provided:bool,
+    timestamp:str,
+    minutes:int,
+    chunk:int,
+    current_index:int,
+    dataset:list,
+    max_bulk_size:int
+) -> tuple:
     """
     Function that constructs the request body for BULK API call
 
-    Arguments:  
+    Arguments:
         - index_name: The name of the index to ingest data
         - file_provided: Boolean flag as to whether or not a file was provided
         - chunk: How many documents can be ingested per BULK call
@@ -160,18 +159,18 @@ def build_request_body(index_name,
 
     Returns:
         - A tuple containing the request body and the current index to look at
-    
+
     Raises:
         - ValueError: current_index should be a positive index position
         - TypeError: dataset is a list of documents to ingest
     """
 
     # First validates input
-    ingest_validation(index_name = index_name, 
-        file_provided = file_provided, 
+    ingest_validation(index_name = index_name,
+        file_provided = file_provided,
         timestamp = timestamp,
         minutes = minutes,
-        chunk = chunk, 
+        chunk = chunk,
         max_bulk_size = max_bulk_size
     )
     # Validates function specific input
@@ -194,7 +193,7 @@ def build_request_body(index_name,
             one_week_ago += timedelta(minutes = minutes)
             offset = one_week_ago.strftime("%s")
             dataset[current_index][timestamp] = int(offset)
-        
+
         # Adds the action to take
         index_action = dataset[current_index]
 
@@ -210,27 +209,27 @@ def build_request_body(index_name,
         else:
             break
         current_index+= 1
-    
+
     return (request_body, current_index)
 
 
-def ingest(client, 
+def ingest(client:OpenSearch,
     data_template,
-    index_name,
-    file_provided = False,  
-    mapping = True,  
-    number = 6, 
-    chunk = 5, 
-    timestamp = None,
-    minutes = 2,
-    current_date = datetime.today(),
-    max_bulk_size = 100000,
-    anomaly_detection_trend = None
-):
+    index_name:str,
+    file_provided:bool = False,
+    mapping:bool = True,
+    number:int = 6,
+    chunk:int = 5,
+    timestamp:str = None,
+    minutes:int = 2,
+    current_date:datetime = datetime.today(),
+    max_bulk_size:int = 100000,
+    anomaly_detection_trend:dict = None
+) -> list:
     """
     Function that ingests user-provided data or generated data
 
-    Arguments:  
+    Arguments:
         - client: an OpenSearch Python client object
         - data_template: JSON file, CSV file, JSON mapping, or JSON short-hand template
         - index_name: The name of the index to ingest data
@@ -247,19 +246,20 @@ def ingest(client,
     Returns:
         - A list of the data that was ingested
 
-    Raises: 
+    Raises:
         - TypeError: Request body is not a list
         - ValueError: Request body does not come in index, action pairs; an index name does not have an action or vice versa
+        - ConnectionError: Index failed to be ingested. Check the client configurations
     """
 
     # Validates that inputs are correct
-    ingest_validation(client = client, 
+    ingest_validation(client = client,
         data_template = data_template,
         index_name = index_name,
-        file_provided = file_provided,  
-        mapping = mapping,  
-        number = number, 
-        chunk = chunk, 
+        file_provided = file_provided,
+        mapping = mapping,
+        number = number,
+        chunk = chunk,
         timestamp = timestamp,
         minutes = minutes,
         current_date = current_date,
@@ -275,17 +275,17 @@ def ingest(client,
 
     # If anomalies wanted to be generated
     elif anomaly_detection_trend:
-        for i in range(number):
+        for current_document_index in range(number):
             # Generate random data
             entry = generate_data(data_template, mapping)
-            
+
             # For each feature needing a trend, modify that specific field value to fit a trend
             for desired_trend in anomaly_detection_trend:
                 if desired_trend["data_trend"] == "AverageTrend":
-                    changed_entry = AverageTrend(  
-                        timestamp = timestamp, 
+                    changed_entry = AverageTrend(
+                        timestamp = timestamp,
                         entry = entry,
-                        feature_trend = desired_trend, 
+                        feature_trend = desired_trend,
                         current_date = current_date
                     )
                     entry = changed_entry.generate_data_trend()
@@ -294,7 +294,7 @@ def ingest(client,
             current_date += timedelta(minutes = minutes)
     else:
          # Generates the specified number of documents
-        for i in range(number):
+        for current_document_index in range(number):
             entry = generate_data(data_template, mapping)
             if type(entry) is list:
                 for element in entry:
@@ -315,22 +315,26 @@ def ingest(client,
             current_date += timedelta(minutes = minutes)
 
     # Calls BULK API to ingest documents of size "chunk"
-    i = 0
-    while i < len(dataset):
+    current_document_index = 0
+    while current_document_index < len(dataset):
 
         # Build request body
-        request_building = build_request_body(index_name, file_provided, timestamp, minutes, chunk, current_index = i, dataset = dataset, max_bulk_size = max_bulk_size)
+        request_building = build_request_body(index_name, file_provided, timestamp, minutes, chunk, current_index = current_document_index, dataset = dataset, max_bulk_size = max_bulk_size)
         request_body = request_building[0]
-        i = request_building[1]
+        current_document_index = request_building[1]
 
         # Validates that request_body is both a list and that it is of even length
         if type(request_body) is not list:
             raise TypeError("Request body is not a list")
         if len(request_body) % 2 != 0:
-            raise ValueError("Request body does not come in index, action pairs; an index name does not have an action or vice versa") 
-            
-        response = client.bulk(body = request_body)
-        print("\nAdding documents:")
-        print(response)
-        
+            raise ValueError("Request body does not come in index, action pairs; an index name does not have an action or vice versa")
+
+        try:
+            response = client.bulk(body = request_body)
+            print("\nAdding documents:")
+            print(response)
+        except Exception as e:
+            print(e)
+            raise ConnectionError("Index failed to be ingested. Check the client configurations")
+
     return dataset
