@@ -47,7 +47,7 @@
         "description": "Monitors cpu usage every 10 minutes",
         "time_field": "date",
         "indices": [
-            "test-index"
+            "cpu-usage-logs*"
         ],
         "feature_attributes": [
             {
