@@ -9,6 +9,7 @@ from opensearchpy import OpenSearch
 from datetime import date, timedelta, datetime
 from os import environ, remove, listdir, path
 from argparse import ArgumentParser
+from urllib.parse import urljoin
 from time import sleep
 from math import ceil
 from json import load
@@ -35,11 +36,12 @@ parser.add_argument("-username", help = "The username of OS with CRUD permission
 parser.add_argument("-password", help = "The password of OS with CRUD permissions", default = environ.get("SAMPLE_DATA_PASSWORD"))
 parser.add_argument("-port", help = "The port number in which OS will listen to", type = int, default = 9200)
 parser.add_argument("-config_path", help = "The directory where plugin configurations are found", default = path.join(DIR_PATH.replace("/sample_data_jobs", ""), "config"))
+parser.add_argument("-scheme", help = "The scheme used to construct the url", default = "https://")
 args = parser.parse_args()
 
 
 # Default configs for startup job
-URL = "https://" + args.host
+URL = urljoin(args.scheme, args.host)
 HEADER = BasicAuthentication(args.username, args.password)
 CLIENT = OpenSearch(
     hosts = [{'host': args.host, 'port': args.port}],
