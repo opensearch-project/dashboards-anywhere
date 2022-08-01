@@ -7,7 +7,7 @@ from opensearchpy import OpenSearch
 
 # Standard libraries
 from datetime import date, timedelta, datetime
-from os import environ, remove, listdir, path
+from os import remove, listdir, path
 from argparse import ArgumentParser
 from urllib.parse import urljoin
 from time import sleep
@@ -17,6 +17,7 @@ import sys
 
 # Adds parent directory "/sample_data_tooling" to sys.path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from constants import MINUTES_PER_DAY, HOST, SAMPLE_DATA_PASSWORD, SAMPLE_DATA_USERNAME, PORT, DIR_PATH, SCHEME
 from sample_data_authentication.sample_data_basic_authentication import BasicAuthentication
 from sample_data_authentication.sample_data_authentication import Authentication
 from sample_data_commons.utils import unzip_file, validate_job_args, untar_file
@@ -24,19 +25,14 @@ from sample_data_indices.sample_data_indices import SampleDataIndex
 from sample_data_plugins.ad_plugin_class import AnomalyDetection
 
 
-# Constants
-DIR_PATH = path.dirname(path.realpath(__file__))
-MINUTES_PER_DAY = 1440
-
-
 # Various arguments to configure where config files are and what credentials to use for OS
 parser = ArgumentParser(description= "Configure credentials for OS connection")
-parser.add_argument("-host", help = "The hostname (without the scheme)", default = environ.get("HOST"))
-parser.add_argument("-username", help = "The username of OS with CRUD permissions", default = environ.get("SAMPLE_DATA_USERNAME"))
-parser.add_argument("-password", help = "The password of OS with CRUD permissions", default = environ.get("SAMPLE_DATA_PASSWORD"))
-parser.add_argument("-port", help = "The port number in which OS will listen to", type = int, default = 9200)
-parser.add_argument("-config_path", help = "The directory where plugin configurations are found", default = path.join(DIR_PATH.replace("/sample_data_jobs", ""), "config"))
-parser.add_argument("-scheme", help = "The scheme used to construct the url", default = "https://")
+parser.add_argument("-host", help = "The hostname (without the scheme)", default = HOST)
+parser.add_argument("-username", help = "The username of OS with CRUD permissions", default = SAMPLE_DATA_USERNAME)
+parser.add_argument("-password", help = "The password of OS with CRUD permissions", default = SAMPLE_DATA_PASSWORD)
+parser.add_argument("-port", help = "The port number in which OS will listen to", type = int, default = PORT)
+parser.add_argument("-config_path", help = "The directory where plugin configurations are found", default = DIR_PATH)
+parser.add_argument("-scheme", help = "The scheme used to construct the url", default = SCHEME)
 args = parser.parse_args()
 
 

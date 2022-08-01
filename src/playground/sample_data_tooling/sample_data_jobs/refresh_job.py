@@ -6,8 +6,8 @@ SPDX-License-Identifier: Apache-2.0
 from opensearchpy import OpenSearch
 
 # Standard libraries
-from os import environ, listdir, path, remove
 from datetime import timedelta, datetime
+from os import listdir, path, remove
 from argparse import ArgumentParser
 from math import ceil
 from json import load
@@ -15,22 +15,18 @@ import sys
 
 # Adds parent directory "/sample_data_tooling" to sys.path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from constants import MINUTES_PER_DAY, HOST, SAMPLE_DATA_PASSWORD, SAMPLE_DATA_USERNAME, PORT, DIR_PATH
 from sample_data_commons.utils import unzip_file, validate_job_args, untar_file
 from sample_data_indices.sample_data_indices import SampleDataIndex
 
 
-# Constants
-DIR_PATH = path.dirname(path.realpath(__file__))
-MINUTES_PER_DAY = 1440
-
-
 # Various arguments to configure where config files are and what credentials to use for OS
 parser = ArgumentParser(description= "Configure credentials for OS connection")
-parser.add_argument("-host", help = "The hostname (without the scheme)", default = environ.get("HOST"))
-parser.add_argument("-username", help = "The username of OS with CRUD permissions", default = environ.get("SAMPLE_DATA_USERNAME"))
-parser.add_argument("-password", help = "The password of OS with CRUD permissions", default = environ.get("SAMPLE_DATA_PASSWORD"))
-parser.add_argument("-port", help = "The port number in which OS will listen to", type = int, default = 9200)
-parser.add_argument("-config_path", help = "The directory where plugin configurations are found", default = path.join(DIR_PATH.replace("/sample_data_jobs", ""), "config"))
+parser.add_argument("-host", help = "The hostname (without the scheme)", default = HOST)
+parser.add_argument("-username", help = "The username of OS with CRUD permissions", default = SAMPLE_DATA_USERNAME)
+parser.add_argument("-password", help = "The password of OS with CRUD permissions", default = SAMPLE_DATA_PASSWORD)
+parser.add_argument("-port", help = "The port number in which OS will listen to", type = int, default = PORT)
+parser.add_argument("-config_path", help = "The directory where plugin configurations are found", default = DIR_PATH)
 args = parser.parse_args()
 
 
