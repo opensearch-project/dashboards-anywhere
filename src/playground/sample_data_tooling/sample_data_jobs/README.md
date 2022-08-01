@@ -134,9 +134,6 @@ As these scripts provide the entry point for executing the aforementioned tasks,
 - `-port PORT`: The port number in which OpenSearch will listen to; The default is 9200
 - `-config_path CONFIG_PATH`: The directory where plugin configurations are to be found and used by the tool; The default is `config/`
 
-Argument only for the startup job:
-- `-scheme SCHEME`: The scheme used to construct the url; by default `"https://"` is used.
-
 ```
 $ python3 startup_job.py -host playground -username admin -password admin
 ```

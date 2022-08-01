@@ -9,7 +9,6 @@ from opensearchpy import OpenSearch
 from datetime import date, timedelta, datetime
 from os import remove, listdir, path
 from argparse import ArgumentParser
-from urllib.parse import urljoin
 from time import sleep
 from math import ceil
 from json import load
@@ -37,7 +36,7 @@ args = parser.parse_args()
 
 
 # Default configs for startup job
-URL = urljoin(args.scheme, args.host)
+URL = args.scheme + args.host
 HEADER = BasicAuthentication(args.username, args.password)
 CLIENT = OpenSearch(
     hosts = [{'host': args.host, 'port': args.port}],
