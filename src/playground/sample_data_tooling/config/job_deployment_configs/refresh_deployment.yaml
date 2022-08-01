@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: refresh-data-cronjob
+spec:
+  # Runs everyday at 1 am UTC
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: refresh-data-job
+              image: huyaboo/demo
+              env:
+              - name: SAMPLE_DATA_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: demo-secret
+                    key: username
+              - name: SAMPLE_DATA_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: demo-secret
+                    key: password
+              - name: HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: demo-secret
+                    key: host
+              command: ["python3"]
+              args: ["./sample_data_jobs/refresh_job.py"]
+          restartPolicy: OnFailure

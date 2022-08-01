@@ -1,26 +1,32 @@
 {
     "plugin": "anomaly_detection",
-    "index_name" : "cpu-usage-logs",
-    "template" : { 
-        "date": "unix_time", 
-        "price": ["float", {"left_digits": 3, "right_digits": 2, "positive": "true"}],
-        "average_cpu_usage": [
-            "integer", 20, 30
-        ],
-        "integers": ["array", "integer", "integer", [1, 3], {"min": 0, "max": 99}]
+    "ingest_args": {
+        "index_name" : "cpu-usage-logs",
+        "data_template" : {
+            "date": "unix_time",
+            "average_cpu_usage": [
+                "integer", 20, 30
+            ]
+        },
+        "mapping" : false,
+        "file_provided": false,
+        "chunk" : 5,
+        "timestamp" : "date",
+        "minutes" : 3,
+        "number": 1,
+        "max_bulk_size": 100000,
+        "anomaly_detection_trend": [
+            {
+                "data_trend": "AverageTrend",
+                "feature" : "average_cpu_usage",
+                "anomaly_percentage" : 0.001,
+                "avg_min" : 20,
+                "avg_max" : 30,
+                "abs_min" : 0,
+                "abs_max" : 100
+            }
+        ]
     },
-    "mapping" : false,
-    "file_provided": false,
-    "chunk" : 5, 
-    "timestamp" : "date",
-    "feature" : "average_cpu_usage",
-    "anomaly_percentage" : 0.001, 
-    "avg_min" : 20, 
-    "avg_max" : 30,
-    "abs_min" : 0, 
-    "abs_max" : 100, 
-    "minutes" : 3,
-    "number": 1,
     "days_before": 7,
     "days_after": 7,
     "index_body": {

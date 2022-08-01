@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: initial-startup-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: initial-startup-job
+          image: huyaboo/demo
+          env:
+          - name: SAMPLE_DATA_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: demo-secret
+                key: username
+          - name: SAMPLE_DATA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: demo-secret
+                key: password
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name: demo-secret
+                key: host
+          command: ["python3"]
+          args: ["./sample_data_jobs/startup_job.py"]
+      restartPolicy: OnFailure
+  backoffLimit: 4
