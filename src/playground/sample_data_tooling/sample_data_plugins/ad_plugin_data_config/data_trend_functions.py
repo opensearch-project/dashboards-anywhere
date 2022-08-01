@@ -1,6 +1,10 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from datetime import datetime, timedelta
 from json import loads, dumps
-from ast import literal_eval
 from random import randint
 import sys
 import os
