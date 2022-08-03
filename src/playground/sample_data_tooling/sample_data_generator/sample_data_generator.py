@@ -1,3 +1,8 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from faker_airtravel import AirTravelProvider
 from faker_credit_score import CreditScore
 from faker_vehicle import VehicleProvider
