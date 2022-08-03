@@ -60,11 +60,6 @@ def choose_field(kind, args = None):
     # fake.add_provider(CellType)
     # fake.add_provider(Organ)
     # fake.add_provider(Organelle)
-    #
-    # Another example code snipped using the School Provider:
-    #
-    # from faker_education import SchoolProvider
-    # fake.add_provider(SchoolProvider)
 
     # "custom-field-types.json" defines what enumerated types return in Faker
     #   - E.g.: "integer" will correspond to Faker's "random_int" attribute
