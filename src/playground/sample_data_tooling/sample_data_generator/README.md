@@ -2,14 +2,13 @@
 
 ## Pre-requisites
 
-Before using this tool, make sure the required libraries as listed in `requirements.txt` are downloaded. As this tool only generates data entries based on the [Faker library](https://faker.readthedocs.io), running this tool alone does not require configuration of OpenSearch (OS) or OpenSearch Dashboards (OSD). 
+Before using this tool, make sure the required libraries as listed in `requirements.txt` are downloaded. As this tool only generates data entries based on the [Faker library](https://faker.readthedocs.io), running this tool alone does not require configuration of OpenSearch (OS) or OpenSearch Dashboards (OSD).
 
 Additionally, this tool requires some familiarization of Faker methods and optional arguments to both use this tool and find all supported data types.
 
-**Note:** this tooling comes with the following providers: 
+**Note:** this tooling comes with the following providers:
 - [Standard Provider](https://faker.readthedocs.io/en/master/providers.html)
 - [Credit Score](https://pypi.org/project/faker-credit-score/)
-- [Education](https://pypi.org/project/faker_education/)
 - [Microservices](https://pypi.org/project/faker-microservice/)
 - [Music](https://pypi.org/project/faker_music/)
 - [Markdown Posts](https://pypi.org/project/mdgen/)
@@ -17,7 +16,7 @@ Additionally, this tool requires some familiarization of Faker methods and optio
 - [Web Data](https://pypi.org/project/faker_web/)
 - [Wi-Fi ESSIDs](https://pypi.org/project/faker-wifi-essid/)
 
-Depending on use case, there are other [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to provide more specific data types. To use them, you would need to install them on their corresponding sites. Navigate to `sample_data_generator/sample_data_generator.py` to modify the Faker instance to add desired community providers. 
+Depending on use case, there are other [Community Providers](https://faker.readthedocs.io/en/master/communityproviders.html) to provide more specific data types. To use them, you would need to install them on their corresponding sites. Navigate to `sample_data_generator/sample_data_generator.py` to modify the Faker instance to add desired community providers.
 
 ## Overview
 
@@ -33,7 +32,7 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
             - *ex:* `choose_field("ascii_company_email")` taken directly from [ascii_company_email](https://faker.readthedocs.io/en/master/providers/faker.providers.internet.html#faker.providers.internet.Provider.ascii_company_email)
             ```
             choose_field("ascii_company_email")
-            
+
             'achang@green.info'
             ```
             - *ex:* `choose_field("job")` taken directly from [job](https://faker.readthedocs.io/en/master/providers/faker.providers.job.html)
@@ -66,7 +65,7 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
                 choose_field("ssn")
 
                 '042-34-8377'
-                
+
                 choose_field("social_security_number")
 
                 '865-50-6891'
@@ -90,9 +89,9 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
             choose_field("file_name", [{"category": "audio"}])
 
             'career.flac'
-            ``` 
+            ```
             - **Note:** Make sure the dictionary is *inside* the list for `choose_field()` to properly parse arguments.
-    - **Returns:** 
+    - **Returns:**
         - Depending on the data type you specify, `choose_field()` may generate `int`, `float`, `string`, `dicts`, and more
 - `generate_data()`: Given an input type (listed below) and a mapping flag, the function generates a document in the specified format
     - **Arguments:**
@@ -105,23 +104,23 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
                 # JSON Mapping as a dict
                 bike_template = {
                    "properties": {
-                       "manufacturer": { "type" : "company" }, 
+                       "manufacturer": { "type" : "company" },
                        "price": { "type" : ["integer", 100, 1000]}
                    }
                 }
-                
+
                 # JSON Mapping as a string
                 bike_template = '{"properties": {"manufacturer": {"type": "company"}, "price": {"type": ["integer", 100, 1000]}}}'
-                
+
                 generate_data(bike_template, True)
 
                 '{"manufacturer": "Stout-Moreno", "price": 955}'
-                ``` 
+                ```
                 - In this example, the `price` field had arguments as a list. The arguments can also be a dictionary of key word arguments, in case the user does not need all optional arguments. Again, to see these key word arguments, refer to the Faker library for optional arguments:
                 ```
                 bike_template = {
                    "properties": {
-                       "manufacturer": { "type" : "company" }, 
+                       "manufacturer": { "type" : "company" },
                        "price": { "type" : ["integer", {"min": 100, "max": 1000}]}
                    }
                 }
@@ -130,21 +129,21 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
 
                 - For this example, say we want to generate basic career information about Texan users, including their name, job title, employer, and their zip codes. For this example, such a data template would be as shown below
                 ```
-                # JSON Short-hand as a dict 
+                # JSON Short-hand as a dict
                 user_career_data_template = {
                    "name": "name",
                    "job-title": "job",
                    "employer": "company",
                    "zip-codes": ["array", "zipcode_in_state", "integer", [1, 3],{"state_abbr": "TX"}]
                 }
-                
+
                 # JSON Short-hand as a string
                 user_career_data_template = '{"name": "name", "job-title": "job", "employer": "company", "zip-codes": ["array", "zipcode_in_state", "integer", [1, 3], {"state_abbr": "TX"}]}'
-                
+
                 generate_data(user_career_data_template, False)
 
                 '{"name": "Andrew Lucas", "job-title": "Gaffer", "employer": "Marquez-Ferguson", "zip-codes": ["79461", "77810"]}'
-                ``` 
+                ```
                 - `zip-codes` is a special type of value. Since we want an array of different TX zip codes, we have to specify some arguments. See [An Aside on Arrays and Keywords](#an-aside-on-arrays-and-keywords) for more information.
 
             - `NDJSON filename`: The filename/filename path, zipped or unzipped, for the NDJSON file. A filename can specify multiple data templates and `generate_data()` will return a list of the documents generated.
@@ -169,7 +168,7 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
                 year,addresses,name
                 year,"[""array"", ""address"", ""integer"", [1, 3]]",name
                 ```
-                
+
                 - And when we call `generate_data()`:
                 ```
                 generate_data("filename.csv")
@@ -185,7 +184,7 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
             ### An Aside on Arrays and Keywords
             - OpenSearch has several predefined [value types](https://opensearch.org/docs/latest/opensearch/mappings/), which this generation tool supports. Two special data types are `arrays` and `keywords`, which aren't easily generated by Faker. Thus, the format is defined as follows
 
-            - **For Arrays:** The array has to not only generate the desired type of entry but also the desired number of entries. There are two main scenarios the array supports:  
+            - **For Arrays:** The array has to not only generate the desired type of entry but also the desired number of entries. There are two main scenarios the array supports:
                 - *Generating a random-length array:* This is what is used in the `user_career_data_template` example. The `zip-codes` field generated one to three Texas zipcodes, inclusive, stored in an array.
 
                     - In general, the format for this scenario is:
@@ -203,7 +202,7 @@ This tool can help. Using the power of [Faker](https://faker.readthedocs.io), th
                     "<field name>": ["array", "<field type>", <array length>, *args]
                     ```
                     - Where `*args` is the same `args` argument as `choose_field()`. `*args` can be left blank.
-            - **For Keywords:** This field may not be needed for most use cases as Faker generates specific data types. However, this datatype is still supported. 
+            - **For Keywords:** This field may not be needed for most use cases as Faker generates specific data types. However, this datatype is still supported.
 
                 - As an example, let us take the `zip-code` field of `user_career_data_template` again. Instead of making `zip-code` an array of TX zip codes, let's just make it a keyword format instead. Thus, the new field would be:
                 ```

@@ -1,6 +1,10 @@
+"""
+Copyright OpenSearch Contributors
+SPDX-License-Identifier: Apache-2.0
+"""
+
 from faker_airtravel import AirTravelProvider
 from faker_credit_score import CreditScore
-from faker_education import SchoolProvider
 from faker_vehicle import VehicleProvider
 from mdgen import MarkdownPostProvider
 from faker_wifi_essid import WifiESSID
@@ -21,9 +25,9 @@ import os
 def choose_field(kind, args = None):
     """
     Function that generates fake values for given fields
-    This is based off of the Faker library 
+    This is based off of the Faker library
 
-    Arguments: 
+    Arguments:
         - kind: The "type" of data being generated
         - args: An array of arguments to pass on to Faker
 
@@ -38,7 +42,6 @@ def choose_field(kind, args = None):
     # Adding Community Providers to Faker
     fake.add_provider(AirTravelProvider)
     fake.add_provider(CreditScore)
-    fake.add_provider(SchoolProvider)
     fake.add_provider(faker_microservice.Provider)
     fake.add_provider(MarkdownPostProvider)
     fake.add_provider(MusicProvider)
@@ -50,9 +53,9 @@ def choose_field(kind, args = None):
     # To see more about Community Providers, visit:
     # https://faker.readthedocs.io/en/master/communityproviders.html
     # and follow instructions there to install them on your environment
-    # 
+    #
     # Example code snippet using the Biology Provider:
-    # 
+    #
     # from faker_biology.physiology import CellType, Organ, Organelle
     # fake.add_provider(CellType)
     # fake.add_provider(Organ)
@@ -62,11 +65,11 @@ def choose_field(kind, args = None):
     #   - E.g.: "integer" will correspond to Faker's "random_int" attribute
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "options/custom-field-types.json"), "r") as f:
         existing_types = json.load(f)
-    
+
     # Null: A null type returns nothing
     if kind == "null":
         return None
-    
+
     # If the user used a data type defined in "custom-field-types.json", it will be executed
     elif kind in existing_types:
         try:
@@ -75,7 +78,7 @@ def choose_field(kind, args = None):
                 # If the user specifies a map for key word arguments, the function unpacks them
                 if len(args) == 1 and type(args[0]) is dict:
                     return field_types(**args[0])
-                
+
                 # If args isn't a map, it will be unpacked as a list/tuple
                 return field_types(*args)
             return field_types()
@@ -94,7 +97,7 @@ def choose_field(kind, args = None):
         try:
             list = []
             length = 0
-            
+
             # User specifies a fixed array length
             if type(args[1]) is int:
                 for i in range(args[1]):
@@ -163,10 +166,10 @@ def generate_data(data_template, mappings = True):
                 - Note: only explicit mapping is supported and the tool will not support fields within fields
             - JSON "short-hand": {<Field name>: <Field type>}
                 - Ex: {"Zip_Code": "zipcode", "Address": "address"}
-            - Format for generating data: 
+            - Format for generating data:
                 - Paste in your mapping value {"properties": {<properties values>}}
                 - Alternatively, pass in a JSON string or string in the form:
-                    {<Field>: <Field Type>} 
+                    {<Field>: <Field Type>}
                 - If you provide arguments, the <Field Type> should be a list:
                     {<Field>: [<Field Type>, *args]}
         - mappings: A boolean value representing whether the template is a mapping or a short-hand template
@@ -174,7 +177,7 @@ def generate_data(data_template, mappings = True):
     Returns:
         - A JSON string of one generated entry
 
-    Raises: 
+    Raises:
         - TypeError: Input is not a mapping
         - TypeError: File not supported or could not be found
     """
@@ -194,7 +197,7 @@ def generate_data(data_template, mappings = True):
             with open(name, 'r') as f:
                 for line in f:
                     JSON_list.append(generate_data(line, "properties" in line))
-            
+
             # Deletes unzipped file
             if name != data_template:
                 os.remove(name)
@@ -214,12 +217,12 @@ def generate_data(data_template, mappings = True):
                         if "," in entry_dict[fields[i]]:
                             entry_dict[fields[i]] = literal_eval(entry_dict[fields[i]])
                     CSV_list.append(generate_data(entry_dict, False))
-            
+
             # Deletes unzipped file
             if name != data_template:
                 os.remove(name)
             return CSV_list
-        
+
         else:
             raise TypeError("File not supported or could not be found")
 
@@ -242,7 +245,7 @@ def generate_data(data_template, mappings = True):
         else:
             print("Invalid: dynamic not supported")
             raise TypeError("Input is not a mapping")
-    
+
     # If you wanted a JSON "short-hand" format
     elif not mappings and (type(data_template) is dict or json or str):
         # Accepts either dicts or JSON strings
@@ -255,10 +258,10 @@ def generate_data(data_template, mappings = True):
             # Field without arguments
             else:
                 data_entry[field] = choose_field(data_template[field])
-    
+
     # No arguments provided
     else:
         print("Invalid argument")
         return json.dumps(data_entry)
-    
+
     return json.dumps(data_entry, default = str)
