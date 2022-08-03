@@ -87,10 +87,6 @@ extraEnvs:
 
 # Allows you to load environment variables from kubernextes secret or config map
 envFrom: []
-# - secretRef:
-#     name: env-secret
-# - configMapRef:
-#     name: config-map
 
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
@@ -106,7 +102,6 @@ imageTag: ""
 imagePullPolicy: "IfNotPresent"
 
 podAnnotations: {}
-  # iam.amazonaws.com/role: es-cluster
 
 # additionals labels
 labels: {}
@@ -161,12 +156,7 @@ persistence:
   # If undefined (the default) or set to null, no storageClassName spec is
   #   set, choosing the default provisioner.  (gp2 on AWS, standard on
   #   GKE, AWS & OpenStack)
-  #
-  # storageClass: "-"
-#  accessModes:
-#    - ReadWriteOnce
-#  size: 8Gi
-#  annotations: {}
+
 storageClass: "-"
 storageClassName: netapp-ssd
 accessModes:
@@ -463,7 +453,7 @@ securityConfig:
         # The security REST API access role is used to assign specific users access to change the security settings through the REST API.
         security_rest_api_access:
           reserved: true
-        
+
         # Allows users to view monitors, destinations and alerts
         alerting_read_access:
           reserved: true
@@ -663,7 +653,7 @@ securityConfig:
                 - '*'
               allowed_actions:
                 - 'indices_monitor'
-        
+
         # Anonymous access role
         opendistro_security_anonymous_role:
           reserved: true
@@ -741,7 +731,7 @@ securityConfig:
         alerting_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
-        
+
         anomaly_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
@@ -955,18 +945,13 @@ ingress:
   enabled: false
   # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-  # ingressClassName: nginx
 
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+
   path: /
   hosts:
     - chart-example.local
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 
 nameOverride: ""
@@ -975,24 +960,6 @@ fullnameOverride: ""
 masterTerminationFix: false
 
 lifecycle: {}
-  # preStop:
-  #   exec:
-  #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
-  # postStart:
-  #   exec:
-  #     command:
-  #       - bash
-  #       - -c
-  #       - |
-  #         #!/bin/bash
-  #         # Add a template to adjust number of shards/replicas1
-  #         TEMPLATE_NAME=my_template
-  #         INDEX_PATTERN="logstash-*"
-  #         SHARD_COUNT=8
-  #         REPLICA_COUNT=1
-  #         ES_URL=http://localhost:9200
-  #         while [[ "$(curl -s -o /dev/null -w '%{http_code}\n' $ES_URL)" != "200" ]]; do sleep 1; done
-  #         curl -XPUT "$ES_URL/_template/$TEMPLATE_NAME" -H 'Content-Type: application/json' -d'{"index_patterns":['\""$INDEX_PATTERN"\"'],"settings":{"number_of_shards":'$SHARD_COUNT',"number_of_replicas":'$REPLICA_COUNT'}}'
 
 keystore: []
 
@@ -1000,11 +967,6 @@ networkPolicy:
   ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   ## In order for a Pod to access OpenSearch, it needs to have the following label:
   ## {{ template "uname" . }}-client: "true"
-  ## Example for default configuration to access HTTP port:
-  ## opensearch-master-http-client: "true"
-  ## Example for default configuration to access transport port:
-  ## opensearch-master-transport-client: "true"
-
   http:
     enabled: false
 
@@ -1022,4 +984,3 @@ sysctl:
 plugins:
   enabled: false
   installList: []
-  # - example-fake-plugin
