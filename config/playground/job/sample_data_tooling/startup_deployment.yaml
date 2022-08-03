@@ -1,28 +1,30 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: initial-startup-job
+  name: sample-data-startup-job
 spec:
   template:
     spec:
       containers:
-        - name: initial-startup-job
-          image: huyaboo/demo
+        - name: sample-data-startup-job
+          image: public.ecr.aws/j6b3p0p7/sample-data-tooling:latest
           env:
           - name: SAMPLE_DATA_USERNAME
             valueFrom:
               secretKeyRef:
-                name: demo-secret
+                name: sample-data-secret
                 key: username
           - name: SAMPLE_DATA_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: demo-secret
+                name: sample-data-secret
                 key: password
-          - name: HOST
+            # SAMPLE_DATA_HOST is a host name or IP without the scheme
+            # ex: SAMPLE_DATA_HOST=localhost
+          - name: SAMPLE_DATA_HOST
             valueFrom:
               secretKeyRef:
-                name: demo-secret
+                name: sample-data-secret
                 key: host
           command: ["python3"]
           args: ["./sample_data_jobs/startup_job.py"]
