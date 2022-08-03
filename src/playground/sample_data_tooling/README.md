@@ -1,6 +1,10 @@
-# Sample Data Generator and Ingestion Tool
+# Sample Data Generator and Ingestion Tool Deployment
 
-This directory contains all the files necessary to generate and ingest data into plugins (like the Anomaly Detector).
+Sourcing sample data is a pain point for developers and having sample data to play with is necessary for the customer. Enter this sample data & ingestion tool, which is ready to run as a container in Kubernetes.
+
+## Overview
+
+This directory contains all the files necessary to generate and ingest data into plugins (like the Anomaly Detector). Below will cover the process for deploying this in Playground as a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) and [Kubernetes Cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/). Alternatively, there are instructions for running this tool on a local environment as well.
 
 ## Running tooling on a local environment
 
