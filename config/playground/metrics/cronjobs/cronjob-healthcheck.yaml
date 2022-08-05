@@ -1,8 +1,9 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: healthcheck-cronjob
 spec:
+  # Runs every minute
   schedule: "*/1 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
@@ -18,6 +19,12 @@ spec:
             - /bin/sh
             - -c
             - 'curl
-              -H "Content-Type: application/json"
-              https://localhost:5601/api/status'
+              -s
+              -XGET
+              -k
+              -u $USER_NAME:$PASSWORD
+              https://$DOMAIN/api/status'
+            envFrom:
+            - secretRef:
+                name: osdsecret
           restartPolicy: Never
