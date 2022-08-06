@@ -32,7 +32,7 @@ def ingest_from_user_data(filename:str) -> list:
         - A list of data loaded from the file
 
     Raises:
-        - ValueError: .json and .csv files are only supported
+        - ValueError: .json, .ndjson, and .csv files are only supported
     """
 
     # Input validation
@@ -182,7 +182,7 @@ def build_request_body(index_name:str,
     if type(current_index) is not int or (type(current_index) is int and current_index < 0):
         raise ValueError("current_index should be a positive index position")
     if type(dataset) is not list:
-        raise TypeError("dataset is a list of documents to ingest")
+        raise TypeError("dataset should be a list of documents to ingest, not a dict")
 
     start_index = current_index
     one_week_ago = datetime.now() - timedelta(days = 7)
@@ -227,7 +227,7 @@ def ingest(client:OpenSearch,
     chunk:int = 5,
     timestamp:str = None,
     minutes:int = 2,
-    current_date:datetime = datetime.today(),
+    current_date:datetime = datetime.now(),
     max_bulk_size:int = 100000,
     anomaly_detection_trend:dict = None
 ) -> list:
@@ -238,15 +238,15 @@ def ingest(client:OpenSearch,
         - client: an OpenSearch Python client object
         - data_template: JSON file, CSV file, JSON mapping, or JSON short-hand template
         - index_name: The name of the index to ingest data
-        - mapping: Whether or not the input is a mapping
-        - file_provided: Boolean flag as to whether or not a file was provided
-        - chunk: How many documents can be ingested per BULK call
-        - timestamp: The field name that contains timestamps
-        - number: How many documents to generate
-        - minutes: The time interval for each data point (e.g. if minutes = 2, this tool will generate entries with timestamps that are 2 minutes apart from one another)
-        - current_date: The date at which entries are generated
-        - max_bulk_size: The max amount in bytes of a bulk call
-        - anomaly_detection_trend: list of configurations dicts to use for generating data trends
+        - file_provided: Boolean flag as to whether or not a file was provided (default is False)
+        - mapping: Whether or not the input is a mapping (default is True)
+        - chunk: How many documents can be ingested per BULK call (default is 5)
+        - timestamp: The field name that contains timestamps (default is None)
+        - number: How many documents to generate (default is 6)
+        - minutes: The time interval for each data point (e.g. if minutes = 2, this tool will generate entries with timestamps that are 2 minutes apart from one another) (default is 2)
+        - current_date: The date at which entries are generated (default is today's datetime)
+        - max_bulk_size: The max amount in bytes of a bulk call (default is 100000)
+        - anomaly_detection_trend: list of configurations dicts to use for generating data trends (default is None)
 
     Returns:
         - A list of the data that was ingested
