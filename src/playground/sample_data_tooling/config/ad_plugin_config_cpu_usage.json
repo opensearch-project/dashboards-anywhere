@@ -10,7 +10,7 @@
         },
         "mapping" : false,
         "file_provided": false,
-        "chunk" : 5,
+        "chunk" : 10,
         "timestamp" : "date",
         "minutes" : 3,
         "number": 1,
