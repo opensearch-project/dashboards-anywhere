@@ -1,4 +1,5 @@
-# This workflow was used for deploying the latest version of OpenSearch and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
+# This workflow was used for deploying the latest version of OpenSearch
+# and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
 name: Deploy OpenSearch and OpenSearch Dashboards 
 
 on:
@@ -29,103 +30,45 @@ jobs:
               - 'config/playground/helm/prod/**'
 
   OS-OSD-Dev-Deployment:
-    if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true'}}
-    runs-on: ubuntu-latest
-
     needs: Pre-Deployment
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Step 1 - Dev - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ secrets.AWS_REGION_DEV }}
-
-      - name: Step 2 - Dev - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        uses: elastic-analytics/dashboards-action@main
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
-        with:
-          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
-          # lists couple helm and kubetl commands here as placeholder, will add more
-          # detail deployment command when helm configuration file ready.
-          command: |
-            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
-            helm repo update
-            helm search repo opensearch
-            kubectl get nodes
+    if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: dev
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+      region: ${{ secrets.AWS_REGION_DEV }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
 
   OS-OSD-Prod-Deployment:
+    needs: Pre-Deployment
     if: ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
-    runs-on: ubuntu-latest
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: prod
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+      region: ${{ secrets.AWS_REGION_PROD }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
 
-    needs: Pre-Deployment
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Step 1 - Prod - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+  OSD-Functional-Test-Dev:
+        needs: OS-OSD-Dev-Deployment
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
-          aws-region: ${{ secrets.AWS_REGION_PROD }}
+          endpoint: https://playground.opensearch.oss.aws.dev
+        secrets:
+          osd-user: ${{ secrets.OSD_USER }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
 
-      - name: Step 2 - Prod - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        uses: elastic-analytics/dashboards-action@main
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
+  OSD-Functional-Test-Prod:
+        needs: OS-OSD-Prod-Deployment
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
         with:
-          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
-          command: |
-            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
-            helm repo update
-            helm search repo opensearch
-            kubectl get nodes
-
-  OS-OSD-All-Deployment:
-    if: ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' && needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
-    runs-on: ubuntu-latest
-
-    needs: Pre-Deployment
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Step 1 - Dev - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ secrets.AWS_REGION_DEV }}
-
-      - name: Step 2 - Dev - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        uses: elastic-analytics/dashboards-action@main
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
-        with:
-          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
-          command: |
-            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
-            helm repo update
-            helm search repo opensearch
-            kubectl get nodes
-
-      - name: Step 3 - Prod - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
-          aws-region: ${{ secrets.AWS_REGION_PROD }}
-
-      - name: Step 4 - Prod - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        uses: elastic-analytics/dashboards-action@main
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
-        with:
-          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
-          command: |
-            helm repo add opensearch https://opensearch-project.github.io/helm-charts/
-            helm repo update
-            helm search repo opensearch
-            kubectl get nodes
+          endpoint: https://playground.opensearch.org
+        secrets:
+          osd-user: ${{ secrets.OSD_USER }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
