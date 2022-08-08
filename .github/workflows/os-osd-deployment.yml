@@ -8,9 +8,6 @@ on:
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
-env:
-  helm-repo: https://opensearch-project.github.io/helm-charts/
-
 jobs:
 
   Pre-Deployment:
@@ -37,7 +34,7 @@ jobs:
     if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
     with:
-      helm-repo: $helm-repo
+      helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: dev
     secrets:
       access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
@@ -50,7 +47,7 @@ jobs:
     if: ${{ needs.Pre-Deployment.outputs.config_change_prod == 'true'}}
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
     with:
-      helm-repo: $helm-repo
+      helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: prod
     secrets:
       access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
