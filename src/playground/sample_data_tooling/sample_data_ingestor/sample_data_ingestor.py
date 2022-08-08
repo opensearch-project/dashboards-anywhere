@@ -15,10 +15,10 @@ import sys
 import csv
 
 # Adds parent directory "/sample_data_tooling" to sys.path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from sample_data_generator.sample_data_generator import generate_data
-from sample_data_plugins.ad_plugin_data_config.average_trend_class import AverageTrend
-from sample_data_commons.utils import validate_filename
+sys.path.append(path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.sample_data_generator.sample_data_generator import generate_data
+from sample_data_tooling.sample_data_plugins.ad_plugin_data_config.average_trend_class import AverageTrend
+from sample_data_tooling.sample_data_commons.utils import validate_filename
 
 
 def ingest_from_user_data(filename:str) -> list:

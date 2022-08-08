@@ -10,10 +10,9 @@ import pytest
 import sys
 import os
 
-
 # Adds the directory "/sample_data_tooling" to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-from sample_data_commons.utils import validate_filename, unzip_file
+sys.path.append(os.path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.sample_data_commons.utils import validate_filename, unzip_file
 
 
 # Constants

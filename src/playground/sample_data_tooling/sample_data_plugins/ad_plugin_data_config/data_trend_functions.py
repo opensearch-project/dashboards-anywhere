@@ -10,9 +10,9 @@ import sys
 import os
 
 # Adds the folder sample_data_tooling to the sys path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from sample_data_plugins.ad_plugin_data_config.data_trend_interface import DataTrend
-from sample_data_generator.sample_data_generator import choose_field
+sys.path.append(os.path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.sample_data_plugins.ad_plugin_data_config.data_trend_interface import DataTrend
+from sample_data_tooling.sample_data_generator.sample_data_generator import choose_field
 
 
 class AverageTrend(DataTrend):
