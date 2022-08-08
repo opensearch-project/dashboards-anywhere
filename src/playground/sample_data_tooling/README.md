@@ -67,7 +67,7 @@ Then, from this directory, change directory into the job and cronjob deployment 
 
 For the sample data startup job:
 ```
-cd ../../../config/playground/job
+cd ../../../config/playground/sample_data_tooling/job
 
 kubectl apply -f startup_deployment.yaml
 ```
@@ -81,7 +81,7 @@ kubectl delete job sample-data-startup-job
 
 For the sample data refresh cronjob:
 ```
-cd ../../../config/playground/cronjob
+cd ../../../config/playground/sample_data_tooling/cronjob
 
 kubectl apply -f refresh_deployment.yaml
 ```
@@ -99,12 +99,12 @@ If you want customization for this tooling, first ensure [Docker](https://docs.d
 
 For the startup job
 ```
-cd ../../../config/playground/job
+cd ../../../config/playground/sample_data_tooling/job
 ```
 
 And for the refresh cronjob
 ```
-cd ../../../config/playground/cronjob
+cd ../../../config/playground/sample_data_tooling/cronjob
 ```
 
 And modify the image name to your specified URI:
@@ -122,3 +122,15 @@ docker buildx build --platform linux/386 -t <IMAGE REPO URI> --push .
 ```
 
 to push the custom image into the registry of your choice. Then the process for deploying to a cluster should be very similar to [Deploying tooling as a container](#deploying-tooling-as-a-container).
+
+## Testing
+
+To run tests for this tooling, from this directory, change directory to `sample_data_tests`
+```
+cd sample_data_tests
+```
+
+and run `pytest`:
+```
+pytest
+```
