@@ -11,8 +11,8 @@ import sys
 import os
 
 # Adds the directory "/sample_data_tooling" to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-from sample_data_jobs.refresh_job import refresh_job
+sys.path.append(os.path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.sample_data_jobs.refresh_job import refresh_job
 
 
 # Serializer class that returns nothing; used to mock API call

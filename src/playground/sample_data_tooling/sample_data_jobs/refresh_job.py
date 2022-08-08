@@ -14,10 +14,10 @@ from json import load
 import sys
 
 # Adds parent directory "/sample_data_tooling" to sys.path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from constants import MINUTES_PER_DAY, HOST, SAMPLE_DATA_PASSWORD, SAMPLE_DATA_USERNAME, PORT, DIR_PATH
-from sample_data_commons.utils import unzip_file, validate_job_args, untar_file
-from sample_data_indices.sample_data_indices import SampleDataIndex
+sys.path.append(path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.constants import MINUTES_PER_DAY, HOST, SAMPLE_DATA_PASSWORD, SAMPLE_DATA_USERNAME, PORT, DIR_PATH
+from sample_data_tooling.sample_data_commons.utils import unzip_file, validate_job_args, untar_file
+from sample_data_tooling.sample_data_indices.sample_data_indices import SampleDataIndex
 
 
 # Various arguments to configure where config files are and what credentials to use for OS
