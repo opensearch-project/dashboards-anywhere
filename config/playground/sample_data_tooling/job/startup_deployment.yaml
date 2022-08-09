@@ -8,25 +8,10 @@ spec:
       containers:
         - name: sample-data-startup-job
           image: public.ecr.aws/j6b3p0p7/sample-data-tooling:latest
-          env:
-          - name: SAMPLE_DATA_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: sample-data-secret
-                key: username
-          - name: SAMPLE_DATA_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: sample-data-secret
-                key: password
-            # SAMPLE_DATA_HOST is a host name or IP without the scheme
-            # ex: SAMPLE_DATA_HOST=localhost
-          - name: SAMPLE_DATA_HOST
-            valueFrom:
-              secretKeyRef:
-                name: sample-data-secret
-                key: host
+          envFrom:
+          - secretRef:
+              name: sample-data-secret
           command: ["python3"]
-          args: ["./sample_data_jobs/startup_job.py"]
+          args: ["./sample_data_tooling/sample_data_jobs/startup_job.py"]
       restartPolicy: OnFailure
   backoffLimit: 4
