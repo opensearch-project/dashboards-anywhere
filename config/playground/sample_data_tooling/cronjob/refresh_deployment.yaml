@@ -4,7 +4,7 @@ metadata:
   name: sample-data-refresh-cronjob
 spec:
   # Runs everyday at 1 am UTC
-  schedule: "* * * * *"
+  schedule: "0 1 * * *"
   jobTemplate:
     spec:
       template:
