@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: healthcheck-cronjob
+spec:
+  # Runs every minute
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        spec:
+          containers:
+          - name: healthcheck-cronjob
+            image: curlimages/curl:latest
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - 'curl
+              -s
+              -XGET
+              -k
+              -u $USER_NAME:$PASSWORD
+              https://$DOMAIN/api/status'
+            envFrom:
+            - secretRef:
+                name: osdsecret
+          restartPolicy: Never
