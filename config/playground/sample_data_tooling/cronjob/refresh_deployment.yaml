@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sample-data-refresh-cronjob
+spec:
+  # Runs everyday at 1 am UTC
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: sample-data-refresh-cronjob
+              image: public.ecr.aws/j6b3p0p7/sample-data-tooling:latest
+              envFrom:
+              - secretRef:
+                  name: sample-data-secret
+              command: ["python3"]
+              args: ["./sample_data_tooling/sample_data_jobs/refresh_job.py"]
+          restartPolicy: OnFailure

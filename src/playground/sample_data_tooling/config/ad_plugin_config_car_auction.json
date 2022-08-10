@@ -1,0 +1,86 @@
+{
+    "plugin": "anomaly_detection",
+    "ingest_args": {
+        "index_name": "car-auction-data",
+        "data_template": {
+            "auction_date": "unix_time",
+            "final_winning_bid": ["float", {"right_digits": 2, "min_value": 20000, "max_value": 40000}],
+            "make": "vehicle_make",
+            "model": "vehicle_model",
+            "year": "vehicle_year"
+        },
+        "mapping": false,
+        "file_provided": false,
+        "chunk": 10,
+        "timestamp": "auction_date",
+        "minutes": 30,
+        "number": 1,
+        "max_bulk_size": 100000,
+        "anomaly_detection_trend": [
+            {
+                "data_trend": "AverageTrend",
+                "feature": "final_winning_bid",
+                "anomaly_percentage": 0.01,
+                "avg_min": 20000,
+                "avg_max": 40000,
+                "abs_min": 0,
+                "abs_max": 150000,
+                "other_args": {"right_digits": 2}
+            }
+        ]
+    },
+    "days_before": 14,
+    "days_after": 7,
+    "index_body": {
+        "settings": {
+            "index": {
+                "number_of_shards": 4
+            }
+        },
+        "mappings": {
+            "properties": {
+                "auction_date": {"type": "date"},
+                "final_winning_bid": {"type": "float"},
+                "make": {"type": "text"},
+                "model": {"type": "text"},
+                "year": {"type": "integer"}
+            }
+        }
+    },
+    "create_payload": {
+        "name": "car-auction-detector",
+        "description": "Detector that monitors final winning bids of cars every 40 minutes.",
+        "time_field": "auction_date",
+        "indices": [
+            "car-auction-data*"
+        ],
+        "feature_attributes": [
+            {
+            "feature_name": "average_car_bid",
+            "feature_enabled": true,
+            "aggregation_query": {
+                "test": {
+                "avg": {
+                    "field": "final_winning_bid"
+                }
+                }
+            }
+            }
+        ],
+        "filter_query": {
+            "match_all": {}
+        },
+        "detection_interval": {
+            "period": {
+            "interval": 40,
+            "unit": "Minutes"
+            }
+        },
+        "window_delay": {
+            "period": {
+            "interval": 1,
+            "unit": "Minutes"
+            }
+        }
+    }
+}

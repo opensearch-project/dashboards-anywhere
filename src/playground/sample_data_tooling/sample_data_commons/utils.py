@@ -67,3 +67,65 @@ def unzip_file(filename:str) -> str:
             copyfileobj(fin, fout)
 
     return filename.split(".gz")[0]
+
+
+def validate_job_args(config_path:str = None,
+    url:str = None,
+    header:Authentication = None,
+    client:OpenSearch = None
+):
+    """
+    Given various arguments, validate input type
+
+    Arguments:
+        - config_path: The directory path in which the plugin config json files are located
+        - url: The base url in which the API can be called
+        - header: The Authentication object used to create and return request headers
+        - client: The OpenSearch Python client object used to create and ingest indices
+
+    Raises:
+        - TypeError: config_path should be a string
+        - TypeError: url should be a string
+        - TypeError: header should be a subclass of Authentication
+        - TypeError: client should be a OpenSearch Python client object
+    """
+    if config_path and type(config_path) is not str:
+        raise TypeError("config_path should be a string")
+    if url and type(url) is not str:
+        raise TypeError("url should be a string")
+    if header and not isinstance(header, Authentication):
+        raise TypeError("header should be a subclass of Authentication")
+    if client and not isinstance(client, OpenSearch):
+        raise TypeError("client should be a OpenSearch Python client object")
+
+
+def untar_file(filename:str, destination:str = None) -> list:
+    """
+    Utility function that extracts tar files and returns the filenames
+
+    Arguments:
+        - filename: The filename (as a tar.gz file) to extract
+        - destination: The destination directory to store the files
+
+    Returns:
+        - A list of filenames extracted from the tar file (or none if the filename isn't a tar file)
+    """
+
+    # Ignores non-filenames or non-tar.gz files
+    if type(filename) is not str or ".tar.gz" not in filename or type(destination) is not str:
+        return []
+
+    t_file = tarfile.open(filename)
+
+    filename_list = []
+
+    # Put files into a desired directory, if specified
+    if destination:
+        t_file.extractall(destination)
+        for file in t_file.getnames():
+            filename_list.append(path.join(destination, file))
+    else:
+        t_file.extractall()
+        filename_list = t_file.getnames()
+
+    return filename_list
