@@ -1,0 +1,81 @@
+{
+    "plugin": "anomaly_detection",
+    "ingest_args": {
+        "index_name" : "cpu-usage-logs",
+        "data_template" : {
+            "date": "unix_time",
+            "average_cpu_usage": [
+                "integer", 20, 30
+            ]
+        },
+        "mapping" : false,
+        "file_provided": false,
+        "chunk" : 10,
+        "timestamp" : "date",
+        "minutes" : 3,
+        "number": 1,
+        "max_bulk_size": 100000,
+        "anomaly_detection_trend": [
+            {
+                "data_trend": "AverageTrend",
+                "feature" : "average_cpu_usage",
+                "anomaly_percentage" : 0.001,
+                "avg_min" : 20,
+                "avg_max" : 30,
+                "abs_min" : 0,
+                "abs_max" : 100
+            }
+        ]
+    },
+    "days_before": 7,
+    "days_after": 7,
+    "index_body": {
+        "settings": {
+            "index": {
+                "number_of_shards": 4
+            }
+        },
+        "mappings": {
+            "properties": {
+                "date": {"type": "date"},
+                "average_cpu_usage": {"type": "integer"}
+            }
+        }
+    },
+    "create_payload": {
+        "name": "cpu-usage-detector",
+        "description": "Monitors cpu usage every 10 minutes",
+        "time_field": "date",
+        "indices": [
+            "cpu-usage-logs*"
+        ],
+        "feature_attributes": [
+            {
+            "feature_name": "average_cpu_usage",
+            "feature_enabled": true,
+            "aggregation_query": {
+                "test": {
+                "avg": {
+                    "field": "average_cpu_usage"
+                }
+                }
+            }
+            }
+        ],
+        "filter_query": {
+            "match_all": {}
+        },
+        "detection_interval": {
+            "period": {
+            "interval": 10,
+            "unit": "Minutes"
+            }
+        },
+        "window_delay": {
+            "period": {
+            "interval": 1,
+            "unit": "Minutes"
+            }
+        }
+    }
+}

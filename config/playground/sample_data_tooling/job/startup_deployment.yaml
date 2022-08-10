@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sample-data-startup-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: sample-data-startup-job
+          image: public.ecr.aws/j6b3p0p7/sample-data-tooling:latest
+          envFrom:
+          - secretRef:
+              name: sample-data-secret
+          command: ["python3"]
+          args: ["./sample_data_tooling/sample_data_jobs/startup_job.py"]
+      restartPolicy: OnFailure
+  backoffLimit: 4
