@@ -7,8 +7,8 @@ from datetime import date
 from types import NoneType
 
 # Adds parent directory sample_data_tooling to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-import sample_data_generator.sample_data_generator as generator
+sys.path.append(os.path.abspath(__file__).split("sample_data_tooling")[0])
+import sample_data_tooling.sample_data_generator.sample_data_generator as generator
 
 
 # This path is for getting the parent directory sample_data_generator_tests
@@ -78,7 +78,7 @@ def test_valid_choose_field():
         assert type(generator.choose_field("keyword", ["email"])) is str
         assert "@" in generator.choose_field("keyword", ["email"])
         assert type(generator.choose_field("date detection string")) is bool
-        assert type(generator.choose_field("numeric detection string")) is bool 
+        assert type(generator.choose_field("numeric detection string")) is bool
         # One of Faker's standard providers
         ssn = generator.choose_field("ssn")
         assert type(ssn) is str and "-" == ssn[3] and "-" == ssn[6]
@@ -158,7 +158,7 @@ def test_valid_generate_data():
         test_2 = json.loads(generator.generate_data(valid_json_mapping))
         assert len(test_2) == 3
         for field in test_2:
-                assert test_2[field] != None        
+                assert test_2[field] != None
 
         test_3 = json.loads(generator.generate_data(valid_json_string_shorthand, False))
         assert len(test_3) == 3

@@ -8,9 +8,9 @@ import sys
 import os
 
 # Adds the directory "/sample_data_tooling" to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-from sample_data_plugins.sample_data_plugin import Plugin
-from sample_data_authentication.sample_data_basic_authentication import BasicAuthentication
+sys.path.append(os.path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.sample_data_plugins.sample_data_plugin import Plugin
+from sample_data_tooling.sample_data_authentication.sample_data_basic_authentication import BasicAuthentication
 
 
 # Constants
