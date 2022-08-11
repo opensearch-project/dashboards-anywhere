@@ -8,8 +8,8 @@ from os import path
 import sys
 
 # Adds parent directory "/sample_data_tooling" to sys.path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from sample_data_authentication.sample_data_authentication import Authentication
+sys.path.append(path.abspath(__file__).split("sample_data_tooling")[0])
+from sample_data_tooling.sample_data_authentication.sample_data_authentication import Authentication
 
 
 class BasicAuthentication(Authentication):

@@ -60,7 +60,7 @@ In order to deploy this tooling to Playground, first ensure that [`kubectl`](htt
 Once `kubectl` is installed and the Kubernetes cluster is running, first configure secrets so the container can pull credentials from the cluster.
 
 ```
-kubectl create secret generic sample-data-secret --from-literal='username=<admin username>' --from-literal='password=<admin password>' --from-literal='host=opensearch-cluster-leader'
+kubectl create secret generic sample-data-secret --from-literal='SAMPLE_DATA_USERNAME=<username>' --from-literal='SAMPLE_DATA_PASSWORD=<password>' --from-literal='SAMPLE_DATA_HOST=opensearch-cluster-leader'
 ```
 
 Then, from this directory, change directory into the job and cronjob deployment files and deploy them.
