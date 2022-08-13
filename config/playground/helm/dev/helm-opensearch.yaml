@@ -460,6 +460,8 @@ securityConfig:
           cluster_permissions:
             - 'cluster:admin/opendistro/alerting/alerts/get'
             - 'cluster:admin/opendistro/alerting/destination/get'
+            - 'cluster:admin/opendistro/alerting/destination/email_group/search'
+            - 'cluster:admin/opendistro/alerting/destination/email_account/search'
             - 'cluster:admin/opendistro/alerting/monitor/get'
             - 'cluster:admin/opendistro/alerting/monitor/search'
 
@@ -531,6 +533,7 @@ securityConfig:
           reserved: true
           cluster_permissions:
             - 'cluster:admin/opensearch/observability/get'
+            - 'cluster:admin/opensearch/ppl'
 
         # Allows users to all Observability functionality
         observability_full_access:
@@ -642,6 +645,24 @@ securityConfig:
             - 'cluster:admin/opensearch/ml/tasks/get'
             - 'cluster:admin/opensearch/ml/tasks/search'
 
+        # Allows users to read Notifications config/channels
+        notifications_read_access:
+          reserved: true
+          cluster_permissions:
+            - 'cluster:admin/opensearch/notifications/configs/get'
+            - 'cluster:admin/opensearch/notifications/features'
+            - 'cluster:admin/opensearch/notifications/channels/get'
+
+        # Allows users to see snapshots, repositories, and snapshot management policies
+        snapshot_management_read_access:
+          reserved: true
+          cluster_permissions:
+            - 'cluster:admin/opensearch/snapshot_management/policy/get'
+            - 'cluster:admin/opensearch/snapshot_management/policy/search'
+            - 'cluster:admin/opensearch/snapshot_management/policy/explain'
+            - 'cluster:admin/repository/get'
+            - 'cluster:admin/snapshot/get'
+
         # Allows users to use all ML functionality
         ml_full_access:
           reserved: true
@@ -661,14 +682,12 @@ securityConfig:
             # For using _cat/indices
             - 'cluster:monitor/state'
             - 'cluster:monitor/health'
+            - 'cluster:monitor/nodes/info'
             # To enable read access to ISM
             - cluster:admin/opendistro/ism/policy/search
             - cluster:admin/opendistro/ism/managedindex/explain
             - cluster:admin/opendistro/rollup/search
             - cluster:admin/opendistro/transform/get_transforms
-            # To enable read access to Snapshots
-            - cluster:admin/repository/get
-            - cluster:admin/opensearch/snapshot_management/policy/search
             # To enable read access to various ISM Jobs
             - cluster:admin/opendistro/rollup/explain
             - cluster:admin/opendistro/ism/policy/get
@@ -761,6 +780,10 @@ securityConfig:
           - "opendistro_security_anonymous_backendrole"
 
         notifications_read_access:
+          backend_roles:
+          - "opendistro_security_anonymous_backendrole"
+
+        snapshot_management_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
 
