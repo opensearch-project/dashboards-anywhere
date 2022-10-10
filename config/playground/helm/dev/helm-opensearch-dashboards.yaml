@@ -78,6 +78,8 @@ config:
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable wizard feature
     wizard.enabled: true
+    # Enable MD
+    data_source.enabled: true
 
 priorityClassName: ""
 
