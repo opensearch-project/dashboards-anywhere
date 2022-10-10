@@ -9,7 +9,7 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "liutaodocker2019/anywhere-osd"
+  repository: "opensearchproject/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default.
   tag: ""
   pullPolicy: "IfNotPresent"
