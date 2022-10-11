@@ -78,7 +78,7 @@ config:
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable wizard feature
     wizard.enabled: true
-    # Enable Multiple Datasource
+    # Enable multiple datasource
     data_source.enabled: true
 
 priorityClassName: ""
