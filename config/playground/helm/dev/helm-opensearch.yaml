@@ -231,7 +231,7 @@ securityConfig:
             #server_username: kibanaserver
             #index: '.kibana'
             http:
-              anonymous_auth_enabled: true
+              anonymous_auth_enabled: false
               xff:
                 enabled: false
                 internalProxies: '192\.168\.0\.10|192\.168\.0\.11' # regex pattern
