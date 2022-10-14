@@ -12,7 +12,7 @@ image:
   repository: "liutaodocker2019/anywhere-osd"
   # override image tag, which is .Chart.AppVersion by default
   tag: "latest"
-  pullPolicy: "IfNotPresent"
+  pullPolicy: "Always"
 
 imagePullSecrets: []
 nameOverride: ""
