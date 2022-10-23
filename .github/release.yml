@@ -19,6 +19,7 @@ changelog:
     - title: Security fix
       labels:
         - cve
+        - security vulnerability
     - title: Bug Fix
     - title: Other Changes
       labels:
