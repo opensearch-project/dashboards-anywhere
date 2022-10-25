@@ -4,12 +4,12 @@ import os
 import sys
 
 def run():
-    source_file = "/opt/opensearch-dashboards/extra_config/osd.yml"
-    target_file = "/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml"
+    SOURCE_FILE = "/opt/opensearch-dashboards/extra_config/osd.yml"
+    TARGET_FILE = "/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml"
 
     s_keys = set()
     nc = []
-    with open(source_file, "r") as s:
+    with open(SOURCE_FILE, "r") as s:
         for r in s:
             nc += [r]
             kv = r.split(":")
@@ -18,7 +18,7 @@ def run():
             s_keys.add(kv[0])
 
     nt = []
-    with open(target_file, "r") as t:
+    with open(TARGET_FILE, "r") as t:
         for r in t:
             kv = r.split(":")
             if len(kv) < 2 or r.strip().startswith("#"):
@@ -29,7 +29,7 @@ def run():
             else:
                 nt += [r]
 
-    with open(target_file, "w") as f:
+    with open(TARGET_FILE, "w") as f:
         f.write("\n".join(nt + nc))
 
     for i in range(1, len(sys.argv)):
