@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: ""
+  tag: "latest"
   pullPolicy: "IfNotPresent"
 
 imagePullSecrets: []
@@ -60,24 +60,6 @@ securityContext:
   runAsUser: 1000
 
 config:
-  # Default OpenSearch Dashboards configuration from docker image of Dashboards
-  opensearch_dashboards.yml:
-    opensearch.hosts: [https://localhost:9200]
-    opensearch.ssl.verificationMode: none
-    opensearch.username: kibanaserver
-    opensearch.password: kibanaserver
-    opensearch.requestHeadersWhitelist: [authorization, securitytenant]
-    opensearch_security.auth.anonymous_auth_enabled: true
-    opensearch_security.multitenancy.enabled: false
-    opensearch_security.multitenancy.tenants.preferred: [Global, Private]
-    opensearch_security.readonly_mode.roles: [kibana_read_only]
-    # Use this setting if you are running opensearch-dashboards without https
-    opensearch_security.cookie.secure: false
-    server.host: '0.0.0.0'
-    # Use the consolidated menu and global header bar
-    opensearchDashboards.branding.useExpandedHeader: false
-    # Enable wizard feature
-    wizard.enabled: true
 
 priorityClassName: ""
 

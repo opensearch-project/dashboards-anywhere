@@ -22,7 +22,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          # creats filters for tracking dev and prod changes
+          # creates filters to check if any dev or prod changes
           filters: |
             dev:
               - 'config/playground/helm/dev/**'
