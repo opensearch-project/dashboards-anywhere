@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "liutaodocker2019/anywhere-osd"
   # override image tag, which is .Chart.AppVersion by default
-  tag: ""
+  tag: "2.3.0-mdsec"
   pullPolicy: "IfNotPresent"
 
 imagePullSecrets: []
@@ -78,6 +78,8 @@ config:
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable wizard feature
     wizard.enabled: true
+    # Enable multiple datasource
+    data_source.enabled: true
 
 priorityClassName: ""
 
