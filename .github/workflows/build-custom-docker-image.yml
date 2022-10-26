@@ -11,8 +11,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: append config and custom command
         env:
-          TRACKING_ID: ${{secrets.GA_TRACKING_ID}}
-          PLUGINS: ${{secrets.PLUGINS}}
+          TRACKING_ID: ${{ secrets.GA_TRACKING_ID }}
+          PLUGINS: ${{ secrets.PLUGINS }}
         run: |
           if [[ $TRACKING_ID ]]; then
             echo -e "\r\n" >> config/playground/docker/dev/extra_config/osd.yml
@@ -29,8 +29,8 @@ jobs:
 
       - name: Build and push
         env:
-          DOCKER_HUB_REPO: ${{secrets.DOCKER_HUB_REPO}}
-          DOCKER_HUB_TAG: ${{secrets.DOCKER_HUB_TAG}}
+          DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+          DOCKER_HUB_TAG: ${{ secrets.DOCKER_HUB_TAG }}
         run:  |
           chmod -R 755 config/playground/docker/dev/scripts/
           docker build -t $DOCKER_HUB_REPO:$DOCKER_HUB_TAG config/playground/docker/dev
