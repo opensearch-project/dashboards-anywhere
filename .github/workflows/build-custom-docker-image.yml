@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: append config and custom command
         env:
           TRACKING_ID: ${{secrets.GA_TRACKING_ID}}

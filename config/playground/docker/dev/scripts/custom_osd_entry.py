@@ -3,10 +3,10 @@
 import os
 import sys
 
-def run():
-    SOURCE_FILE = "/opt/opensearch-dashboards/extra_config/osd.yml"
-    TARGET_FILE = "/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml"
+SOURCE_FILE = "/opt/opensearch-dashboards/extra_config/osd.yml"
+TARGET_FILE = "/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml"
 
+def update_config():
     s_keys = set()
     nc = []
     with open(SOURCE_FILE, "r") as s:
@@ -31,6 +31,10 @@ def run():
 
     with open(TARGET_FILE, "w") as f:
         f.write("\n".join(nt + nc))
+
+def run():
+    if os.path.exists(SOURCE_FILE):
+        update_config()
 
     for i in range(1, len(sys.argv)):
         os.system("/opt/opensearch-dashboards/scripts/install-plugins.sh " + sys.argv[i])

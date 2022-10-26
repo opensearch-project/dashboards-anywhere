@@ -12,7 +12,8 @@ image:
   repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
   tag: "latest"
-  pullPolicy: "IfNotPresent"
+  # Always/Never/IfNotPresent
+  pullPolicy: "Always"
 
 imagePullSecrets: []
 nameOverride: ""
