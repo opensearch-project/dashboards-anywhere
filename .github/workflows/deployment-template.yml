@@ -18,6 +18,9 @@ on:
         required: true
       kube-config:
         required: true
+      ga-tracking-id:
+        required: false
+        default: ''
 
 jobs:
 
@@ -38,6 +41,7 @@ jobs:
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
+          TRACKING_ID: ${{ secrets.ga-tracking-id }}
         with:
           plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
           # Teardown the current OS and OSD and then install the lastest version
@@ -52,4 +56,8 @@ jobs:
             helm uninstall dashboards --namespace default
             kubectl delete pvc --all
             helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
-            helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
+            args=""
+            if [[ $TRACKING_ID ]]; then
+              args='--set config."opensearch_dashboards\.yml"."google_analytics_plugin\.trackingID"='"$TRACKING_ID"''
+            fi
+            helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml $args

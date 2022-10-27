@@ -11,11 +11,16 @@ def update_config():
     nc = []
     with open(SOURCE_FILE, "r") as s:
         for r in s:
+            if not r.strip():
+                continue
             nc += [r]
             kv = r.split(":")
             if len(kv) < 2 or r.strip().startswith("#"):
                 continue
             s_keys.add(kv[0])
+
+    if not nc:
+        return
 
     nt = []
     with open(TARGET_FILE, "r") as t:
