@@ -57,6 +57,7 @@ jobs:
             helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
             args=""
             if [[ $TRACKING_ID ]]; then
+              echo 'here'
               args='--set config."opensearch_dashboards\.yml"."google_analytics_plugin\.trackingID"='"$TRACKING_ID"''
             fi
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml $args
