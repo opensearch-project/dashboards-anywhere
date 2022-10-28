@@ -3,8 +3,9 @@
 name: Scheduled Deploy OpenSearch and OpenSearch Dashboards
 
 on:
-  push:
-    branches: [ privatebranchfeature ]
+  schedule:
+    # Run every night at 21:30 PDT.
+    - cron:  '30 21 * * *'
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
