@@ -1,0 +1,22 @@
+# This workflow is a scheduled workflow and used for deploying the latest version of OpenSearch
+# and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
+name: Scheduled Deploy OpenSearch and OpenSearch Dashboards
+
+on:
+  push:
+    branches: [ privatebranchfeature ]
+  # adds workflow_dispatch for manually running a workflow
+  workflow_dispatch:
+
+jobs:
+
+  OS-OSD-Preview-Scheduled-Deployment:
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template-scheduled.yml@privatebranchfeature
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: preview
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PREVIEW }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PREVIEW }}
+      region: ${{ secrets.AWS_REGION_PREVIEW }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_PREVIEW }}
