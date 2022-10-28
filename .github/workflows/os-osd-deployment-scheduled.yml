@@ -3,12 +3,11 @@
 name: Scheduled Deploy OpenSearch and OpenSearch Dashboards
 
 on:
+  # adds workflow_dispatch for manually running a workflow
+  workflow_dispatch:
   schedule:
     # Run every night at 21:30 PDT.
     - cron:  '30 21 * * *'
-  # adds workflow_dispatch for manually running a workflow
-  workflow_dispatch:
-
 jobs:
 
   OS-OSD-Preview-Scheduled-Deployment:
