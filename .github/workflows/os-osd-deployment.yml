@@ -22,7 +22,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          # creats filters for tracking dev and prod changes
+          # creates filters to check if any dev or prod changes
           filters: |
             dev:
               - 'config/playground/helm/dev/**'
@@ -41,6 +41,7 @@ jobs:
       secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
       region: ${{ secrets.AWS_REGION_DEV }}
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
 
   OS-OSD-Prod-Deployment:
     needs: Pre-Deployment

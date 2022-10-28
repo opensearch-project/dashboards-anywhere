@@ -1,0 +1,33 @@
+name: OpenSearch Dashboards Build Custom Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Build-Custom-Docker-Image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: append config and custom command
+        env:
+          PLUGINS: ${{ secrets.PLUGINS }}
+        run: |
+          echo -e "\r\n" >> config/playground/docker/dev/Dockerfile
+          echo CMD [\"python\", \"/opt/opensearch-dashboards/scripts/custom_osd_entry.py\", \"$PLUGINS\"] >> config/playground/docker/dev/Dockerfile
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        env:
+          DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+          DOCKER_HUB_TAG: ${{ secrets.DOCKER_HUB_TAG }}
+        run:  |
+          chmod -R 755 config/playground/docker/dev/scripts/
+          docker build -t $DOCKER_HUB_REPO:$DOCKER_HUB_TAG config/playground/docker/dev
+          docker push $DOCKER_HUB_REPO:$DOCKER_HUB_TAG
+
