@@ -11,7 +11,7 @@ replicaCount: 2
 image:
   repository: "liutaodocker2019/anywhere-osd"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.3.0-mdsec"
+  tag: "2.3.0-mdmd1031"
   pullPolicy: "IfNotPresent"
 
 imagePullSecrets: []
@@ -68,7 +68,7 @@ config:
     opensearch.password: kibanaserver
     opensearch.requestHeadersWhitelist: [authorization, securitytenant]
     opensearch_security.auth.anonymous_auth_enabled: true
-    opensearch_security.multitenancy.enabled: false
+    opensearch_security.multitenancy.enabled: true
     opensearch_security.multitenancy.tenants.preferred: [Global, Private]
     opensearch_security.readonly_mode.roles: [kibana_read_only]
     # Use this setting if you are running opensearch-dashboards without https
