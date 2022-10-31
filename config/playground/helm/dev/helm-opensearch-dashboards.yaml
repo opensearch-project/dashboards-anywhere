@@ -11,8 +11,8 @@ replicaCount: 2
 image:
   repository: "liutaodocker2019/anywhere-osd"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.3.0-mdmd1031"
-  pullPolicy: "IfNotPresent"
+  tag: "2.3.0-md1031"
+  pullPolicy: "Always"
 
 imagePullSecrets: []
 nameOverride: ""
