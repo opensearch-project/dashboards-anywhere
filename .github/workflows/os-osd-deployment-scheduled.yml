@@ -1,0 +1,34 @@
+# This workflow is a scheduled workflow and used for deploying the preview version of OpenSearch
+# and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
+name: Scheduled Deploy OpenSearch and OpenSearch Dashboards
+
+on:
+  # Adds workflow_dispatch for manually running a workflow
+  workflow_dispatch:
+  schedule:
+    # Run every night at 21:30 PDT.
+    - cron:  '30 21 * * *'
+jobs:
+
+  OS-OSD-Preview-Scheduled-Deployment:
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template-scheduled.yml@main
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: preview
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PREVIEW }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PREVIEW }}
+      region: ${{ secrets.AWS_REGION_PREVIEW }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_PREVIEW }}
+      openid_client_id: ${{ secrets.OPENID_CLIENT_ID }}
+      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
+
+  OSD-Functional-Test-Preview:
+    needs: OS-OSD-Preview-Scheduled-Deployment
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
+    with:
+      endpoint: https://reinvent.playground.opensearch.org
+    secrets:
+      osd-user: ${{ secrets.OSD_USER }}
+      osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}

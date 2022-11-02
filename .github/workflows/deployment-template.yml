@@ -18,6 +18,10 @@ on:
         required: true
       kube-config:
         required: true
+      openid_client_id:
+        required: false
+      openid_client_secret:
+        required: false
       ga-tracking-id:
         required: false
 
@@ -36,7 +40,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.secret-access-key }}
           aws-region: ${{ secrets.region }}
 
-      - name: Step 2 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+      - name: Step 2 - Replace Tokens
+        if: ${{inputs.deploy-env}} == 'preview'
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+          OPENID_CLIENT_ID: ${{ secrets.openid_client_id }}
+          OPENID_CLIENT_SECRET: ${{ secrets.openid_client_secret }}
+          GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
+
+      - name: Step 3 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -55,8 +71,4 @@ jobs:
             helm uninstall dashboards --namespace default
             kubectl delete pvc --all
             helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
-            args=""
-            if [[ $TRACKING_ID ]]; then
-              args='--set config."opensearch_dashboards\.yml"."google_analytics_plugin\.trackingID"='"$TRACKING_ID"''
-            fi
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml $args
