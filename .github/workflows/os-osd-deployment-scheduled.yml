@@ -13,7 +13,7 @@ on:
 jobs:
 
   OS-OSD-Preview-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template-scheduled.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template-scheduled.yml@previewchangefeature
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: preview
