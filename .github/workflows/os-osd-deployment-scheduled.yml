@@ -3,6 +3,8 @@
 name: Scheduled Deploy OpenSearch and OpenSearch Dashboards
 
 on:
+  push:
+    branches: [ previewchangefeature ]
   # Adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
   schedule:
