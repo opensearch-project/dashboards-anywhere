@@ -799,6 +799,7 @@ securityConfig:
                 - "indices:data/read/mget"
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
+                - "indices:admin/create"
                 - "indices:admin/get"
                 - "indices:admin/aliases/exists*"
                 - "indices:admin/aliases/get*"
