@@ -4,7 +4,7 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 
 on:
   push:
-    branches: [ main ]
+    branches: [ previewchangefeature ]
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
@@ -22,6 +22,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: previewchangefeature
           # creates filters to check if any dev or prod changes
           filters: |
             dev:
