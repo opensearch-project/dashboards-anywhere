@@ -33,14 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Step 1 - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.access-key-id }}
-          aws-secret-access-key: ${{ secrets.secret-access-key }}
-          aws-region: ${{ secrets.region }}
-
-      - name: Step 2 - Replace Tokens
+      - name: Step 1 - Replace Tokens
         if: ${{inputs.deploy-env}} == 'preview'
         uses: cschleiden/replace-tokens@v1
         with:
@@ -51,6 +44,13 @@ jobs:
           OPENID_CLIENT_ID: ${{ secrets.openid_client_id }}
           OPENID_CLIENT_SECRET: ${{ secrets.openid_client_secret }}
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
+
+      - name: Step 2 - Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.access-key-id }}
+          aws-secret-access-key: ${{ secrets.secret-access-key }}
+          aws-region: ${{ secrets.region }}
 
       - name: Step 3 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
