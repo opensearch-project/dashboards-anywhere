@@ -5,9 +5,11 @@ name: Scheduled Deploy OpenSearch and OpenSearch Dashboards
 on:
   # Adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
+  # Adds schdeule event trigger for daily reset.
+  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
   schedule:
-    # Run every night at 21:30 PDT.
-    - cron:  '30 21 * * *'
+    # Run daily at 04:30 UTC.
+    - cron:  '30 04 * * *'
 jobs:
 
   OS-OSD-Preview-Scheduled-Deployment:
