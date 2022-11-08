@@ -22,8 +22,10 @@ jobs:
       secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PREVIEW }}
       region: ${{ secrets.AWS_REGION_PREVIEW }}
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_PREVIEW }}
-      openid_client_id: ${{ secrets.OPENID_CLIENT_ID }}
-      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET }}
+      openid_client_id: ${{ secrets.OPENID_CLIENT_ID_PREVIEW }}
+      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET_PREVIEW }}
+      openid_base_redirect_url: ${{ secrets.OPENID_LOGOUT_URL_PREVIEW }}
+      openid_logout_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_PREVIEW }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
 
   OSD-Functional-Test-Preview:

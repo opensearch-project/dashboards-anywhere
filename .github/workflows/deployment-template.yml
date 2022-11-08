@@ -22,6 +22,10 @@ on:
         required: false
       openid_client_secret:
         required: false
+      openid_base_redirect_url:
+        required: false
+      openid_logout_url:
+        required: false
       ga-tracking-id:
         required: false
 
@@ -43,6 +47,8 @@ jobs:
         env:
           OPENID_CLIENT_ID: ${{ secrets.openid_client_id }}
           OPENID_CLIENT_SECRET: ${{ secrets.openid_client_secret }}
+          OPENID_BASE_REDIRECT_URL: ${{ secrets.openid_base_redirect_url }}
+          OPENID_LOGOUT_URL: ${{ secrets.openid_logout_url }}
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
 
       - name: Step 2 - Configure AWS Credentials

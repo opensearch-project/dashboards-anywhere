@@ -89,7 +89,7 @@ config:
     opensearch_security.ui.openid.login.buttonname: "Log in with Google account"
     opensearch_security.ui.openid.login.brandimage: "https://opensearch.org/assets/brand/PNG/Mark/opensearch_mark_default.png"
     opensearch_security.ui.openid.login.showbrandimage: true
-    opensearch_security.openid.base_redirect_url: ${OPENID_BASE_REDIRECT_URL_PREVIEW}
+    opensearch_security.openid.base_redirect_url: ${OPENID_BASE_REDIRECT_URL}
     opensearch_security.openid.scope: 'openid profile email'
     opensearch_security.openid.verify_hostnames: false
     opensearch_security.openid.refresh_tokens: false
@@ -97,7 +97,7 @@ config:
     opensearch_security.openid.connect_url: "https://accounts.google.com/.well-known/openid-configuration"
     opensearch_security.openid.client_id: ${OPENID_CLIENT_ID}
     opensearch_security.openid.client_secret: ${OPENID_CLIENT_SECRET}
-    opensearch_security.openid.logout_url: ${OPENID_LOGOUT_URL_PREVIEW}
+    opensearch_security.openid.logout_url: ${OPENID_LOGOUT_URL}
 
     # Content security policy(csp) settings
     csp.rules: ["connect-src 'self' www.google-analytics.com maps.opensearch.org;"]
