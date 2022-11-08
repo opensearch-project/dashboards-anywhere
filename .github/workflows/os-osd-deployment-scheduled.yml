@@ -30,9 +30,9 @@ jobs:
 
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@previewchangefeature
     with:
-      endpoint: https://reinvent.playground.opensearch.org
+      endpoint: https://preview.playground.opensearch.org
     secrets:
       osd-user: ${{ secrets.OSD_USER }}
       osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
