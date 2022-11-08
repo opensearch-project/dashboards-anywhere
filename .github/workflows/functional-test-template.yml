@@ -44,14 +44,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        run: ['OSD-Functional-Test-AD', 'OSD-Functional-Test-Alert', 'OSD-Functional-Test-Notifications', 'OSD-Functional-Test-Reports', 'OSD-Functional-Test-IndexMan']
+        run: ['OSD-Functional-Test-AD', 'OSD-Functional-Test-Alert', 'OSD-Functional-Test-Notifications', 'OSD-Functional-Test-Reports', 'OSD-Functional-Test-Observability', 'OSD-Functional-Test-IndexMan']
     steps:
     - run: echo Run ${{ matrix.run }}
     - name: Checkout functional test repo
       uses: actions/checkout@v3
       with:
         repository: elastic-analytics/opensearch-dashboards-functional-test
-        ref: playground
+        ref: playground-preview
     - name: Install dependencies for functional test
       run: |
         npm install
@@ -79,7 +79,7 @@ jobs:
     - name: Run Functional Test For Observability
       if:  ${{ matrix.run == 'OSD-Functional-Test-Observability' }}
       run: |
-        yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability_full.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
     - name: Run Functional Test For Index Management
       if:  ${{ matrix.run == 'OSD-Functional-Test-IndexMan' }}
