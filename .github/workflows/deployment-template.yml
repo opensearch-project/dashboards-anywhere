@@ -28,6 +28,10 @@ on:
         required: false
       ga-tracking-id:
         required: false
+      osd_user: 
+        required: false
+      osd_user_password: 
+        required: false
 
 jobs:
 
