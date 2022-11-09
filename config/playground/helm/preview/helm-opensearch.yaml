@@ -14,7 +14,7 @@ roles:
   - data
   - remote_cluster_client
 
-replicas: 6
+replicas: 3
 minimumMasterNodes: 2
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
@@ -111,7 +111,7 @@ opensearchJavaOpts: "-Xmx2G -Xms2G"
 resources:
   requests:
     cpu: "1"
-    memory: "8Gi"
+    memory: "10Gi"
 
 networkHost: "0.0.0.0"
 
@@ -157,11 +157,10 @@ persistence:
   #   set, choosing the default provisioner.  (gp2 on AWS, standard on
   #   GKE, AWS & OpenStack)
 
-storageClass: "-"
-storageClassName: netapp-ssd
-accessModes:
-  - ReadWriteOnce
-size: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  size: 50Gi
+  annotations: {}
 
 protocol: http
 httpPort: 9200
@@ -758,6 +757,8 @@ securityConfig:
             - 'cluster:monitor/state'
             - 'cluster:monitor/health'
             - 'cluster:monitor/nodes/info'
+            # For script
+            - 'cluster:admin/script/put'
             # To enable read access to ISM
             - cluster:admin/opendistro/ism/policy/search
             - cluster:admin/opendistro/ism/managedindex/explain
@@ -800,6 +801,7 @@ securityConfig:
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
                 - "indices:admin/create"
+                - 'indices:admin/analyze'
                 - "indices:admin/get"
                 - "indices:admin/aliases/exists*"
                 - "indices:admin/aliases/get*"
