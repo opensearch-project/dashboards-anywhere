@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash-deployment
+  namespace: logstash
+  labels:
+    app: logstash-opensearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash-opensearch
+  template:
+    metadata:
+      labels:
+        app: logstash-opensearch
+    spec:
+      containers:
+      - name: logstash
+        image: opensearchproject/logstash-oss-with-opensearch-output-plugin:8.4.0
+        ports:
+        - containerPort: 5044
+          name: beats
+          protocol: TCP
+        env:
+        - name: OS_VERSION
+          value: 7.10.2
+        - name: OPENSEARCH_DOMAIN
+          value: "https://opensearch-cluster-leader.default.svc:9200"
+        - name: OPENSEARCH_USER
+          value: ${OSD_USER}
+        - name: OPENSEARCH_PWD
+          value: ${OSD_USER_PASSWORD}
+        - name: LS_JAVA_OPTS
+          value: -Xmx1g -Xms1g
+        volumeMounts:
+          - name: config-volume
+            mountPath: /usr/share/logstash/config
+          - name: logstash-pipeline-volume
+            mountPath: /usr/share/logstash/pipeline
+        resources:
+          limits:
+            cpu:    1
+            memory: 2Gi
+          requests:
+            cpu:    0.5
+            memory: 1Gi
+      volumes:
+      - name: config-volume
+        configMap:
+          name: logging-configmap
+          items:
+            - key: logstash.yml
+              path: logstash.yml
+            - key: jvm.options
+              path: jvm.options
+            - key: metricbeat-template.json
+              path: metricbeat-template.json
+      - name: logstash-pipeline-volume
+        configMap:
+          name: logging-configmap
+          items:
+            - key: logstash.conf
+              path: logstash.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: logstash-opensearch
+  name: logstash-service
+  namespace: logstash
+spec:
+  ports:
+  - port: 5044
+    protocol: TCP
+    targetPort: 5044
+  selector:
+    app: logstash-opensearch
