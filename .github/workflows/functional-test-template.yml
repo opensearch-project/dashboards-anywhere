@@ -40,11 +40,11 @@ jobs:
 
         - name: Step 3 - Add moviegeek dashboard
           run: |
-            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/moviegeekdashboard.ndjson" -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
+            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/moviegeekdashboard.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
 
         - name: Step 4 - Add metricsbeat dashboard
           run: |
-            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/metricbeat-eks-overview.ndjson" -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
+            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/metricbeat-eks-overview.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
 
   Plugins:
     runs-on: ubuntu-latest
