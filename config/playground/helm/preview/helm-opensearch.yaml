@@ -14,7 +14,7 @@ roles:
   - data
   - remote_cluster_client
 
-replicas: 6
+replicas: 3
 minimumMasterNodes: 2
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
@@ -111,7 +111,7 @@ opensearchJavaOpts: "-Xmx2G -Xms2G"
 resources:
   requests:
     cpu: "1"
-    memory: "8Gi"
+    memory: "10Gi"
 
 networkHost: "0.0.0.0"
 
@@ -159,7 +159,7 @@ persistence:
 
   accessModes:
     - ReadWriteOnce
-  size: 30Gi
+  size: 50Gi
   annotations: {}
 
 protocol: http
