@@ -121,5 +121,5 @@ jobs:
           # blue/green deployment later.
           command: |
             kubectl create ns logstash
-            kubectl create -f -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash-configmap.yaml
+            kubectl create -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash-configmap.yaml
             kubectl apply -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash.yaml
