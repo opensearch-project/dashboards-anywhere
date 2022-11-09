@@ -14,7 +14,7 @@ roles:
   - data
   - remote_cluster_client
 
-replicas: 6
+replicas: 3
 minimumMasterNodes: 2
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
@@ -159,7 +159,7 @@ persistence:
 
   accessModes:
     - ReadWriteOnce
-  size: 30Gi
+  size: 50Gi
   annotations: {}
 
 protocol: http
