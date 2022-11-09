@@ -24,11 +24,13 @@ jobs:
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_PREVIEW }}
       openid_client_id: ${{ secrets.OPENID_CLIENT_ID }}
       openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET }}
+      openid_base_redirect_url: ${{ secrets.OPENID_LOGOUT_URL }}
+      openid_logout_url: ${{ secrets.OPENID_BASE_REDIRECT_URL }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
 
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@previewchangefeature
     with:
       endpoint: https://reinvent.playground.opensearch.org
     secrets:
