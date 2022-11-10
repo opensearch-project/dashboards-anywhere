@@ -46,7 +46,7 @@ kubectl delete cronjob healthcheck-cronjob
 You need to replace the `${OSD_USER}` and `${OSD_USER_PASSWORD}` in the `logstash.yaml` file, this file was used for logstash deployment.
 
 ```
-# Dploy Logstash
+# Deploy Logstash
 kubectl create ns logstash
 kubectl create -f logstash-configmap.yaml
 kubectl apply -f logstash.yaml
