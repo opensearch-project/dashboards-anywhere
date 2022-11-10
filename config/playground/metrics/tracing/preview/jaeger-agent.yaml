@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: jaeger-agent
+  name: jaeger-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: jaeger-agent
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        k8s-app: tracing
+        io.kompose.service: jaeger-agent
+    spec:
+      containers:
+        - args:
+            - --reporter.grpc.host-port=otel-collector:14250
+          image: jaegertracing/jaeger-agent:1.38
+          name: jaeger-agent
+          ports:
+            - containerPort: 5775
+              protocol: UDP
+            - containerPort: 6831
+              protocol: UDP
+            - containerPort: 6832
+              protocol: UDP
+            - containerPort: 5778
+              protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: jaeger-agent
+  name: jaeger-agent
+spec:
+  ports:
+    - name: "5775"
+      port: 5775
+      protocol: UDP
+      targetPort: 5775
+    - name: "6831"
+      port: 6831
+      protocol: UDP
+      targetPort: 6831
+    - name: "6832"
+      port: 6832
+      protocol: UDP
+      targetPort: 6832
+    - name: "5778"
+      port: 5778
+      targetPort: 5778
+  selector:
+    io.kompose.service: jaeger-agent

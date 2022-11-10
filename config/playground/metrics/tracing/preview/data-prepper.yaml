@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: data-prepper
+  name: data-prepper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: data-prepper
+  template:
+    metadata:
+      labels:
+        k8s-app: tracing
+        io.kompose.service: data-prepper
+    spec:
+      containers:
+        - image: opensearchproject/data-prepper:1.5.1
+          name: data-prepper
+          env:
+            - name: ENV_PIPELINE_FILEPATH
+              value: /usr/share/data-prepper-config/pipelines.yaml
+            - name: ENV_CONFIG_FILEPATH
+              value: /usr/share/data-prepper-config/data-prepper-config.yaml
+          ports:
+            - containerPort: 21890
+          volumeMounts:
+            - mountPath: /usr/share/data-prepper-config
+              name: data-prepper-config
+      restartPolicy: Always
+      volumes:
+        - name: data-prepper-config
+          configMap:
+            name: otel-configmap
+            items:
+              - key: data-prepper-pipeline
+                path: pipelines.yaml
+              - key: data-prepper-config
+                path: data-prepper-config.yaml
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: data-prepper
+  name: data-prepper
+spec:
+  ports:
+    - name: "21890"
+      port: 21890
+      targetPort: 21890
+  selector:
+    io.kompose.service: data-prepper
+---

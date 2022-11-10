@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-configmap
+  namespace: default
+data:
+  otel-collector-config: |
+    receivers:
+      jaeger:
+        protocols:
+          grpc:
+
+    exporters:
+      otlp/data-prepper:
+        endpoint: data-prepper:21890
+        tls:
+          insecure: true
+          insecure_skip_verify: true
+      logging:
+
+    service:
+      pipelines:
+        traces:
+          receivers: [jaeger]
+          exporters: [logging, otlp/data-prepper]
+
+  data-prepper-pipeline: |
+    entry-pipeline:
+      delay: "100"
+      source:
+        otel_trace_source:
+          ssl: false
+          record_type: event
+      sink:
+        - pipeline:
+            name: "raw-pipeline"
+        - pipeline:
+            name: "service-map-pipeline"
+    raw-pipeline:
+      source:
+        pipeline:
+          name: "entry-pipeline"
+      processor:
+        - otel_trace_raw:
+      sink:
+        - opensearch:
+            hosts: [ "https://opensearch-cluster-leader:9200" ]
+            # cert: "/usr/share/data-prepper-config/root-ca.pem"
+            insecure: true
+            username: "${OSD_USER}"
+            password: "${OSD_USER_PASSWORD}"
+            index_type: trace-analytics-raw
+    service-map-pipeline:
+      delay: "100"
+      source:
+        pipeline:
+          name: "entry-pipeline"
+      processor:
+        - service_map_stateful:
+      sink:
+        - opensearch:
+            hosts: ["https://opensearch-cluster-leader:9200"]
+            # cert: "//usr/share/data-prepper-config/root-ca.pem"
+            insecure: true
+            username: "${OSD_USER}"
+            password: "${OSD_USER_PASSWORD}"
+            index_type: trace-analytics-service-map
+
+  data-prepper-config: |
+    ssl: false
+
+  root-ca: |
+${OTEL_ROOT_CA}
+
+  data-prepper-cert: |
+${OTEL_ROOT_CA}
+
+
+
+
+

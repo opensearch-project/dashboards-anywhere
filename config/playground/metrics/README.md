@@ -4,12 +4,18 @@
 
 This document provides a guide to configure [fluentbit](https://docs.fluentbit.io/manual) and Kubernetes [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) which process EKS cluster logs to OpenSearch and trigger health check CronJob.
 
-The current metrics folder contains two functions, the detail as following:
+The current metrics folder contains four functions, the detail as following:
 > CronJobs
 >> This folder contains Kubernetes CronJob. `cronjob-healthcheck.yaml` was used to check health for the playground site. The health check response memtrics will be piped to OpenSearch by fluent-bit log processor. 
 
 > Fluent-Bit
 >> This folder contains the configuration of fluent-bit, `fluent-bit.yaml` was used for processing the metrics log from Playground site to OpenSearch. 
+
+> Logstash
+>> This folder contains the configuration of logstash, the configuration files were used for processing the cluster metrics log from EKS cluster to Playground OpenSearch. Please refer to [Workshop Logstash](https://catalog.us-east-1.prod.workshops.aws/workshops/c87214bf-11ea-46b7-82d9-4d934c2a7f53/en-US/logs/logstash).
+
+> Tracing
+>> This folder contains the configuration of tracing, the configuration files were used for processing the observability trace log from sample applicaton to Playground OpenSearch. Please refer to [Workshop Tracing](https://catalog.us-east-1.prod.workshops.aws/workshops/c87214bf-11ea-46b7-82d9-4d934c2a7f53/en-US/logs/tracing).
 
 ## Prerequisites
 
@@ -34,6 +40,35 @@ You need to pre-config [secrets](https://kubernetes.io/docs/concepts/configurati
 # Creates CronJob for health check
 kubectl create -f cronjob-healthcheck.yaml
 kubectl delete cronjob healthcheck-cronjob
+```
+
+## Deploy And Delete Logstash
+You need to replace the `${OSD_USER}` and `${OSD_USER_PASSWORD}` in the `logstash.yaml` file, this file was used for logstash deployment.
+
+```
+# Deploy Logstash
+kubectl create ns logstash
+kubectl create -f logstash-configmap.yaml
+kubectl apply -f logstash.yaml
+
+# Delete Logstash
+kubectl delete ns logstash
+```
+## Deploy And Delete Tracing
+You need to replace the `${OSD_USER}` and `${OSD_USER_PASSWORD}` in the `otel-config.yaml` file, this file was used for tracing deployment. 
+
+```
+# Deploy Tracing
+kubectl apply -f jaeger-agent.yaml
+kubectl create -f otel-config.yaml
+kubectl apply -f otel-collector.yaml
+kubectl apply -f data-prepper.yaml
+
+# Delete Tracing
+kubectl delete -f jaeger-agent.yaml
+kubectl delete -f otel-config.yaml
+kubectl delete -f otel-collector.yaml
+kubectl delete -f data-prepper.yaml```
 ```
 
 
