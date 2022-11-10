@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: searchticker-cronjob
+spec:
+  # Runs every 20 minutes
+  schedule: "*/20 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        spec:
+          containers:
+          - name: searchticker-cronjob
+            image: public.ecr.aws/j6b3p0p7/searchticker:latest
+            imagePullPolicy: IfNotPresent
+            args: ["10m", "5m", "http://k8s-default-ingressm-01116c5b67-1615084315.us-east-1.elb.amazonaws.com"] 
+          restartPolicy: Never

@@ -30,7 +30,11 @@ on:
         required: false
       osd_user: 
         required: false
-      osd_user_password: 
+      osd_user_password:
+        required: false
+      otel_root_ca:
+        required: false
+      otel_data_prepper_cert:
         required: false
 
 jobs:
@@ -76,6 +80,8 @@ jobs:
         env:
           OSD_USER: ${{ secrets.osd_user }}
           OSD_USER_PASSWORD: ${{ secrets.osd_user_password }}
+          OTEL_ROOT_CA: ${{ secrets.otel_root_ca }}
+          OTEL_DATA_PREPPER_CERT: ${{ secrets.otel_data_prepper_cert }}
 
       - name: Step 3 - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
