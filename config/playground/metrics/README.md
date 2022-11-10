@@ -58,7 +58,7 @@ kubectl delete ns logstash
 You need to replace the `${OSD_USER}` and `${OSD_USER_PASSWORD}` in the `otel-config.yaml` file, this file was used for tracing deployment. 
 
 ```
-# Dploy Tracing
+# Deploy Tracing
 kubectl apply -f jaeger-agent.yaml
 kubectl create -f otel-config.yaml
 kubectl apply -f otel-collector.yaml
