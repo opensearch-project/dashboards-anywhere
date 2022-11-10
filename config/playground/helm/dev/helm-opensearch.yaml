@@ -159,7 +159,7 @@ persistence:
 
   accessModes:
     - ReadWriteOnce
-  size: 30Gi
+  size: 50Gi
 
 protocol: http
 httpPort: 9200

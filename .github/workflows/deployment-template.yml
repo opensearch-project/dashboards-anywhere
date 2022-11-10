@@ -45,8 +45,42 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Step 1 - Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.access-key-id }}
+          aws-secret-access-key: ${{ secrets.secret-access-key }}
+          aws-region: ${{ secrets.region }}
+
+      - name: Step 2 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
+          TRACKING_ID: ${{ secrets.ga-tracking-id }}
+        with:
+          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
+          # Teardown the current OS and OSD and then install the lastest version
+          # of OS and OSD as it only takes 23 seconds for the process, will add
+          # blue/green deployment later.
+          command: |
+            helm repo add opensearch ${{ inputs.helm-repo }}
+            helm repo update
+            helm search repo opensearch
+            kubectl get nodes
+            helm uninstall opensearch --namespace default
+            helm uninstall dashboards --namespace default
+            kubectl get pvc | grep opensearch-cluster-leader-opensearch-cluster-leader- | awk '{print $1}'| xargs kubectl delete pvc
+            helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
+            helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
+
+  OS-OSD-Deployment-Preview:
+    if: ${{inputs.deploy-env}} == 'preview'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Step 1 - Replace Tokens for helm chart configuration
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml"]'
@@ -60,7 +94,6 @@ jobs:
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
 
       - name: Step 2 - Replace Tokens for logstash configuration
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash.yaml"]'
@@ -71,7 +104,6 @@ jobs:
           OSD_USER_PASSWORD: ${{ secrets.osd_user_password }}
 
       - name: Step 2 - Replace Tokens for tracing configuration
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml"]'
@@ -91,7 +123,6 @@ jobs:
           aws-region: ${{ secrets.region }}
 
       - name: Step 4 - Delete Logstash
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -102,7 +133,6 @@ jobs:
             kubectl delete ns logstash
 
       - name: Step 5 - Delete Tracing
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -137,7 +167,6 @@ jobs:
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
 
       - name: Step 6 - Install Logstash
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -150,7 +179,6 @@ jobs:
             kubectl apply -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash.yaml
 
       - name: Step 7 - Install Tracing
-        if: ${{inputs.deploy-env}} == 'preview'
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
