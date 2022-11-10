@@ -4,7 +4,7 @@ metadata:
   name: searchticker-cronjob
 spec:
   # Runs every 20 minutes
-  schedule: "*/20 * * * *"
+  schedule: "*/15 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -15,5 +15,5 @@ spec:
           - name: searchticker-cronjob
             image: public.ecr.aws/j6b3p0p7/searchticker:latest
             imagePullPolicy: IfNotPresent
-            args: ["10m", "5m", "http://k8s-default-ingressm-01116c5b67-1615084315.us-east-1.elb.amazonaws.com"] 
+            args: ["13m", "15m", "${application_base_url}"] 
           restartPolicy: Never
