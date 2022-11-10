@@ -66,6 +66,17 @@ jobs:
           OSD_USER: ${{ secrets.osd_user }}
           OSD_USER_PASSWORD: ${{ secrets.osd_user_password }}
 
+      - name: Step 2 - Replace Tokens for tracing configuration
+        if: ${{inputs.deploy-env}} == 'preview'
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+          OSD_USER: ${{ secrets.osd_user }}
+          OSD_USER_PASSWORD: ${{ secrets.osd_user_password }}
+
       - name: Step 3 - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -80,14 +91,25 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
           TRACKING_ID: ${{ secrets.ga-tracking-id }}
         with:
-          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
-          # Teardown the current OS and OSD and then install the lastest version
-          # of OS and OSD as it only takes 23 seconds for the process, will add
-          # blue/green deployment later.
+          plugins: ""
           command: |
             kubectl delete ns logstash
 
-      - name: Step 5 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+      - name: Step 5 - Delete Tracing
+        if: ${{inputs.deploy-env}} == 'preview'
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
+          TRACKING_ID: ${{ secrets.ga-tracking-id }}
+        with:
+          plugins: ""
+          command: |
+            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/jaeger-agent.yaml
+            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml
+            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-collector.yaml
+            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/data-prepper.yaml
+
+      - name: Step 6 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -115,11 +137,22 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
           TRACKING_ID: ${{ secrets.ga-tracking-id }}
         with:
-          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
-          # Teardown the current OS and OSD and then install the lastest version
-          # of OS and OSD as it only takes 23 seconds for the process, will add
-          # blue/green deployment later.
+          plugins: ""
           command: |
             kubectl create ns logstash
             kubectl create -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash-configmap.yaml
             kubectl apply -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash.yaml
+
+      - name: Step 7 - Install Tracing
+        if: ${{inputs.deploy-env}} == 'preview'
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
+          TRACKING_ID: ${{ secrets.ga-tracking-id }}
+        with:
+          plugins: ""
+          command: |
+            kubectl apply -f config/playground/metrics/tracing/${{inputs.deploy-env}}/jaeger-agent.yaml
+            kubectl create -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml
+            kubectl apply -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-collector.yaml
+            kubectl apply -f config/playground/metrics/tracing/${{inputs.deploy-env}}/data-prepper.yaml
