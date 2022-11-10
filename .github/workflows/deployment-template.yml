@@ -74,7 +74,7 @@ jobs:
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
 
   OS-OSD-Deployment-Preview:
-    if: ${{inputs.deploy-env}} == 'preview'
+    if: ${{inputs.deploy-env == 'preview'}}
     runs-on: ubuntu-latest
 
     steps:
