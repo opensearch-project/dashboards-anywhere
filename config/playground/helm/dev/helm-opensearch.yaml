@@ -157,11 +157,9 @@ persistence:
   #   set, choosing the default provisioner.  (gp2 on AWS, standard on
   #   GKE, AWS & OpenStack)
 
-storageClass: "-"
-storageClassName: netapp-ssd
-accessModes:
-  - ReadWriteOnce
-size: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  size: 30Gi
 
 protocol: http
 httpPort: 9200
