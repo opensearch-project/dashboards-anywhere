@@ -70,7 +70,12 @@ data:
     ssl: false
 
   root-ca: |
-   ${OTEL_ROOT_CA}
+${OTEL_ROOT_CA}
 
   data-prepper-cert: |
-   ${OTEL_DATA_PREPPER_CERT}
+${OTEL_ROOT_CA}
+
+
+
+
+
