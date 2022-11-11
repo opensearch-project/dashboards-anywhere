@@ -801,7 +801,7 @@ securityConfig:
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
                 - "indices:data/read/scroll"
-                - "indices:data/write/index"
+                - "indices:data/write/index*"
                 - "indices:admin/create"
                 - 'indices:admin/analyze'
                 - "indices:admin/get"
