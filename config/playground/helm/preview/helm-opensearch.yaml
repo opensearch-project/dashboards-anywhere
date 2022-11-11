@@ -111,7 +111,7 @@ opensearchJavaOpts: "-Xmx2G -Xms2G"
 resources:
   requests:
     cpu: "1"
-    memory: "10Gi"
+    memory: "12Gi"
 
 networkHost: "0.0.0.0"
 
@@ -800,13 +800,14 @@ securityConfig:
                 - "indices:data/read/mget"
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
+                - "indices:data/read/scroll"
+                - "indices:data/write*"
                 - "indices:admin/create"
                 - 'indices:admin/analyze'
                 - "indices:admin/get"
                 - "indices:admin/aliases/exists*"
                 - "indices:admin/aliases/get*"
                 - "indices:admin/mappings/get"
-                - "indices:data/read/scroll"
                 - "indices:monitor/settings/get"
                 - "indices:monitor/stats"
       roles_mapping.yml: |
