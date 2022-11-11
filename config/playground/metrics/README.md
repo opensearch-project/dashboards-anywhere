@@ -75,3 +75,4 @@ kubectl delete -f data-prepper.yaml```
 ## Appendix
 - [Fluent-Bit](https://docs.fluentbit.io/manual) is a logging processor and forwarder that’ll be used to take the raw logs and send them up to OpenSearch for processing.
 - [Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) creates jobs on a repeating schedule.
+- [Data Prepper](https://opensearch.org/docs/1.2/clients/data-prepper/index/) is a server side data collector capable of filtering, enriching, transforming, normalizing and aggregating data for downstream analytics and visualization.
