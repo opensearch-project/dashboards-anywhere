@@ -11,7 +11,7 @@ replicaCount: 2
 image:
   repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "latest"
+  tag: "2.4.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -78,8 +78,8 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
 
-    # Enable wizard feature
-    wizard.enabled: true
+    # Enable multiple datasource
+    data_source.enabled: true
 
     #Content security policy(csp) settings
     csp.rules: [ "connect-src 'self' www.google-analytics.com maps.opensearch.org;" ]
