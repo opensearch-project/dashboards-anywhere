@@ -800,7 +800,7 @@ securityConfig:
                 - "indices:data/read/mget"
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
-                - "indices:data/read/scroll"
+                - "indices:data/read/scroll*"
                 - "indices:data/write*"
                 - "indices:admin/create"
                 - 'indices:admin/analyze'
