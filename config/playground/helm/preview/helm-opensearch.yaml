@@ -810,6 +810,11 @@ securityConfig:
                 - "indices:admin/mappings/get"
                 - "indices:monitor/settings/get"
                 - "indices:monitor/stats"
+          tenant_permissions:
+            - tenant_patterns:
+              - '*'
+              allowed_actions:
+                - "kibana_all_read"
       roles_mapping.yml: |
         _meta:
           type: "rolesmapping"
