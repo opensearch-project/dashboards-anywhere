@@ -770,6 +770,8 @@ securityConfig:
             - cluster:admin/opendistro/rollup/get
             - cluster:admin/opendistro/transform/explain
             - cluster:admin/opendistro/transform/get
+            # For using sql join query
+            - "indices:data/read/scroll*"
           index_permissions:
             - index_patterns:
               - ".kibana"
@@ -800,7 +802,6 @@ securityConfig:
                 - "indices:data/read/mget"
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
-                - "indices:data/read/scroll"
                 - "indices:data/write*"
                 - "indices:admin/create"
                 - 'indices:admin/analyze'
@@ -810,6 +811,11 @@ securityConfig:
                 - "indices:admin/mappings/get"
                 - "indices:monitor/settings/get"
                 - "indices:monitor/stats"
+          tenant_permissions:
+            - tenant_patterns:
+              - '*'
+              allowed_actions:
+                - "kibana_all_read"
       roles_mapping.yml: |
         _meta:
           type: "rolesmapping"
