@@ -96,10 +96,10 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: "opensearchproject/opensearch"
-# override image tag, which is .Chart.AppVersion by default
-imageTag: ""
-imagePullPolicy: "IfNotPresent"
+  repository: "opensearchplayground/opensearch"
+  # override image tag, which is .Chart.AppVersion by default
+  tag: "latest"
+  pullPolicy: "Always"
 
 podAnnotations: {}
 
@@ -770,6 +770,8 @@ securityConfig:
             - cluster:admin/opendistro/rollup/get
             - cluster:admin/opendistro/transform/explain
             - cluster:admin/opendistro/transform/get
+            # For using sql join query
+            - "indices:data/read/scroll*"
           index_permissions:
             - index_patterns:
               - ".kibana"
@@ -800,7 +802,6 @@ securityConfig:
                 - "indices:data/read/mget"
                 - "indices:data/read/msearch"
                 - "indices:data/read/mtv"
-                - "indices:data/read/scroll*"
                 - "indices:data/write*"
                 - "indices:admin/create"
                 - 'indices:admin/analyze'
