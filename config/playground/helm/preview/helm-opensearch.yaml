@@ -96,10 +96,10 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: "opensearchproject/opensearch"
-# override image tag, which is .Chart.AppVersion by default
-imageTag: ""
-imagePullPolicy: "IfNotPresent"
+  repository: "opensearchplayground/opensearch"
+  # override image tag, which is .Chart.AppVersion by default
+  tag: "latest"
+  pullPolicy: "Always"
 
 podAnnotations: {}
 
