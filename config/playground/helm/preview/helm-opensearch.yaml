@@ -706,6 +706,14 @@ securityConfig:
             - cluster:admin/opendistro/rollup/get
             - cluster:admin/opendistro/transform/explain
             - cluster:admin/opendistro/transform/get
+            # To enable read access to security analytics
+            - cluster:admin/opensearch/securityanalytics/rule/search
+            - cluster:admin/opensearch/securityanalytics/detector/search
+            - cluster:admin/opensearch/securityanalytics/findings/get
+            - cluster:admin/opensearch/securityanalytics/alerts/get
+            - cluster:admin/opensearch/securityanalytics/detector/get
+            # For using sql join query
+            - "indices:data/read/scroll*"
           index_permissions:
             - index_patterns:
               - ".kibana"
@@ -770,6 +778,12 @@ securityConfig:
             - cluster:admin/opendistro/rollup/get
             - cluster:admin/opendistro/transform/explain
             - cluster:admin/opendistro/transform/get
+            # To enable read access to security analytics
+            - cluster:admin/opensearch/securityanalytics/rule/search
+            - cluster:admin/opensearch/securityanalytics/detector/search
+            - cluster:admin/opensearch/securityanalytics/findings/get
+            - cluster:admin/opensearch/securityanalytics/alerts/get
+            - cluster:admin/opensearch/securityanalytics/detector/get
             # For using sql join query
             - "indices:data/read/scroll*"
           index_permissions:
