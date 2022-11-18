@@ -699,6 +699,8 @@ securityConfig:
             - cluster:admin/opensearch/securityanalytics/findings/get
             - cluster:admin/opensearch/securityanalytics/alerts/get
             - cluster:admin/opensearch/securityanalytics/detector/get
+            # For using sql join query
+            - "indices:data/read/scroll*"
           index_permissions:
             - index_patterns:
               - ".kibana"
