@@ -697,6 +697,7 @@ securityConfig:
             - cluster:admin/opensearch/securityanalytics/detector/search
             - cluster:admin/opensearch/securityanalytics/findings/get
             - cluster:admin/opensearch/securityanalytics/alerts/get
+            - cluster:admin/opensearch/securityanalytics/detector/get
           index_permissions:
             - index_patterns:
               - ".kibana"
