@@ -25,9 +25,9 @@ jobs:
       - name: Build and push
         env:
           DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
-          DOCKER_HUB_TAG: ${{ secrets.DOCKER_HUB_TAG }}
+          DOCKER_HUB_TAG: 2.4.0-ob
         run:  |
           chmod -R 755 config/playground/docker/dev/scripts/
-          docker build -t $DOCKER_HUB_REPO:$DOCKER_HUB_TAG config/playground/docker/dev
-          docker push $DOCKER_HUB_REPO:$DOCKER_HUB_TAG
+          docker build -t $DOCKER_HUB_REPO:2.4.0-ob config/playground/docker/dev
+          docker push $DOCKER_HUB_REPO:2.4.0-ob
 
