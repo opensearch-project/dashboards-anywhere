@@ -706,6 +706,8 @@ securityConfig:
             - cluster:admin/opendistro/rollup/get
             - cluster:admin/opendistro/transform/explain
             - cluster:admin/opendistro/transform/get
+            # For ML
+            - cluster:admin/opensearch/ml/trainAndPredict
           index_permissions:
             - index_patterns:
               - ".kibana"
@@ -772,6 +774,12 @@ securityConfig:
             - cluster:admin/opendistro/transform/get
             # For using sql join query
             - "indices:data/read/scroll*"
+            # For Observability sample
+            - cluster:admin/opensearch/observability/create
+            - cluster:admin/opensearch/observability/update
+            - cluster:admin/opensearch/observability/get
+            # For ML
+            - cluster:admin/opensearch/ml/trainAndPredict
           index_permissions:
             - index_patterns:
               - ".kibana"
