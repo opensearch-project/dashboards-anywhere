@@ -50,6 +50,10 @@ jobs:
           run: |
             curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/introduction-dashboard.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
 
+        - name: Step 6 - Add multiple datasource dashboard
+          run: |
+            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/multiple-data-sources-sample.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
+
   Plugins:
     runs-on: ubuntu-latest
     needs: OSD-Functional-Test-OSD
