@@ -52,7 +52,7 @@ jobs:
 
         - name: Step 6 - Add multiple datasource dashboard
           run: |
-            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/multiple-data-sources-sample.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
+            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import?overwrite=true -H 'osd-xsrf: true' --form file=@cypress/dashboards/multiple-data-sources-sample.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
 
   Plugins:
     runs-on: ubuntu-latest
