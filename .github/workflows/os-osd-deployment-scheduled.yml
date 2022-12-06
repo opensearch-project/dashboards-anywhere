@@ -31,6 +31,7 @@ jobs:
       osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
+      kibanaserver: ${{ secrets.KIBANASERVER }}
 
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment

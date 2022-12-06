@@ -36,6 +36,8 @@ on:
         required: false
       otel_data_prepper_cert:
         required: false
+      kibanaserver:
+        required: true
 
 jobs:
 
@@ -58,6 +60,7 @@ jobs:
           OPENID_BASE_REDIRECT_URL: ${{ secrets.openid_base_redirect_url }}
           OPENID_LOGOUT_URL: ${{ secrets.openid_logout_url }}
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
+          KIBANASERVER: ${{ secrets.kibanaserver }}
 
       - name: Step 2 - Replace Tokens for logstash configuration
         if: ${{inputs.deploy-env == 'preview' }}
