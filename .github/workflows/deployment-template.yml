@@ -59,6 +59,7 @@ jobs:
           OPENID_BASE_REDIRECT_URL: ${{ secrets.openid_base_redirect_url }}
           OPENID_LOGOUT_URL: ${{ secrets.openid_logout_url }}
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
+          KIBANASERVER: ${{ secrets.kibanaserver }}
 
       - name: Step 2 - Replace Tokens for dashboards
         uses: cschleiden/replace-tokens@v1
