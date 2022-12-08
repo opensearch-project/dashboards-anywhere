@@ -37,7 +37,7 @@ jobs:
 
   OSD-Functional-Test-SearchApps:
     needs: OS-OSD-SearchApps-Scheduled-Deployment
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@previewchangefeature
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@searchapps
     with:
       endpoint: https://searchapps.playground.opensearch.org
     secrets:
