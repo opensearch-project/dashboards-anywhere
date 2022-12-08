@@ -74,7 +74,7 @@ jobs:
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
         uses: cschleiden/replace-tokens@v1
         with:
-          files: '["${{ github.workspace }}/config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash.yaml"]'
+          files: '["${{ github.workspace }}/config/playground/metrics/logstash/preview/logstash.yaml"]'
           tokenPrefix: '${'
           tokenSuffix: '}'
         env:
@@ -85,7 +85,7 @@ jobs:
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
         uses: cschleiden/replace-tokens@v1
         with:
-          files: '["${{ github.workspace }}/config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml"]'
+          files: '["${{ github.workspace }}/config/playground/metrics/tracing/preview/otel-config.yaml"]'
           tokenPrefix: '${'
           tokenSuffix: '}'
         env:
@@ -119,10 +119,10 @@ jobs:
         with:
           plugins: ""
           command: |
-            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/jaeger-agent.yaml
-            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml
-            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-collector.yaml
-            kubectl delete -f config/playground/metrics/tracing/${{inputs.deploy-env}}/data-prepper.yaml
+            kubectl delete -f config/playground/metrics/tracing/preview/jaeger-agent.yaml
+            kubectl delete -f config/playground/metrics/tracing/preview/otel-config.yaml
+            kubectl delete -f config/playground/metrics/tracing/preview/otel-collector.yaml
+            kubectl delete -f config/playground/metrics/tracing/preview/data-prepper.yaml
 
       - name: Step 8 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
@@ -153,8 +153,8 @@ jobs:
           plugins: ""
           command: |
             kubectl create ns logstash
-            kubectl create -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash-configmap.yaml
-            kubectl apply -f config/playground/metrics/logstash/${{inputs.deploy-env}}/logstash.yaml
+            kubectl create -f config/playground/metrics/logstash/preview/logstash-configmap.yaml
+            kubectl apply -f config/playground/metrics/logstash/preview/logstash.yaml
 
       - name: Step 10 - Install Tracing
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
@@ -164,7 +164,7 @@ jobs:
         with:
           plugins: ""
           command: |
-            kubectl apply -f config/playground/metrics/tracing/${{inputs.deploy-env}}/jaeger-agent.yaml
-            kubectl create -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-config.yaml
-            kubectl apply -f config/playground/metrics/tracing/${{inputs.deploy-env}}/otel-collector.yaml
-            kubectl apply -f config/playground/metrics/tracing/${{inputs.deploy-env}}/data-prepper.yaml
+            kubectl apply -f config/playground/metrics/tracing/preview/jaeger-agent.yaml
+            kubectl create -f config/playground/metrics/tracing/preview/otel-config.yaml
+            kubectl apply -f config/playground/metrics/tracing/preview/otel-collector.yaml
+            kubectl apply -f config/playground/metrics/tracing/preview/data-prepper.yaml
