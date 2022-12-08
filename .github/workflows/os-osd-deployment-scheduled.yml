@@ -14,27 +14,6 @@ on:
     - cron:  '30 04 * * *'
 jobs:
 
-  OS-OSD-Preview-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@previewchangefeature
-    with:
-      helm-repo: https://opensearch-project.github.io/helm-charts/
-      deploy-env: preview
-    secrets:
-      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PREVIEW }}
-      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PREVIEW }}
-      region: ${{ secrets.AWS_REGION_PREVIEW }}
-      kube-config: ${{ secrets.KUBE_CONFIG_DATA_PREVIEW }}
-      openid_client_id: ${{ secrets.OPENID_CLIENT_ID }}
-      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET }}
-      openid_base_redirect_url: ${{ secrets.OPENID_LOGOUT_URL }}
-      openid_logout_url: ${{ secrets.OPENID_BASE_REDIRECT_URL }}
-      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
-      osd_user: ${{ secrets.OSD_USER }}
-      osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
-      otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
-      otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
-      kibanaserver: ${{ secrets.KIBANASERVER }}
-
   OS-OSD-SearchApps-Scheduled-Deployment:
     uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@searchapps
     with:
@@ -55,15 +34,6 @@ jobs:
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
-
-  OSD-Functional-Test-Preview:
-    needs: OS-OSD-Preview-Scheduled-Deployment
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@previewchangefeature
-    with:
-      endpoint: https://reinvent.playground.opensearch.org
-    secrets:
-      osd-user: ${{ secrets.OSD_USER }}
-      osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
 
   OSD-Functional-Test-SearchApps:
     needs: OS-OSD-SearchApps-Scheduled-Deployment
