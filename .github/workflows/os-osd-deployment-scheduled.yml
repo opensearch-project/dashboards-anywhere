@@ -45,8 +45,8 @@ jobs:
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_SEARCHAPPS }}
       openid_client_id: ${{ secrets.OPENID_CLIENT_ID_SEARCHAPPS }}
       openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET_SEARCHAPPS }}
-      openid_base_redirect_url: ${{ secrets.OPENID_LOGOUT_URL_SEARCHAPPS }}
-      openid_logout_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_SEARCHAPPS }}
+      openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_SEARCHAPPS }}
+      openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL_SEARCHAPPS }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
       osd_user: ${{ secrets.OSD_USER }}
       osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
