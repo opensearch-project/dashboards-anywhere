@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 3
 
 image:
-  repository: "opensearchplayground/opensearch-dashboards"
+  repository: "opensearchproject/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.4.0-11282022"
+  tag: "latest"
   pullPolicy: "Always"
 
 imagePullSecrets: []
@@ -168,3 +168,8 @@ affinity: {}
 
 # -- Array of extra K8s manifests to deploy
 extraObjects: []
+
+# specify the plugin to install
+plugins:
+  enabled: true
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.4.1/googleAnalytics-2.4.1.zip"]
