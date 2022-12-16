@@ -28,10 +28,14 @@ jobs:
             npm install -g yarn
 
         - name: Step 1 - Check If OSD is Up
-          run: |
-            sleep 30s
-            curl -XGET --retry 10 --retry-delay 30 -k -u '${{secrets.osd-user}}:${{secrets.osd-user-password}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
-            echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
+          uses: nick-fields/retry@v2
+          with:
+            timeout_minutes: 10
+            max_attempts: 3
+            command: |
+              sleep 30s
+              curl -XGET -k -u '${{secrets.osd-user}}:${{secrets.osd-user-password}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
+              echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
 
         - name: Step 2 - Run Functional Test For OSD
           if: ${{ env.OSD_STATUS == 'green'}}
