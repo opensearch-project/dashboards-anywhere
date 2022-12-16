@@ -28,10 +28,14 @@ jobs:
             npm install -g yarn
 
         - name: Step 1 - Check If OSD is Up
-          run: |
-            sleep 30s
-            curl -XGET -k -u '${{secrets.osd-user}}:${{secrets.osd-user-password}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
-            echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
+          uses: ./
+          with:
+            timeout_minutes: 10
+            max_attempts: 3
+            command: |
+              sleep 30s
+              curl -XGET -k -u '${{secrets.osd-user}}:${{secrets.osd-user-password}}' '${{inputs.endpoint}}/api/status' > $HOME/osd-response.json
+              echo "OSD_STATUS=$(cat $HOME/osd-response.json | jq -r '.status.overall.state')" >> $GITHUB_ENV
 
         - name: Step 2 - Run Functional Test For OSD
           if: ${{ env.OSD_STATUS == 'green'}}
@@ -43,8 +47,8 @@ jobs:
     needs: OSD-Functional-Test-OSD
     strategy:
       fail-fast: false
-      matrix: 
-        run: ['OSD-Functional-Test-AD', 'OSD-Functional-Test-Alert', 'OSD-Functional-Test-Notifications', 'OSD-Functional-Test-Reports', 'OSD-Functional-Test-Observability', 'OSD-Functional-Test-IndexMan']
+      matrix:
+        run: ['OSD-Functional-Test-AD', 'OSD-Functional-Test-Alert', 'OSD-Functional-Test-Notifications', 'OSD-Functional-Test-Reports', 'OSD-Functional-Test-Observability', 'OSD-Functional-Test-IndexMan', 'OSD-Functional-Test-SecurityAnalytics']
     steps:
     - run: echo Run ${{ matrix.run }}
     - name: Checkout functional test repo
@@ -85,3 +89,8 @@ jobs:
       if:  ${{ matrix.run == 'OSD-Functional-Test-IndexMan' }}
       run: |
         yarn cypress run --spec "cypress/integration/playground/plugins/playground_index*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
+
+    - name: Run Functional Test For Security Analytics
+      if: ${{ matrix.run == 'OSD-Functional-Test-SecurityAnalytics' }}
+      run: |
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_security_analytics*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
