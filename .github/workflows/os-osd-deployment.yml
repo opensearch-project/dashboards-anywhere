@@ -60,7 +60,7 @@ jobs:
 
   OSD-Functional-Test-Dev:
         needs: OS-OSD-Dev-Deployment
-        uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@addft
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
         secrets:
