@@ -69,6 +69,7 @@ jobs:
           tokenSuffix: '}'
         env:
           KIBANASERVER: ${{ secrets.kibanaserver }}
+          GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
 
       - name: Step 3 - Replace Tokens for logstash configuration
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
