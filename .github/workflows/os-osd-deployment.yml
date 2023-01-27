@@ -57,6 +57,7 @@ jobs:
       region: ${{ secrets.AWS_REGION_PROD }}
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID_PROD }}
 
   OSD-Functional-Test-Dev:
         needs: OS-OSD-Dev-Deployment
