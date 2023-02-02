@@ -96,7 +96,7 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: "opensearchplayground/opensearch"
+  repository: "opensearchproject/opensearch"
   # override image tag, which is .Chart.AppVersion by default
   tag: "latest"
   pullPolicy: "Always"
@@ -1112,7 +1112,8 @@ masterTerminationFix: false
 
 lifecycle: {}
 
-keystore: []
+keystore:
+  - secretName: opensearch-dashboards-ob
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
