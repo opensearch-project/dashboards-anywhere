@@ -66,7 +66,7 @@ jobs:
   OS-OSD-ML-Deployment:
     needs: Pre-Deployment
     if:  ${{ needs.Pre-Deployment.outputs.config_change_ml == 'true' }}
-    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@playground-ml
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: ml
