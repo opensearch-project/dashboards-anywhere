@@ -163,6 +163,7 @@ jobs:
             kubectl get nodes
             helm uninstall opensearch --namespace default
             helm uninstall dashboards --namespace default
+            helm uninstall machinelearning --namespace default
             kubectl get pvc | grep opensearch-cluster-leader-opensearch-cluster-leader- | awk '{print $1}'| xargs kubectl delete pvc
             kubectl get pvc | grep opensearch-cluster-machinelearning-opensearch-cluster-machinelearning- | awk '{print $1}'| xargs kubectl delete pvc
             helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
