@@ -34,7 +34,7 @@ jobs:
       kibanaserver: ${{ secrets.KIBANASERVER }}
 
   OS-OSD-SearchApps-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@searchapps
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: searchapps
@@ -47,6 +47,27 @@ jobs:
       openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET_SEARCHAPPS }}
       openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_SEARCHAPPS }}
       openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL_SEARCHAPPS }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
+      osd_user: ${{ secrets.OSD_USER }}
+      osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
+      otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
+      otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
+      kibanaserver: ${{ secrets.KIBANASERVER }}
+
+  OS-OSD-Observability-Scheduled-Deployment:
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: observability
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_OBSERVABILITY }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_OBSERVABILITY }}
+      region: ${{ secrets.AWS_REGION_OBSERVABILITY }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_OBSERVABILITY }}
+      openid_client_id: ${{ secrets.OPENID_CLIENT_ID_OBSERVABILITY }}
+      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET_OBSERVABILITY }}
+      openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_OBSERVABILITY }}
+      openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL_OBSERVABILITY }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
       osd_user: ${{ secrets.OSD_USER }}
       osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
@@ -68,6 +89,15 @@ jobs:
     uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@searchapps
     with:
       endpoint: https://searchapps.playground.opensearch.org
+    secrets:
+      osd-user: ${{ secrets.OSD_USER }}
+      osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+
+  OSD-Functional-Test-Observability:
+    needs: OS-OSD-Observability-Scheduled-Deployment
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@observability
+    with:
+      endpoint: https://observability.playground.opensearch.org
     secrets:
       osd-user: ${{ secrets.OSD_USER }}
       osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}

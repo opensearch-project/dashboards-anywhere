@@ -1,0 +1,175 @@
+# Copyright OpenSearch Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+# Default values for opensearch-dashboards.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+opensearchHosts: "https://opensearch-cluster-leader:9200"
+replicaCount: 2
+
+image:
+  repository: "opensearchproject/opensearch-dashboards"
+  # override image tag, which is .Chart.AppVersion by default
+  tag: ""
+  pullPolicy: "Always"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  create: true
+
+# A list of secrets and their paths to mount inside the pod
+# This is useful for mounting certificates for security and for mounting
+# the X-Pack license
+secretMounts: []
+
+podAnnotations: {}
+
+extraEnvs: []
+
+envFrom: []
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraInitContainers: ""
+
+extraContainers: ""
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+config:
+  # Default OpenSearch Dashboards configuration from docker image of Dashboards
+  opensearch_dashboards.yml:
+    opensearch.hosts: [https://localhost:9200]
+    opensearch.ssl.verificationMode: none
+    opensearch.username: kibanaserver
+    opensearch.password: ${KIBANASERVER}
+    opensearch.requestHeadersWhitelist: [authorization, securitytenant]
+    opensearch_security.auth.anonymous_auth_enabled: true
+    opensearch_security.multitenancy.enabled: true
+    opensearch_security.multitenancy.tenants.enable_global: true
+    opensearch_security.multitenancy.tenants.enable_private: true
+    opensearch_security.multitenancy.tenants.preferred: [Global, Private]
+    opensearch_security.readonly_mode.roles: [kibana_read_only]
+    # Use this setting if you are running opensearch-dashboards without https
+    opensearch_security.cookie.secure: false
+    server.host: '0.0.0.0'
+    # Use the consolidated menu and global header bar
+    opensearchDashboards.branding.useExpandedHeader: false
+    # Enable multiple datasource
+    data_source.enabled: true
+
+    # security plugin for openid
+    opensearch_security.auth.type: ['Basicauth','openid']
+    opensearch_security.auth.multiple_auth_enabled: true
+    opensearch_security.ui.openid.login.buttonname: "Log in with Google account"
+    opensearch_security.ui.openid.login.brandimage: "https://opensearch.org/assets/brand/PNG/Mark/opensearch_mark_default.png"
+    opensearch_security.ui.openid.login.showbrandimage: true
+    opensearch_security.openid.base_redirect_url: ${OPENID_BASE_REDIRECT_URL}
+    opensearch_security.openid.scope: 'openid profile email'
+    opensearch_security.openid.verify_hostnames: false
+    opensearch_security.openid.refresh_tokens: false
+
+    opensearch_security.openid.connect_url: "https://accounts.google.com/.well-known/openid-configuration"
+    opensearch_security.openid.client_id: ${OPENID_CLIENT_ID}
+    opensearch_security.openid.client_secret: ${OPENID_CLIENT_SECRET}
+    opensearch_security.openid.logout_url: ${OPENID_LOGOUT_URL}
+
+    # Content security policy(csp) settings
+    csp.rules: [ "connect-src 'self' www.google-analytics.com vectors.maps.opensearch.org tiles.maps.opensearch.org maps.opensearch.org;" ]
+    csp.warnLegacyBrowsers: false
+    google_analytics_plugin.trackingID: ${GA_TRACKING_ID}
+
+priorityClassName: ""
+
+opensearchAccount:
+  secret: ""
+  keyPassphrase:
+    enabled: false
+
+labels: {}
+
+hostAliases: []
+
+serverHost: "0.0.0.0"
+
+service:
+  type: ClusterIP
+  port: 5601
+  loadBalancerIP: ""
+  nodePort: ""
+  labels: {}
+  annotations: {}
+  loadBalancerSourceRanges: []
+  # 0.0.0.0/0
+  httpPortName: http
+
+ingress:
+  enabled: false
+  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+  # ingressClassName: nginx
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          backend:
+            serviceName: chart-example.local
+            servicePort: 80
+  tls: []
+
+resources:
+  requests:
+    cpu: "1"
+    memory: "8G"
+  limits:
+    cpu: "3"
+    memory: "24G"
+
+autoscaling:
+  # This requires metrics server to be installed, to install use kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  # See https://github.com/kubernetes-sigs/metrics-server
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+updateStrategy:
+  type: "Recreate"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# -- Array of extra K8s manifests to deploy
+extraObjects: []
+
+# specify the external plugins to install
+plugins:
+  enabled: true
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.5.0/googleAnalytics-2.5.0.zip"]
