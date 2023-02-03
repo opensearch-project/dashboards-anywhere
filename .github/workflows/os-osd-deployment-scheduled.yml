@@ -13,7 +13,7 @@ on:
 jobs:
 
   OS-OSD-Preview-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@observability
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: preview
@@ -34,7 +34,7 @@ jobs:
       kibanaserver: ${{ secrets.KIBANASERVER }}
 
   OS-OSD-SearchApps-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@searchapps
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@observability
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: searchapps
@@ -55,7 +55,7 @@ jobs:
       kibanaserver: ${{ secrets.KIBANASERVER }}
 
   OS-OSD-Observability-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@observability
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: observability
