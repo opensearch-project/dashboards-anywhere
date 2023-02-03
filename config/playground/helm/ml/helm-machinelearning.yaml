@@ -138,7 +138,7 @@ podSecurityPolicy:
 
 persistence:
   enabled: true
-  # Set to false to disable the `fsgroup-volume` initContainer that will update permissions on the persistent disk.
+  # Set to false to disable the `fsgroup-volume` initContainer that will update permissions on the persistent disk
   enableInitChown: false
   # override image, which is busybox by default
   # image: busybox
