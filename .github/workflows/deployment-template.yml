@@ -168,7 +168,7 @@ jobs:
             kubectl get pvc | grep opensearch-cluster-machinelearning-opensearch-cluster-machinelearning- | awk '{print $1}'| xargs kubectl delete pvc
             helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
-            helm install machinelearning opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml.yaml
+            helm install machinelearning opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml
 
       - name: Step 10 - Install Logstash
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
