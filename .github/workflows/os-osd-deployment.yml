@@ -4,7 +4,7 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 
 on:
   push:
-    branches: [ main ]
+    branches: [ playground-ml ]
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
@@ -16,18 +16,22 @@ jobs:
     outputs:
       config_change_dev: ${{steps.filter.outputs.dev}}
       config_change_prod: ${{steps.filter.outputs.prod}}
+      config_change_ml: ${{steps.filter.outputs.ml}}
 
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: playground-ml
           # creates filters to check if any dev or prod changes
           filters: |
             dev:
               - 'config/playground/helm/dev/**'
             prod:
               - 'config/playground/helm/prod/**'
+            ml:
+              - 'config/playground/helm/ml/**'
 
   OS-OSD-Dev-Deployment:
     needs: Pre-Deployment
@@ -59,6 +63,21 @@ jobs:
       kibanaserver: ${{ secrets.KIBANASERVER }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID_PROD }}
 
+  OS-OSD-ML-Deployment:
+    needs: Pre-Deployment
+    if:  ${{ needs.Pre-Deployment.outputs.config_change_ml == 'true' }}
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: ml
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ML }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ML }}
+      region: ${{ secrets.AWS_REGION_ML }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_ML }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
+      kibanaserver: ${{ secrets.KIBANASERVER }}
+
   OSD-Functional-Test-Dev:
         needs: OS-OSD-Dev-Deployment
         uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
@@ -73,6 +92,15 @@ jobs:
         uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
         with:
           endpoint: https://playground.opensearch.org
+        secrets:
+          osd-user: ${{ secrets.OSD_USER }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+
+  OSD-Functional-Test-ML:
+        needs: OS-OSD-ML-Deployment
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
+        with:
+          endpoint: https://ml.playground.opensearch.org
         secrets:
           osd-user: ${{ secrets.OSD_USER }}
           osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
