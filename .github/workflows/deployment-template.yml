@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Step 1 - Replace Tokens for helm chart configuration
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml"]'
@@ -72,7 +72,7 @@ jobs:
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
 
       - name: Step 3 - Replace Tokens for logstash configuration
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/metrics/logstash/preview/logstash.yaml"]'
@@ -83,7 +83,7 @@ jobs:
           OSD_USER_PASSWORD: ${{ secrets.osd_user_password }}
 
       - name: Step 4 - Replace Tokens for tracing configuration
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/metrics/tracing/preview/otel-config.yaml"]'
@@ -103,7 +103,7 @@ jobs:
           aws-region: ${{ secrets.region }}
 
       - name: Step 6 - Delete Logstash
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -113,7 +113,7 @@ jobs:
             kubectl delete ns logstash
 
       - name: Step 7 - Delete Tracing
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -126,7 +126,7 @@ jobs:
             kubectl delete -f config/playground/metrics/tracing/preview/data-prepper.yaml
 
       - name: Step 8 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') }}
+        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'observability')}}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -171,7 +171,7 @@ jobs:
             helm install machinelearning opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml
 
       - name: Step 10 - Install Logstash
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -183,7 +183,7 @@ jobs:
             kubectl apply -f config/playground/metrics/logstash/preview/logstash.yaml
 
       - name: Step 11 - Install Tracing
-        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') }}
+        if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
