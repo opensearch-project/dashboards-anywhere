@@ -48,7 +48,7 @@ jobs:
 
         - name: Step 5 - Add introduction dashboard
           run: |
-            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/introduction-dashboard.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
+            curl -XPOST ${{inputs.endpoint}}/api/saved_objects/_import -H 'osd-xsrf: true' --form file=@cypress/dashboards/introduction-dashboard-observability.ndjson -k -u ${{secrets.osd-user}}:${{secrets.osd-user-password}}
 
         - name: Step 6 - Add multiple datasource dashboard
           run: |
