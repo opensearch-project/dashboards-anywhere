@@ -75,6 +75,8 @@ config:
     # Use this setting if you are running opensearch-dashboards without https
     opensearch_security.cookie.secure: false
     server.host: '0.0.0.0'
+    # The maximum payload size in bytes for incoming server requests.
+    server.maxPayloadBytes: 104857600
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
 
