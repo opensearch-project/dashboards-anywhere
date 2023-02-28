@@ -126,7 +126,7 @@ jobs:
             kubectl delete -f config/playground/metrics/tracing/preview/data-prepper.yaml
 
       - name: Step 8 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        if: ${{ (inputs.deploy-env == 'prod') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'observability')}}
+        if: ${{ (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'observability')}}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}
@@ -147,7 +147,7 @@ jobs:
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
 
       - name: Step 9 - Deploy OpenSearch/OpenSearch Dashboards/ML By Helm Chart
-        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'ml') }}
+        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') || (inputs.deploy-env == 'ml') }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}

@@ -74,6 +74,8 @@ config:
     # Use this setting if you are running opensearch-dashboards without https
     opensearch_security.cookie.secure: false
     server.host: '0.0.0.0'
+    # The maximum payload size in bytes for incoming server requests.
+    server.maxPayloadBytes: 104857600
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable multiple datasource
@@ -153,4 +155,4 @@ extraObjects: []
 # specify the external plugins to install
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.5.0/googleAnalytics-2.5.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.6.0/googleAnalytics-2.6.0.zip"]
