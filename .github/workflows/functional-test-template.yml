@@ -95,7 +95,7 @@ jobs:
     - name: Run Functional Test For Observability
       if:  ${{ matrix.run == 'OSD-Functional-Test-Observability' }}
       run: |
-        yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability_cluster.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
+        yarn cypress run --spec "cypress/integration/playground/plugins/playground_observability_cluster*.js" --config "baseUrl=${{inputs.endpoint}}" --env "openSearchUrl=${{inputs.endpoint}},SECURITY_ENABLED=true,username=${{secrets.osd-user}},password=${{secrets.osd-user-password}}"
 
     - name: Run Functional Test For Index Management
       if:  ${{ matrix.run == 'OSD-Functional-Test-IndexMan' }}
