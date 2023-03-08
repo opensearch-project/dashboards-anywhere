@@ -687,6 +687,8 @@ securityConfig:
             - cluster:admin/opendistro/ism/managedindex/explain
             - cluster:admin/opendistro/rollup/search
             - cluster:admin/opendistro/transform/get_transforms
+            # To enable read access ml profile
+            - cluster:admin/opensearch/ml/profile/nodes
             # To enable read access to various ISM Jobs
             - cluster:admin/opendistro/rollup/explain
             - cluster:admin/opendistro/ism/policy/get
