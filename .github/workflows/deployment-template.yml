@@ -96,7 +96,7 @@ jobs:
           OTEL_DATA_PREPPER_CERT: ${{ secrets.otel_data_prepper_cert }}
 
       - name: Step 5 - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.access-key-id }}
           aws-secret-access-key: ${{ secrets.secret-access-key }}
@@ -126,7 +126,7 @@ jobs:
             kubectl delete -f config/playground/metrics/tracing/preview/data-prepper.yaml
 
       - name: Step 8 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        if: ${{ (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'observability')}}
+        if: ${{ (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'pink') }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kube-config }}

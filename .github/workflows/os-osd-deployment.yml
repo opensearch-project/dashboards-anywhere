@@ -4,7 +4,7 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 
 on:
   push:
-    branches: [ main ]
+    branches: [ pinkfeature ]
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
@@ -17,12 +17,14 @@ jobs:
       config_change_dev: ${{steps.filter.outputs.dev}}
       config_change_prod: ${{steps.filter.outputs.prod}}
       config_change_ml: ${{steps.filter.outputs.ml}}
+      config_change_pink: ${{steps.filter.outputs.pink}}
 
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: pinkfeature
           # creates filters to check if any dev or prod changes
           filters: |
             dev:
@@ -31,6 +33,8 @@ jobs:
               - 'config/playground/helm/prod/**'
             ml:
               - 'config/playground/helm/ml/**'
+            pink:
+              - 'config/playground/helm/pink/**'
 
   OS-OSD-Dev-Deployment:
     needs: Pre-Deployment
@@ -77,6 +81,21 @@ jobs:
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
 
+  OS-OSD-PINK-Deployment:
+    needs: Pre-Deployment
+    if:  ${{ needs.Pre-Deployment.outputs.config_change_pink == 'true' }}
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@pinkfeature
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: pink
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PINK }}
+      region: ${{ secrets.AWS_REGION_PINK }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_PINK }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
+      kibanaserver: ${{ secrets.KIBANASERVER }}
+
   OSD-Functional-Test-Dev:
         needs: OS-OSD-Dev-Deployment
         uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
@@ -100,6 +119,15 @@ jobs:
         uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
         with:
           endpoint: https://ml.playground.opensearch.org
+        secrets:
+          osd-user: ${{ secrets.OSD_USER }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+
+  OSD-Functional-Test-PINK:
+        needs: OS-OSD-PINK-Deployment
+        uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@main
+        with:
+          endpoint: https://pink.playground.opensearch.org
         secrets:
           osd-user: ${{ secrets.OSD_USER }}
           osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
