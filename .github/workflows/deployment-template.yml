@@ -96,7 +96,7 @@ jobs:
           OTEL_DATA_PREPPER_CERT: ${{ secrets.otel_data_prepper_cert }}
 
       - name: Step 5 - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.access-key-id }}
           aws-secret-access-key: ${{ secrets.secret-access-key }}
