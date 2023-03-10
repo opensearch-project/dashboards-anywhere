@@ -107,8 +107,8 @@ opensearchJavaOpts: "-Xmx2G -Xms2G"
 
 resources:
   requests:
-    cpu: "2"
-    memory: "16Gi"
+    cpu: "16"
+    memory: "128Gi"
 
 networkHost: "0.0.0.0"
 
