@@ -107,7 +107,7 @@ opensearchJavaOpts: "-Xmx50G -Xms50G"
 
 resources:
   requests:
-    cpu: "16"
+    cpu: "12"
     memory: "100Gi"
 
 networkHost: "0.0.0.0"
