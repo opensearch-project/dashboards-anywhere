@@ -11,8 +11,8 @@ masterService: "opensearch-cluster-leader"
 roles:
   - ml
 
-replicas: 2
-minimumMasterNodes: 2
+replicas: 1
+minimumMasterNodes: 1
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
 majorVersion: "7"
@@ -103,12 +103,12 @@ podAnnotations: {}
 # additionals labels
 labels: {}
 
-opensearchJavaOpts: "-Xmx2G -Xms2G"
+opensearchJavaOpts: "-Xmx50G -Xms50G"
 
 resources:
   requests:
-    cpu: "2"
-    memory: "16Gi"
+    cpu: "16"
+    memory: "100Gi"
 
 networkHost: "0.0.0.0"
 
