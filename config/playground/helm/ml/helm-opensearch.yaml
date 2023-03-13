@@ -106,12 +106,12 @@ podAnnotations: {}
 # additionals labels
 labels: {}
 
-opensearchJavaOpts: "-Xmx36G -Xms36G"
+opensearchJavaOpts: "-Xmx50G -Xms50G"
 
 resources:
   requests:
-    cpu: "8"
-    memory: "72Gi"
+    cpu: "16"
+    memory: "100Gi"
 
 networkHost: "0.0.0.0"
 
