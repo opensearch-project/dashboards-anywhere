@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "latest"
+  tag: "2.6.0-md"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -77,6 +77,8 @@ config:
     server.host: '0.0.0.0'
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
+
+    data_source.enabled: true
 
     #Content security policy(csp) settings
     csp.rules: [ "connect-src 'self' www.google-analytics.com vectors.maps.opensearch.org tiles.maps.opensearch.org maps.opensearch.org;" ]
