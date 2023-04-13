@@ -3,7 +3,7 @@ clusterName: "opensearch-cluster"
 nodeGroup: "leader"
 
 # The service that non master groups will try to connect to when joining the cluster
-# This should be set to clusterName + "-" + nodeGroup for your master group
+# This should be set to clusterName + "-" + nodeGroup for your master group.
 masterService: "opensearch-cluster-leader"
 
 # OpenSearch roles that will be applied to this nodeGroup
