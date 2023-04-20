@@ -11,7 +11,7 @@ replicaCount: 2
 image:
   repository: "opensearchproject/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "latest"
+  tag: ""
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -77,6 +77,8 @@ config:
     server.host: '0.0.0.0'
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
+
+    # data_source.enabled: true
 
     #Content security policy(csp) settings
     csp.rules: [ "connect-src 'self' www.google-analytics.com vectors.maps.opensearch.org tiles.maps.opensearch.org maps.opensearch.org;" ]
@@ -154,4 +156,4 @@ extraObjects: []
 # specify the external plugins to install
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.5.0/googleAnalytics-2.5.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.6.0/googleAnalytics-2.6.0.zip"]

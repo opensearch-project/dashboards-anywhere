@@ -77,7 +77,7 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable multiple datasource
-    data_source.enabled: true
+    # data_source.enabled: true
     # Enable ml_commons_dashboards
     ml_commons_dashboards.enabled: true
     # Content security policy(csp) settings
