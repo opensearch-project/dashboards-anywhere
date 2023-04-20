@@ -27,8 +27,8 @@ jobs:
       openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL }}
       openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
-      osd_user: ${{ secrets.OSD_USER }}
-      osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
+      osd_user: ${{ secrets.OSD_USER_PREVIEW }}
+      osd_user_password: ${{ secrets.OSD_USER_PASSWORD_PREVIEW }}
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
@@ -48,8 +48,8 @@ jobs:
       openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_SEARCHAPPS }}
       openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL_SEARCHAPPS }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
-      osd_user: ${{ secrets.OSD_USER }}
-      osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
+      osd_user: ${{ secrets.OSD_USER_SEARCHAPPS }}
+      osd_user_password: ${{ secrets.OSD_USER_PASSWORD_SEARCHAPPS }}
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
@@ -69,8 +69,8 @@ jobs:
       openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_OBSERVABILITY }}
       openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL_OBSERVABILITY }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
-      osd_user: ${{ secrets.OSD_USER }}
-      osd_user_password: ${{ secrets.OSD_USER_PASSWORD }}
+      osd_user: ${{ secrets.OSD_USER_OBSERVABILITY }}
+      osd_user_password: ${{ secrets.OSD_USER_PASSWORD_OBSERVABILITY }}
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
@@ -81,8 +81,8 @@ jobs:
     with:
       endpoint: https://reinvent.playground.opensearch.org
     secrets:
-      osd-user: ${{ secrets.OSD_USER }}
-      osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+      osd-user: ${{ secrets.OSD_USER_PREVIEW }}
+      osd-user-password: ${{ secrets.OSD_USER_PASSWORD_PREVIEW }}
 
   OSD-Functional-Test-SearchApps:
     needs: OS-OSD-SearchApps-Scheduled-Deployment
@@ -90,8 +90,8 @@ jobs:
     with:
       endpoint: https://searchapps.playground.opensearch.org
     secrets:
-      osd-user: ${{ secrets.OSD_USER }}
-      osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+      osd-user: ${{ secrets.OSD_USER_SEARCHAPPS }}
+      osd-user-password: ${{ secrets.OSD_USER_PASSWORD_SEARCHAPPS }}
 
   OSD-Functional-Test-Observability:
     needs: OS-OSD-Observability-Scheduled-Deployment
@@ -99,5 +99,5 @@ jobs:
     with:
       endpoint: https://observability.playground.opensearch.org
     secrets:
-      osd-user: ${{ secrets.OSD_USER }}
-      osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+      osd-user: ${{ secrets.OSD_USER_OBSERVABILITY }}
+      osd-user-password: ${{ secrets.OSD_USER_PASSWORD_OBSERVABILITY }}
