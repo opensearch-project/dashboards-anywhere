@@ -396,7 +396,7 @@ securityConfig:
         ## Demo users
 
         admin:
-          hash: "$2y$12$xPfip6FkK5UJBZ88rWVY7uKIDFMNQ2PMw8cIFuSACii09v1Pmlqvy"
+          hash: "$2y$12$Z4K8PeTTLUA4x.4mDri2ReuHCtZ55.zxiw342xhYeQf1P9RIkLSCW"
           reserved: true
           backend_roles:
           - "admin"

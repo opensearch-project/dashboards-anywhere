@@ -83,8 +83,8 @@ jobs:
         with:
           endpoint: https://playground.opensearch.oss.aws.dev
         secrets:
-          osd-user: ${{ secrets.OSD_USER }}
-          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+          osd-user: ${{ secrets.OSD_USER_DEV }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD_DEV }}
 
   OSD-Functional-Test-Prod:
         needs: OS-OSD-Prod-Deployment
@@ -92,8 +92,8 @@ jobs:
         with:
           endpoint: https://playground.opensearch.org
         secrets:
-          osd-user: ${{ secrets.OSD_USER }}
-          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+          osd-user: ${{ secrets.OSD_USER_PROD }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD_PROD }}
 
   OSD-Functional-Test-ML:
         needs: OS-OSD-ML-Deployment
@@ -101,5 +101,5 @@ jobs:
         with:
           endpoint: https://ml.playground.opensearch.org
         secrets:
-          osd-user: ${{ secrets.OSD_USER }}
-          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+          osd-user: ${{ secrets.OSD_USER_ML }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD_ML }}
