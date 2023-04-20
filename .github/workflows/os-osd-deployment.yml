@@ -102,5 +102,5 @@ jobs:
         with:
           endpoint: https://ml.playground.opensearch.org
         secrets:
-          osd-user: ${{ secrets.OSD_USER }}
-          osd-user-password: ${{ secrets.OSD_USER_PASSWORD }}
+          osd-user: ${{ secrets.OSD_USER_ML }}
+          osd-user-password: ${{ secrets.OSD_USER_PASSWORD_ML }}
