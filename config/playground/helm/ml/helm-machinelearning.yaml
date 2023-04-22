@@ -684,8 +684,10 @@ securityConfig:
             - cluster:admin/opendistro/ism/managedindex/explain
             - cluster:admin/opendistro/rollup/search
             - cluster:admin/opendistro/transform/get_transforms
-            # To enable read access ml profile
+            # To enable train, predict and read access ml profile
             - cluster:admin/opensearch/ml/profile/nodes
+            - cluster:admin/opensearch/ml/train
+            - cluster:admin/opensearch/ml/predict
             # To enable read access to various ISM Jobs
             - cluster:admin/opendistro/rollup/explain
             - cluster:admin/opendistro/ism/policy/get
@@ -990,7 +992,9 @@ masterTerminationFix: false
 
 lifecycle: {}
 
-keystore: []
+keystore:
+  - secretName: os-snapshot-access
+  - secretName: os-snapshot-secret
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
@@ -1011,5 +1015,5 @@ sysctl:
 
 ## Enable to add 3rd Party / Custom plugins not offered in the default OpenSearch image.
 plugins:
-  enabled: false
-  installList: []
+  enabled: true
+  installList: [repository-s3]
