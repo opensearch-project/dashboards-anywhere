@@ -225,7 +225,7 @@ securityConfig:
             #do_not_fail_on_forbidden: false
             kibana:
               # Kibana multitenancy
-              multitenancy_enabled: true
+              multitenancy_enabled: false
             #server_username: kibanaserver
             #index: '.kibana'
             http:
