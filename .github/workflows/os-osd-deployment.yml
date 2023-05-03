@@ -4,7 +4,7 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 
 on:
   push:
-    branches: [ main ]
+    branches: [ changeconfig ]
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
