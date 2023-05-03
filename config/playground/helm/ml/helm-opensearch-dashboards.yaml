@@ -9,10 +9,11 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 1
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: ""
-  pullPolicy: "IfNotPresent"
+  tag: "2.7.0-fix"
+  # Always/Never/IfNotPresent
+  pullPolicy: "Always"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -77,7 +78,7 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable multiple datasource
-    # data_source.enabled: true
+    data_source.enabled: true
     # Enable ml_commons_dashboards
     ml_commons_dashboards.enabled: true
     # Content security policy(csp) settings

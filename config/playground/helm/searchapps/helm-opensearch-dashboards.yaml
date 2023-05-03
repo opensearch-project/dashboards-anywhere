@@ -79,7 +79,7 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable multiple datasource
-    # data_source.enabled: true
+    data_source.enabled: true
 
     # security plugin for openid
     opensearch_security.auth.type: ['Basicauth','openid']
