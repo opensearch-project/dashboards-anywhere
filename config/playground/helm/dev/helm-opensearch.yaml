@@ -224,7 +224,6 @@ securityConfig:
             #filtered_alias_mode: warn
             #do_not_fail_on_forbidden: false
             kibana:
-            # Kibana multitenancy
               multitenancy_enabled: false
             #server_username: kibanaserver
             #index: '.kibana'
