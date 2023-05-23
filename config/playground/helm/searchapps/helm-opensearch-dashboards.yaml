@@ -11,7 +11,7 @@ replicaCount: 3
 image:
   repository: "opensearchstaging/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "3.0.0"
+  tag: "2.8.0"
   pullPolicy: "Always"
 
 imagePullSecrets: []
