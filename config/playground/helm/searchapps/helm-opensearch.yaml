@@ -32,6 +32,8 @@ config:
     cluster.name: opensearch-cluster
     # Bind to all interfaces because we don't know what IP address Docker will assign to us.
     network.host: 0.0.0.0
+    # Enable search pipeline
+    opensearch.experimental.feature.search_pipeline.enabled: true
     # # minimum_master_nodes need to be explicitly set when bound on a public IP
     # # set to 1 to allow single node clusters
     # discovery.zen.minimum_master_nodes: 1
@@ -98,7 +100,7 @@ hostAliases: []
 image:
   repository: "opensearchstaging/opensearch"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "3.0.0"
+  tag: "2.8.0"
   pullPolicy: "Always"
 
 podAnnotations: {}
