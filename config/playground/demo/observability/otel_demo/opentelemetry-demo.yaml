@@ -51,6 +51,14 @@ metadata:
 data:
   relay: |
     receivers:
+      jaeger:
+        protocols:
+          grpc:
+            endpoint: ${MY_POD_IP}:14250
+          thrift_compact:
+            endpoint: ${MY_POD_IP}:6831
+          thrift_http:
+            endpoint: ${MY_POD_IP}:14268
       otlp:
         protocols:
           grpc:
@@ -59,67 +67,84 @@ data:
               allowed_origins:
                 - "http://*"
                 - "https://*"
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+            - targets:
+              - ${MY_POD_IP}:8888
       otlp/servicegraph: # Dummy receiver for the metrics pipeline
         protocols:
           grpc:
-            endpoint: localhost:12345
+            endpoint: 0.0.0.0:12345
 
     exporters:
+      logging: {}
       otlp/2:
-        endpoint: "data-prepper:21890"
+        endpoint: "data-prepper-service:21890"
         tls:
           insecure: true
           insecure_skip_verify: true
       otlp:
-        endpoint: "jaeger:4317"
+        endpoint: "jaeger-service:4317"
         tls:
           insecure: true
-      logging:
       prometheus:
-        endpoint: "otelcol:9464"
+        enable_open_metrics: true
+        endpoint: "0.0.0.0:9464"
         resource_to_telemetry_conversion:
           enabled: true
-        enable_open_metrics: true
       prometheus/servicegraph:
         endpoint: localhost:9090
         namespace: servicegraph
 
     processors:
-      batch:
-      memory_limiter:
-        check_interval: 1s
-        limit_mib: 4000
-        spike_limit_mib: 800
-      filter:
+      batch: {}
+      filter/ottl:
+        error_mode: ignore
         metrics:
-          exclude:
-            match_type: strict
-            metric_names:
-              - queueSize
+          metric:
+          - name == "queueSize"
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+      transform:
+        metric_statements:
+        - context: metric
+          statements:
+          - set(description, "Measures the duration of inbound HTTP requests") where name
+            == "http.server.duration"
       servicegraph:
-        metrics_exporter: prometheus/servicegraph # Exporter to send metrics to
-        latency_histogram_buckets: [100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms] # Buckets for latency histogram
-        dimensions: [cluster, namespace] # Additional dimensions (labels) to be added to the metrics extracted from the resource and span attributes
-        store: # Configuration for the in-memory store
-          ttl: 2s # Value to wait for an edge to be completed
-          max_items: 200 # Amount of edges that will be stored in the storeMap
-        cache_loop: 2m # the time to cleans the cache periodically
-        store_expiration_loop: 10s # the time to expire old entries from the store periodically.
+        metrics_exporter: prometheus/servicegraph 
+        latency_histogram_buckets: [100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms] 
+        dimensions: [cluster, namespace] 
+        store:
+          ttl: 2s 
+          max_items: 200 
+        cache_loop: 2m 
+        store_expiration_loop: 10s 
         virtual_node_peer_attributes:
           - db.name
           - rpc.service
 
     connectors:
-      spanmetrics:
+      spanmetrics: null
 
     extensions:
       health_check: {}
+      memory_ballast:
+        size_in_percentage: 40
 
     service:
-      extensions: [health_check]
+      extensions:
+      - health_check
+      - memory_ballast
       pipelines:
         traces:
-          receivers: [otlp]
+          receivers: [otlp, jaeger]
           processors: [memory_limiter, batch, servicegraph]
           exporters: [otlp, logging, spanmetrics, otlp/2]
         metrics/servicegraph:
@@ -128,12 +153,15 @@ data:
           exporters: [prometheus/servicegraph]
         metrics:
           receivers: [otlp, spanmetrics]
-          processors: [filter, memory_limiter, batch]
+          processors: [memory_limiter, filter/ottl, transform , batch]
           exporters: [prometheus, logging]
         logs:
           receivers: [otlp]
           processors: [memory_limiter, batch]
           exporters: [logging]
+      telemetry:
+        metrics:
+          address: ${MY_POD_IP}:8888
 
 ---
 # Source: opentelemetry-demo/charts/prometheus/templates/cm.yaml

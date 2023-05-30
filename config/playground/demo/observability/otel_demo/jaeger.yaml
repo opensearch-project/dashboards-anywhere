@@ -34,7 +34,7 @@ spec:
         - name: jaeger
           image: jaegertracing/jaeger-collector:latest
           command:
-            - "--metrics-backend=prometheus"
+            - "--metrics-backend=opentelemetry-demo-prometheus-server"
             - "--es.server-urls=https://opensearch-cluster-leader:9200"
             - "--es.tls.enabled=true"
           envFrom:
@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: jaeger
+  name: jaeger-service
 spec:
   selector:
     app: jaeger
@@ -81,7 +81,7 @@ spec:
         - name: jaeger-agent
           image: jaegertracing/jaeger-agent:latest
           command:
-            - "--reporter.grpc.host-port=jaeger:14250"
+            - "--reporter.grpc.host-port=jaeger-service:14250"
           env:
             - name: SPAN_STORAGE_TYPE
               value: "opensearch"
