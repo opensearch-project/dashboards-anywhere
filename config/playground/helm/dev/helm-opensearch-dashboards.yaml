@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchplayground/opensearch-dashboards"
+  repository: "opensearchproject/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.7.0-fix"
+  tag: ""
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
