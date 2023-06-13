@@ -4,7 +4,7 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 
 on:
   push:
-    branches: [ main, bump-aws-creds-v2 ]
+    branches: [ main ]
 
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
@@ -28,7 +28,6 @@ jobs:
           filters: |
             dev:
               - 'config/playground/helm/dev/**'
-              - '.github/workflows/**'
             prod:
               - 'config/playground/helm/prod/**'
             ml:
@@ -37,12 +36,12 @@ jobs:
   OS-OSD-Dev-Deployment:
     needs: Pre-Deployment
     if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
-    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@bump-aws-creds-v2
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: dev
     secrets:
-      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}x
       secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
       region: ${{ secrets.AWS_REGION_DEV }}
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
