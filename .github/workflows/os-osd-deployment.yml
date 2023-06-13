@@ -37,7 +37,7 @@ jobs:
   OS-OSD-Dev-Deployment:
     needs: Pre-Deployment
     if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
-    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@bump-aws-creds-v2
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: dev
