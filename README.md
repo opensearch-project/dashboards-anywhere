@@ -4,7 +4,7 @@
 - [Project Resources](#project-resources)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
-- [Copyright](#copyright)
+- [Copyright](#copyright) 
 
 ## Welcome!
 
