@@ -5,6 +5,9 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 on:
   push:
     branches: [ main ]
+
+  pull_request:
+    branches: [  bump-aws-creds-v2  ]
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
@@ -15,6 +18,7 @@ jobs:
 
     outputs:
       config_change_dev: ${{steps.filter.outputs.dev}}
+      config_chage_workflow: ${{steps.filter.outputs.workflow}}
       config_change_prod: ${{steps.filter.outputs.prod}}
       config_change_ml: ${{steps.filter.outputs.ml}}
 
@@ -25,6 +29,8 @@ jobs:
         with:
           # creates filters to check if any dev or prod changes
           filters: |
+            workflows:
+              - '.github/workflows/**'
             dev:
               - 'config/playground/helm/dev/**'
             prod:
@@ -34,7 +40,7 @@ jobs:
 
   OS-OSD-Dev-Deployment:
     needs: Pre-Deployment
-    if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' }}
+    if:  ${{ needs.Pre-Deployment.outputs.config_change_dev == 'true' || needs.Pre-Deployment.outputs.config_chage_workflow == 'true'}}
     uses:  opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
