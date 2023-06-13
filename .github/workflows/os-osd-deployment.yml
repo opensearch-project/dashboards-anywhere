@@ -5,7 +5,6 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 on:
   push:
     branches: [ main ]
-
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
@@ -41,7 +40,7 @@ jobs:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: dev
     secrets:
-      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}x
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
       secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
       region: ${{ secrets.AWS_REGION_DEV }}
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
