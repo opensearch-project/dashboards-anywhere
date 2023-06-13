@@ -4,7 +4,8 @@ name: Deploy OpenSearch and OpenSearch Dashboards
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, bump-aws-creds-v2 ]
+
   # adds workflow_dispatch for manually running a workflow
   workflow_dispatch:
 
@@ -27,6 +28,7 @@ jobs:
           filters: |
             dev:
               - 'config/playground/helm/dev/**'
+              - '.github/workflows/**'
             prod:
               - 'config/playground/helm/prod/**'
             ml:
