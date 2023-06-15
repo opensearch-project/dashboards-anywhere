@@ -21,7 +21,9 @@ spec:
         - name: integrations
           image: python:3.9
           command: ["/bin/sh", "-c"]
-          args: ["pip install -r /app/requirements.txt && python /app/install.py"]
+          args:
+            - "pip install -r /app/requirements.txt"
+            - "python /app/install.py"
           volumeMounts:
             - name: app-volume
               mountPath: /app
