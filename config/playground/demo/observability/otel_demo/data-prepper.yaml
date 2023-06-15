@@ -24,15 +24,16 @@ spec:
             - containerPort: 21890
           volumeMounts:
             - name: config-volume
-              mountPath: /usr/share/data-prepper/pipelines/
+              mountPath: /usr/share/data-prepper/pipelines/pipelines.yaml
               subPath: pipelines.yaml
             - name: config-volume
-              mountPath: /usr/share/data-prepper/config/
+              mountPath: /usr/share/data-prepper/config/data-prepper-config.yaml
               subPath: data-prepper-config.yaml
       volumes:
         - name: config-volume
           configMap:
             name: data-prepper-config
+      restartPolicy: Always
 ---
 # Data Prepper config-map
 apiVersion: v1
@@ -60,7 +61,7 @@ data:
         - otel_trace_raw:
       sink:
         - opensearch:
-            hosts: [ "https://opensearch-cluster-leader:9200" ]
+            hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
             insecure: true
             username: "{USR}"
             password: "{PSWD}"
@@ -74,12 +75,12 @@ data:
         - service_map_stateful:
       sink:
         - opensearch:
-            hosts: ["https://opensearch-cluster-leader:9200"]
+            hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
             insecure: true
             username: "{USR}"
             password: "{PSWD}"
             index_type: trace-analytics-service-map
-  data-prepper-config.yaml: |
+  pipelines.yaml: |
     ssl: false
 ---
 # Data Prepper Service

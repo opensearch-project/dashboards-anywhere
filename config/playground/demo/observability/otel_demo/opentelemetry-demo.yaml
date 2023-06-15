@@ -78,7 +78,7 @@ data:
       otlp/servicegraph: # Dummy receiver for the metrics pipeline
         protocols:
           grpc:
-            endpoint: 0.0.0.0:12345
+            endpoint: localhost:12345
 
     exporters:
       logging: {}
@@ -93,7 +93,7 @@ data:
           insecure: true
       prometheus:
         enable_open_metrics: true
-        endpoint: "0.0.0.0:9464"
+        endpoint: "localhost:9464"
         resource_to_telemetry_conversion:
           enabled: true
       prometheus/servicegraph:
@@ -318,7 +318,7 @@ spec:
       port: 9411
       targetPort: 9411
       protocol: TCP
-    - name: health_check
+    - name: health-check
       port: 13133
       targetPort: 13133
       protocol: TCP
