@@ -62,7 +62,7 @@ data:
     opensearch_dashboard = os.environ.get('OPENSEARCH_DASHBOARD_HOST', 'opensearch-dashboards')
 
     # For testing only. Don't store credentials in code.
-    auth = ('admin', 'admin')
+    auth = ('{USR}', '{PWD}')
 
     # Configure logging to file
     logging.basicConfig(
