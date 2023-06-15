@@ -58,8 +58,8 @@ data:
     RESTAPI_HEADERS = {'Content-Type': 'application/json'}
 
     # load env variables
-    opensearch_host = os.getenv('OPENSEARCH1_HOST', 'opensearch-node1')
-    opensearch_dashboard = os.environ.get('OPENSEARCH_DASHBOARD_HOST', 'opensearch-dashboards')
+    opensearch_host = os.getenv('OPENSEARCH_HOST', 'opensearch-cluster-leader')
+    opensearch_dashboard = os.environ.get('OPENSEARCH_DASHBOARD_HOST', 'dashboards-opensearch-dashboards')
 
     # For testing only. Don't store credentials in code.
     auth = ('{USR}', '{PWD}')
