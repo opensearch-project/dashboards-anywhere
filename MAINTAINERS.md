@@ -4,14 +4,15 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 
 ## Current Maintainers
 
-| Maintainer   | GitHub ID                                           | Affiliation |
-| ------------ | --------------------------------------------------- | ----------- |
-| Huan Jiang   | [seraphjiang](https://github.com/seraphjiang)       | Amazon      |
-| Zhongnan Su  | [zhongnansu](https://github.com/zhongnansu)         | Amazon      |
-| Kristen Tian | [kristenTian](https://github.com/kristenTian)       | Amazon      |
-| Tao Liu      | [Flyingliuhub](https://github.com/Flyingliuhub)     | Amazon      |
-| Lu Yu        | [BionIT](https://github.com/BionIT)                 | Amazon      |
-| Yan Zeng     | [zengyan-amazon](https://github.com/zengyan-amazon) | Amazon      |
+| Maintainer     | GitHub ID                                           | Affiliation |
+| -------------- | --------------------------------------------------- | ----------- |
+| Huan Jiang     | [seraphjiang](https://github.com/seraphjiang)       | Amazon      |
+| Zhongnan Su    | [zhongnansu](https://github.com/zhongnansu)         | Amazon      |
+| Kristen Tian   | [kristenTian](https://github.com/kristenTian)       | Amazon      |
+| Tao Liu        | [Flyingliuhub](https://github.com/Flyingliuhub)     | Amazon      |
+| Lu Yu          | [BionIT](https://github.com/BionIT)                 | Amazon      |
+| Yan Zeng       | [zengyan-amazon](https://github.com/zengyan-amazon) | Amazon      |
+| Himanshu gupta | [himsgupta1122](https://github.com/himsgupta1122)   | Amazon      |
 
 ## Emeritus
 
