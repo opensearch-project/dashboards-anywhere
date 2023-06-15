@@ -65,7 +65,7 @@ These (demo-sample) integrations contain the following assets:
  - queries
  - dashboards
    
-Once they are loaded, the user can imminently review his OTEL demo services and dashboards that reflect the system state.
+Once they are loaded, the user can imminently review the OTEL demo services and dashboards that reflect the system state.
  - [Nginx Dashboard]() - reflects the Nginx Proxy server that routes all the network communication to/from the frontend
  - [Prometheus datasource]() - reflects the connectivity to the prometheus metric storage that allows us to federate metrics analytics queries
  - [Logs Datastream]() - reflects the data-stream used by nginx logs ingestion and dashboards representing a well-structured [log schema](../src/integrations/mapping-templates/logs.mapping)
