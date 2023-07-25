@@ -990,7 +990,8 @@ masterTerminationFix: false
 
 lifecycle: {}
 
-keystore: []
+keystore:
+  - secretName: ob-masterkey
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
