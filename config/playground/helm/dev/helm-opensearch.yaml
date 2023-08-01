@@ -30,6 +30,7 @@ opensearchHome: /usr/share/opensearch
 config:
   opensearch.yml: |
     cluster.name: opensearch-cluster
+    plugins.query.datasources.encryption.masterkey: ${QUERY_DATASOURCES_MASTER_KEY}
     # Bind to all interfaces because we don't know what IP address Docker will assign to us.
     network.host: 0.0.0.0
     # # minimum_master_nodes need to be explicitly set when bound on a public IP
