@@ -1,0 +1,39 @@
+# This workflow is a scheduled workflow and used for deploying the preview version of OpenSearch
+# and OpenSearch Dashboards to AWS EKS (Elastic Kubernetes Service) cluster.
+name: Manually Deploy OpenSearch and OpenSearch Dashboards
+
+on:
+  # Adds workflow_dispatch for manually running a workflow
+  workflow_dispatch:
+
+jobs:
+
+  OS-OSD-Preview-Scheduled-Deployment:
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    with:
+      helm-repo: https://opensearch-project.github.io/helm-charts/
+      deploy-env: preview
+    secrets:
+      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PREVIEW }}
+      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PREVIEW }}
+      region: ${{ secrets.AWS_REGION_PREVIEW }}
+      kube-config: ${{ secrets.KUBE_CONFIG_DATA_PREVIEW }}
+      openid_client_id: ${{ secrets.OPENID_CLIENT_ID }}
+      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET }}
+      openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL }}
+      openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL }}
+      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
+      osd_user: ${{ secrets.OSD_USER_PREVIEW }}
+      osd_user_password: ${{ secrets.OSD_USER_PASSWORD_PREVIEW }}
+      otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
+      otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
+      kibanaserver: ${{ secrets.KIBANASERVER }}
+
+  OSD-Functional-Test-Preview:
+    needs: OS-OSD-Preview-Scheduled-Deployment
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@previewchangefeature
+    with:
+      endpoint: https://reinvent.playground.opensearch.org
+    secrets:
+      osd-user: ${{ secrets.OSD_USER_PREVIEW }}
+      osd-user-password: ${{ secrets.OSD_USER_PASSWORD_PREVIEW }}
