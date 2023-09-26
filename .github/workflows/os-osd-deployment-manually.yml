@@ -5,7 +5,7 @@ name: Manually Deploy OpenSearch and OpenSearch Dashboards
 on:
     push:
         branches: [ 2023reinvent ]
-  # Adds workflow_dispatch for manually running a workflow
+  # Adds workflow_dispatch for manually running a workflow.
     workflow_dispatch:
 
 jobs:
