@@ -78,6 +78,10 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
 
+    uiSettings:
+      overrides:
+        "theme:next": true
+
     data_source.enabled: true
     data_source.endpointDeniedIPs: [
         '127.0.0.0/8',

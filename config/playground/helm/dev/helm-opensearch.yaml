@@ -65,16 +65,25 @@ config:
           enabled: true
           indices:
             [
-              ".opendistro-alerting-config",
-              ".opendistro-alerting-alert*",
-              ".opendistro-anomaly-results*",
-              ".opendistro-anomaly-detector*",
-              ".opendistro-anomaly-checkpoints",
-              ".opendistro-anomaly-detection-state",
-              ".opendistro-reports-*",
-              ".opendistro-notifications-*",
-              ".opendistro-notebooks",
-              ".opendistro-asynchronous-search-response*",
+              ".plugins-ml-config", 
+              ".plugins-ml-connector", 
+              ".plugins-ml-model-group", 
+              ".plugins-ml-model", 
+              ".plugins-ml-task", 
+              ".opendistro-alerting-config", 
+              ".opendistro-alerting-alert*", 
+              ".opendistro-anomaly-results*", 
+              ".opendistro-anomaly-detector*", 
+              ".opendistro-anomaly-checkpoints", 
+              ".opendistro-anomaly-detection-state", 
+              ".opendistro-reports-*", 
+              ".opensearch-notifications-*", 
+              ".opensearch-notebooks", 
+              ".opensearch-observability", 
+              ".ql-datasources", 
+              ".opendistro-asynchronous-search-response*", 
+              ".replication-metadata-store", 
+              ".opensearch-knn-models",
             ]
 
 # Extra environment variables to append to this nodeGroup.
