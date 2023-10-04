@@ -110,6 +110,11 @@ config:
     csp.warnLegacyBrowsers: false
     google_analytics_plugin.trackingID: ${GA_TRACKING_ID}
 
+    uiSettings:
+      overrides:
+        "theme:next": true
+        "theme:darkMode": true
+
 priorityClassName: ""
 
 opensearchAccount:
