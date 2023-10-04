@@ -81,6 +81,7 @@ config:
     uiSettings:
       overrides:
         "theme:next": true
+        "theme:darkMode": true
 
     data_source.enabled: true
     data_source.endpointDeniedIPs: [
