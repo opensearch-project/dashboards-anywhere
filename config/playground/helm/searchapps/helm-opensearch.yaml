@@ -98,9 +98,10 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: "opensearchstaging/opensearch"
+  repository: "opensearchproject/opensearch"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.8.0"
+  tag: ""
+  # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
 podAnnotations: {}
