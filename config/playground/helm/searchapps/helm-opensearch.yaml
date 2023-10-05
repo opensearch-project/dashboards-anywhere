@@ -32,8 +32,6 @@ config:
     cluster.name: opensearch-cluster
     # Bind to all interfaces because we don't know what IP address Docker will assign to us.
     network.host: 0.0.0.0
-    # Enable search pipeline
-    opensearch.experimental.feature.search_pipeline.enabled: true
     # # minimum_master_nodes need to be explicitly set when bound on a public IP
     # # set to 1 to allow single node clusters
     # discovery.zen.minimum_master_nodes: 1
@@ -66,6 +64,11 @@ config:
           enabled: true
           indices:
             [
+              ".plugins-ml-config",
+              ".plugins-ml-connector",
+              ".plugins-ml-model-group",
+              ".plugins-ml-model",
+              ".plugins-ml-task",
               ".opendistro-alerting-config",
               ".opendistro-alerting-alert*",
               ".opendistro-anomaly-results*",
@@ -73,9 +76,13 @@ config:
               ".opendistro-anomaly-checkpoints",
               ".opendistro-anomaly-detection-state",
               ".opendistro-reports-*",
-              ".opendistro-notifications-*",
-              ".opendistro-notebooks",
+              ".opensearch-notifications-*",
+              ".opensearch-notebooks",
+              ".opensearch-observability",
+              ".ql-datasources",
               ".opendistro-asynchronous-search-response*",
+              ".replication-metadata-store",
+              ".opensearch-knn-models",
             ]
 
 # Extra environment variables to append to this nodeGroup.
