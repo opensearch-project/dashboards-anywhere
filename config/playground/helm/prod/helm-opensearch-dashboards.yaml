@@ -185,4 +185,4 @@ extraObjects: []
 # specify the external plugins to install
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.10.0/googleAnalytics-2.10.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.11.0/googleAnalytics-2.11.0.zip"]
