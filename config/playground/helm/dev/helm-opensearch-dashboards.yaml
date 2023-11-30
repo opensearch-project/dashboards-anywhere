@@ -79,7 +79,7 @@ config:
     opensearchDashboards.branding.useExpandedHeader: false
 
     home.hero.title: 'Try the Query Assistant'
-    home.hero.body: 'Automatically generate complex queries using simple conversational prompts. AI assisted summary helps you navigate and understand errors from your logs.{br}{br}You will be redirected to the AI playground where you will need to login. All the {terms} of the playground still apply.',
+    home.hero.body: 'Automatically generate complex queries using simple conversational prompts. AI assisted summary helps you navigate and understand errors from your logs.{br}{br}You will be redirected to the AI playground where you will need to login. All the {terms} of the playground still apply.'
     home.hero.externalActionButton: {
       text: 'Login to try',
       link: 'https://ai.playground.opensearch.org/'
