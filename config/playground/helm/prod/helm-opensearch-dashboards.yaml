@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 3
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "public.ecr.aws/w1m7p7g2/opensearch-dashboards-reinvent2023"
   # override image tag, which is .Chart.AppVersion by default
-  tag: ""
+  tag: "onlycore"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -79,6 +79,15 @@ config:
     server.maxPayloadBytes: 104857600
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
+
+    home.hero.title: 'Try the Query Assistant'
+    home.hero.body: 'Automatically generate complex queries using simple conversational prompts. AI assisted summary helps you navigate and understand errors from your logs.{br}{br}You will be redirected to the AI playground where you will need to login. All the {terms} of the playground still apply.'
+    home.hero.externalActionButton: {
+      text: 'Login to try',
+      link: 'https://ai.playground.opensearch.org/'
+    }
+    home.hero.img.link: 'https://www.youtube.com/watch?v=VTiJtGI2Sr4&autoplay=1'
+    home.hero.secondaryButton.link: 'https://opensearch.org/blog/opensearch-adds-new-generative-ai-assistant-toolkit/'
     # Enable multiple datasource
     data_source.enabled: true
     data_source.endpointDeniedIPs: [
