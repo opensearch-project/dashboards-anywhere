@@ -79,11 +79,20 @@ data:
         protocols:
           grpc:
             endpoint: localhost:12345
-
     exporters:
       logging: {}
-      otlp/2:
+      otlp/traces:
         endpoint: "data-prepper-service:21890"
+        tls:
+          insecure: true
+          insecure_skip_verify: true
+      otlp/data-prepper:
+        endpoint: "data-prepper-service:21891"
+        tls:
+          insecure: true
+          insecure_skip_verify: true
+      otlp/logs:
+        endpoint: "data-prepper-service:21892"
         tls:
           insecure: true
           insecure_skip_verify: true
@@ -99,7 +108,6 @@ data:
       prometheus/servicegraph:
         endpoint: localhost:9090
         namespace: servicegraph
-
     processors:
       batch: {}
       filter/ottl:
@@ -129,15 +137,12 @@ data:
         virtual_node_peer_attributes:
           - db.name
           - rpc.service
-
     connectors:
       spanmetrics: null
-
     extensions:
       health_check: {}
       memory_ballast:
         size_in_percentage: 40
-
     service:
       extensions:
       - health_check
@@ -146,7 +151,7 @@ data:
         traces:
           receivers: [otlp, jaeger]
           processors: [memory_limiter, batch, servicegraph]
-          exporters: [otlp, logging, spanmetrics, otlp/2]
+          exporters: [otlp, logging, spanmetrics, otlp/traces]
         metrics/servicegraph:
           receivers: [otlp/servicegraph]
           processors: []
@@ -154,15 +159,14 @@ data:
         metrics:
           receivers: [otlp, spanmetrics]
           processors: [memory_limiter, filter/ottl, transform , batch]
-          exporters: [prometheus, logging]
+          exporters: [prometheus, logging, otlp/data-prepper]
         logs:
           receivers: [otlp]
           processors: [memory_limiter, batch]
-          exporters: [logging]
+          exporters: [logging, otlp/logs]
       telemetry:
         metrics:
           address: ${MY_POD_IP}:8888
-
 ---
 # Source: opentelemetry-demo/charts/prometheus/templates/cm.yaml
 apiVersion: v1
@@ -1935,7 +1939,7 @@ spec:
             - name: LOCUST_SPAWN_RATE
               value: "1"
             - name: LOCUST_HOST
-              value: http://opentelemetry-demo-frontend:8080
+              value: http://nginx-service:90
             - name: LOCUST_HEADLESS
               value: "false"
             - name: LOCUST_AUTOSTART

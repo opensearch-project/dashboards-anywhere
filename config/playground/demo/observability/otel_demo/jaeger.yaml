@@ -62,6 +62,12 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 14268  # Update with the correct targetPort for your service
+      name: jaeger14268
+    - protocol: TCP
+      port: 4317
+      targetPort: 4317  # Update with the correct targetPort for your service
+      name: jaeger4317
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -78,9 +84,10 @@ spec:
         app: jaeger-agent
     spec:
       containers:
-        args:
-          - "--reporter.grpc.host-port=jaeger:14250"
-        image: jaegertracing/jaeger-agent:latest
+        - args:
+            - "--reporter.grpc.host-port=jaeger:14250"
+          image: jaegertracing/jaeger-agent:latest
+          name: jaeger-agent
           env:
             - name: SPAN_STORAGE_TYPE
               value: "opensearch"
