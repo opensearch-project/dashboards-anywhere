@@ -78,6 +78,11 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
 
+    uiSettings:
+      overrides:
+        "theme:next": true
+        "theme:darkMode": true
+
     data_source.enabled: true
     data_source.endpointDeniedIPs: [
         '127.0.0.0/8',
@@ -177,7 +182,7 @@ affinity: {}
 # -- Array of extra K8s manifests to deploy
 extraObjects: []
 
-# specify the external plugins to install
+# specify the external plugins to install.
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.8.0/googleAnalytics-2.8.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.11.0/googleAnalytics-2.11.0.zip"]

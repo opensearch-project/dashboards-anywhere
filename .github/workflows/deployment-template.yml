@@ -38,6 +38,8 @@ on:
         required: false
       kibanaserver:
         required: true
+      query_datasources_master_key:
+        required: false 
 jobs:
 
   OS-OSD-Deployment:
@@ -61,7 +63,17 @@ jobs:
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
           KIBANASERVER: ${{ secrets.kibanaserver }}
 
-      - name: Step 2 - Replace Tokens for dashboards
+      - name: Step 2 - Replace Token in opensearch.yml
+        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') }}
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+          QUERY_DATASOURCES_MASTER_KEY: ${{ secrets.query_datasources_master_key }}
+
+      - name: Step 3 - Replace Tokens for dashboards
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml"]'
@@ -71,7 +83,7 @@ jobs:
           KIBANASERVER: ${{ secrets.kibanaserver }}
           GA_TRACKING_ID: ${{ secrets.ga-tracking-id }}
 
-      - name: Step 3 - Replace Tokens for logstash configuration
+      - name: Step 4 - Replace Tokens for logstash configuration
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: cschleiden/replace-tokens@v1
         with:
@@ -82,7 +94,7 @@ jobs:
           OSD_USER: ${{ secrets.osd_user }}
           OSD_USER_PASSWORD: ${{ secrets.osd_user_password }}
 
-      - name: Step 4 - Replace Tokens for tracing configuration
+      - name: Step 5 - Replace Tokens for tracing configuration
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: cschleiden/replace-tokens@v1
         with:
@@ -95,14 +107,14 @@ jobs:
           OTEL_ROOT_CA: ${{ secrets.otel_root_ca }}
           OTEL_DATA_PREPPER_CERT: ${{ secrets.otel_data_prepper_cert }}
 
-      - name: Step 5 - Configure AWS Credentials
+      - name: Step 6 - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.access-key-id }}
           aws-secret-access-key: ${{ secrets.secret-access-key }}
           aws-region: ${{ secrets.region }}
 
-      - name: Step 6 - Delete Logstash
+      - name: Step 7 - Delete Logstash
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
@@ -112,7 +124,7 @@ jobs:
           command: |
             kubectl delete ns logstash
 
-      - name: Step 7 - Delete Tracing
+      - name: Step 8 - Delete Tracing
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
@@ -125,7 +137,7 @@ jobs:
             kubectl delete -f config/playground/metrics/tracing/preview/otel-collector.yaml
             kubectl delete -f config/playground/metrics/tracing/preview/data-prepper.yaml
 
-      - name: Step 8 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+      - name: Step 9 - Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         if: ${{ (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'observability')}}
         uses: elastic-analytics/dashboards-action@main
         env:
@@ -146,7 +158,7 @@ jobs:
             helm install opensearch opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
 
-      - name: Step 9 - Deploy OpenSearch/OpenSearch Dashboards/ML By Helm Chart
+      - name: Step 10 - Deploy OpenSearch/OpenSearch Dashboards/ML By Helm Chart
         if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') || (inputs.deploy-env == 'ml') }}
         uses: elastic-analytics/dashboards-action@main
         env:
@@ -170,7 +182,7 @@ jobs:
             helm install dashboards opensearch/opensearch-dashboards -f config/playground/helm/${{inputs.deploy-env}}/helm-opensearch-dashboards.yaml
             helm install machinelearning opensearch/opensearch -f config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml
 
-      - name: Step 10 - Install Logstash
+      - name: Step 11 - Install Logstash
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
@@ -182,7 +194,7 @@ jobs:
             kubectl create -f config/playground/metrics/logstash/preview/logstash-configmap.yaml
             kubectl apply -f config/playground/metrics/logstash/preview/logstash.yaml
 
-      - name: Step 11 - Install Tracing
+      - name: Step 12 - Install Tracing
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
         uses: elastic-analytics/dashboards-action@main
         env:
