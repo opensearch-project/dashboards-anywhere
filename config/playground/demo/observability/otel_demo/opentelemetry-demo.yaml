@@ -822,7 +822,6 @@ spec:
   revisionHistoryLimit: 10
   strategy:
     type: Recreate
-    rollingUpdate: null
   template:
     metadata:
       labels:
