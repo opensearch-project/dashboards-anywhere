@@ -1,0 +1,113 @@
+apiVersion: v1
+data:
+  data-prepper-config: |
+    ssl: false
+  data-prepper-pipeline: |
+    entry-pipeline:
+      delay: "100"
+      source:
+        otel_trace_source:
+          ssl: false
+          record_type: event
+      sink:
+        - pipeline:
+            name: "raw-pipeline"
+        - pipeline:
+            name: "service-map-pipeline"
+    raw-pipeline:
+      source:
+        pipeline:
+          name: "entry-pipeline"
+      processor:
+        - otel_trace_raw:
+      sink:
+        - opensearch:
+            hosts: [ "https://opensearch-cluster-leader:9200" ]
+            insecure: true
+            username: "admin"
+            password: "neoplay_2010_OPS"
+            index_type: trace-analytics-raw
+    service-map-pipeline:
+      delay: "100"
+      source:
+        pipeline:
+          name: "entry-pipeline"
+      processor:
+        - service_map_stateful:
+      sink:
+        - opensearch:
+            hosts: ["https://opensearch-cluster-leader:9200"]
+            insecure: true
+            username: "admin"
+            password: "neoplay_2010_OPS"
+            index_type: trace-analytics-service-map
+  otel-collector-config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+            cors:
+              allowed_origins:
+                - "http://*"
+                - "https://*"
+    exporters:
+      debug:
+      otlp:
+        endpoint: "jaeger-service:4317"
+        tls:
+          insecure: true
+      otlp/traces:
+        endpoint: "data-prepper-service:21890"
+        tls:
+          insecure: true
+          insecure_skip_verify: true
+      otlp/data-prepper:
+        endpoint: "data-prepper-service:21891"
+        tls:
+          insecure: true
+          insecure_skip_verify: true
+      otlp/logs:
+        endpoint: "data-prepper-service:21892"
+        tls:
+          insecure: true
+          insecure_skip_verify: true
+      otlphttp/prometheus:
+        endpoint: "http://prometheus-service:9090/api/v1/otlp"
+        tls:
+          insecure: true
+    processors:
+      batch:
+      filter/ottl:
+        error_mode: ignore
+        metrics:
+          metric:
+            - 'name == "rpc.server.duration"'
+      transform:
+        metric_statements:
+          - context: metric
+            statements:
+              - set(description, "") where name == "queueSize"
+              - set(description, "") where name == "http.client.duration"
+    connectors:
+      spanmetrics:
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp, debug, spanmetrics, otlp/traces]
+        metrics:
+          receivers: [otlp, spanmetrics]
+          processors: [filter/ottl, transform, batch]
+          exporters: [otlphttp/prometheus, otlp/data-prepper, debug]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp/logs, debug]
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-06-21T19:54:36Z"
+  name: otel-configmap
+  namespace: default
+  resourceVersion: "123972540"
