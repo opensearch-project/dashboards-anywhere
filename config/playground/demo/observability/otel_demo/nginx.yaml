@@ -34,9 +34,9 @@ spec:
             - name: OPENSEARCH_HOST
               value: "opensearch-cluster-leader.default.svc"
             - name: OPENSEARCH_USER
-              value: "admin"
+              value: $USERNAME
             - name: OPENSEARCH_PWD
-              value: "admin"
+              value: $PASSWORD
           volumeMounts:
             - name: log-storage
               mountPath: /var/log/

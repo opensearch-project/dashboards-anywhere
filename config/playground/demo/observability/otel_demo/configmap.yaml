@@ -15,8 +15,8 @@ data:
         - opensearch:
             hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
             insecure: true
-            username: "admin"
-            password: "neoplay_2010_OPS"
+            username: $USERNAME
+            password: $PASSWORD
             index_type: custom
             index: otel-events-%{yyyy.MM.dd}
             bulk_size: 4
@@ -41,8 +41,8 @@ data:
         - opensearch:
             hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
             insecure: true
-            username: "admin"
-            password: "neoplay_2010_OPS"
+            username: $USERNAME
+            password: $PASSWORD
             index_type: trace-analytics-raw
     service-map-pipeline:
       delay: "100"
@@ -55,8 +55,8 @@ data:
         - opensearch:
             hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
             insecure: true
-            username: "admin"
-            password: "neoplay_2010_OPS"
+            username: $USERNAME
+            password: $PASSWORD
             index_type: trace-analytics-service-map
     otel-metrics-pipeline:
       workers: 8
@@ -79,8 +79,8 @@ data:
         - opensearch:
             hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
             insecure: true
-            username: "admin"
-            password: "neoplay_2010_OPS"
+            username: $USERNAME
+            password: $PASSWORD
             index_type: custom
             index: otel-metrics-%{yyyy.MM.dd}
             bulk_size: 4

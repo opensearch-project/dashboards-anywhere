@@ -11,8 +11,8 @@ data:
   METRICS_STORAGE_TYPE: "prometheus"
   SPAN_STORAGE_TYPE: "opensearch"
   ES_TAGS_AS_FIELDS_ALL: "true"
-  ES_USERNAME: "admin"
-  ES_PASSWORD: "admin"
+  ES_USERNAME: $USERNAME
+  ES_PASSWORD: $PASSWORD
   ES_TLS_SKIP_HOST_VERIFY: "true"
 ---
 apiVersion: apps/v1
