@@ -1,0 +1,141 @@
+def IMAGE_NAME
+def DOCKER_IMAGE
+
+properties([
+    parameters([
+        string(name: 'OS_VERSIONS', defaultValue: '1.0.0,1.1.0,1.2.0,1.3.0,2.3.0,2.5.0,2.7.0,2.9.0,2.11.0', description: 'Comma-separated list of OpenSearch Dashboards versions')
+    ])
+])
+
+pipeline {
+    agent { label 'fork' }
+
+    options {
+        throttleJobProperty(
+            categories: ['Website_PR'],
+            throttleEnabled: true,
+            throttleOption: 'category'
+        )
+    }
+
+    stages {
+        stage("Build") {
+            steps {
+                script {
+                    IMAGE_NAME = "website-src-image:${env.BUILD_ID}"
+                    DOCKER_IMAGE = docker.build(IMAGE_NAME)
+                    DOCKER_IMAGE.inside {
+                        sh 'rm -rf target/junit'
+                        sh 'rm -rf junit-test'
+                        sh 'mkdir junit-test'
+
+                        stage('bootstrap') {
+                            echo "Bootstrap here"
+                            sh 'yarn osd bootstrap'
+                            sh 'node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers 10 --scan-dir "./test/plugin_functional/plugins"'
+                        }
+                    }
+                }
+            }
+        }
+        stage('Unit tests') {
+        steps {
+            script {
+            DOCKER_IMAGE.inside {
+                echo "Start Unit Tests"
+                sh 'CI=1 GCS_UPLOAD_PREFIX=fake yarn test:jest -u --ci --verbose'
+                junit 'target/junit/TEST-Jest Tests*.xml'
+            }
+            }
+        }
+        }
+        stage('Integ tests') {
+        steps {
+            script {
+            DOCKER_IMAGE.inside {
+                sh 'yarn test:jest_integration -u --ci --verbose'
+                sh 'CI=1 GCS_UPLOAD_PREFIX=fake yarn test:mocha'
+                junit 'target/junit/TEST-Jest Integration Tests*.xml'
+            }
+            }
+        }
+        }
+        stage("Functional tests for all the OSD versions") {
+            steps {
+                script {
+                    def osVersions = params.OS_VERSIONS.split(',')
+                    osVersions.each { osVersion ->
+                        try {
+                            script {
+                                functionalDynamicParallelSteps(DOCKER_IMAGE, osVersion, 0, 12)
+                                junit "target/junit/${osVersion}/ci*/*.xml"
+                            }
+                        } catch (Exception e) {
+                            echo "Functional tests failed for ${osVersion}, but continuing..."
+                            currentBuild.result = 'FAILURE'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+def functionalDynamicParallelSteps(image, currentOSVersion, start, end, batchSize = 6) {
+    ciGroups = [
+        "ciGroup1", "ciGroup2", "ciGroup3", "ciGroup4", "ciGroup5", "ciGroup6",
+        "ciGroup7", "ciGroup8", "ciGroup9", "ciGroup10", "ciGroup11", "ciGroup12"
+    ]
+
+    for (int i = start; i <= end; i += batchSize) {
+        def ciGroupsMap = [:]  // Reset ciGroupsMap for each batch
+        def currentBatch = ciGroups.subList(i, Math.min(i + batchSize, ciGroups.size())).toList()
+
+        try {
+            sh "echo ${currentBatch}"
+
+            def parallelStages = currentBatch.collectEntries { currentCiGroup ->
+                def currentStep = ciGroups.indexOf(currentCiGroup)
+                def dynamicOSPort = 9400 + currentStep  // Calculate dynamic OS port based on currentStep
+                def dynamicOSDPort = 6610 + currentStep  // Calculate dynamic OSD port based on currentStep
+                def dynamicTransDPort = 9403 + currentStep  // Calculate dynamic Transport port based on currentStep
+                ["${currentCiGroup}" : {
+                    script {
+                        stage("${currentOSVersion}-${currentCiGroup}") {
+                            withEnv([
+                                "TEST_BROWSER_HEADLESS=1",
+                                "CI=1",
+                                "CI_GROUP=${currentCiGroup}",
+                                "GCS_UPLOAD_PREFIX=fake",
+                                "TEST_OPENSEARCH_DASHBOARDS_HOST=localhost",
+                                "TEST_OPENSEARCH_DASHBOARDS_PORT=${dynamicOSDPort}",
+                                "TEST_OPENSEARCH_TRANSPORT_PORT=${dynamicTransDPort}",
+                                "TEST_OPENSEARCH_PORT=${dynamicOSPort}",
+                                "TEST_OPENSEARCH_BRANCH=${currentOSVersion}",
+                                "CI_PARALLEL_PROCESS_NUMBER=${currentStep}",
+                                "JOB=ci${currentStep}",
+                                "CACHE_DIR=${currentStep}-${currentCiGroup}"
+                            ]) {
+                                image.inside {
+                                    def randomSleepSeconds = 30 + new Random().nextInt(91)
+                                    sh "sleep ${randomSleepSeconds}"
+                                    sh "node scripts/functional_tests.js --config test/functional/config.js --include ${currentCiGroup}"
+                                    // Move test results to the version-specific directory
+                                    sh "mkdir -p target/junit/${currentOSVersion}/ci${currentStep}"
+                                    sh "mv target/junit/ci*/*.xml target/junit/${currentOSVersion}/ci${currentStep}/"
+                                    def results = sh(script: "ls target/junit/${currentOSVersion}/ci*/*.xml", returnStdout: true).trim().split('\n')
+                                    results.each { result ->
+                                        sh "sed -i 's/Chrome UI Functional Tests/Functional Tests For ${currentOSVersion}/g' \"${result}\""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }]
+            }
+            parallel parallelStages
+        } catch (Exception e) {
+            echo "Functional tests failed for batch ${currentBatch}, but continuing..."
+        }
+    }
+}
