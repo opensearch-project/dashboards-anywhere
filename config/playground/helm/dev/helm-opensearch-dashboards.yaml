@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "public.ecr.aws/w1m7p7g2/opensearch-dashboards-reinvent2023"
+  repository: "opensearchproject/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "onlycore"
+  tag: "2.12.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -193,4 +193,4 @@ extraObjects: []
 # specify the external plugins to install.
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.11.0/googleAnalytics-2.11.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.12.0/googleAnalytics-2.12.0.zip"]
