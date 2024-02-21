@@ -79,6 +79,18 @@ jobs:
           ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
           ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
 
+      - name: Step 2.1 - Replace Token in machinelearning.yml
+        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') }}
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+            ESNODE_CERT: ${{ secrets.esnode_cert }}
+            ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
+            ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
+
       - name: Step 3 - Replace Tokens for dashboards
         uses: cschleiden/replace-tokens@v1
         with:
