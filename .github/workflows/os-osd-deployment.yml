@@ -47,7 +47,6 @@ jobs:
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
-      query_datasources_master_key: ${{ secrets.QUERY_DATASOURCES_MASTER_KEY }}
       esnode_cert: ${{ secrets.ESNODE_CERT }}
       esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
       root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
