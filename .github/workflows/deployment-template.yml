@@ -68,7 +68,7 @@ jobs:
           KIBANASERVER: ${{ secrets.kibanaserver }}
 
       - name: Step 2 - Replace Token in opensearch.yml
-        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') }}
+        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml"]'
@@ -80,7 +80,7 @@ jobs:
           ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
 
       - name: Step 2.1 - Replace Token in machinelearning.yml
-        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') }}
+        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml"]'
