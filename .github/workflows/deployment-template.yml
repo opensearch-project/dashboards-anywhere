@@ -38,8 +38,12 @@ on:
         required: false
       kibanaserver:
         required: true
-      query_datasources_master_key:
-        required: false 
+      esnode_cert:
+        required: false
+      esnode_key_cert:
+        required: false
+      root_ca_cert:
+        required: false
 jobs:
 
   OS-OSD-Deployment:
@@ -71,7 +75,9 @@ jobs:
           tokenPrefix: '${'
           tokenSuffix: '}'
         env:
-          QUERY_DATASOURCES_MASTER_KEY: ${{ secrets.query_datasources_master_key }}
+          ESNODE_CERT: ${{ secrets.esnode_cert }}
+          ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
+          ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
 
       - name: Step 3 - Replace Tokens for dashboards
         uses: cschleiden/replace-tokens@v1
