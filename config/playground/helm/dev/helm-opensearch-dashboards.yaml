@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: ""
+  tag: "2.12.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -78,6 +78,15 @@ config:
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
 
+    home.hero.title: 'Try the Query Assistant'
+    home.hero.body: 'Automatically generate complex queries using simple conversational prompts. AI assisted summary helps you navigate and understand errors from your logs.{br}{br}You will be redirected to the AI playground where you will need to login. All the {terms} of the playground still apply.'
+    home.hero.externalActionButton: {
+      text: 'Login to try',
+      link: 'https://ai.playground.opensearch.org/'
+    }
+    home.hero.img.link: 'https://www.youtube.com/watch?v=VTiJtGI2Sr4&autoplay=1'
+    home.hero.secondaryButton.link: 'https://opensearch.org/blog/opensearch-adds-new-generative-ai-assistant-toolkit/'
+    
     uiSettings:
       overrides:
         "theme:next": true
@@ -185,4 +194,4 @@ extraObjects: []
 # specify the external plugins to install.
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.11.0/googleAnalytics-2.11.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.12.0/googleAnalytics-2.12.0.zip"]
