@@ -28,6 +28,12 @@ majorVersion: "7"
 opensearchHome: /usr/share/opensearch
 # such as opensearch.yml
 config:
+ esnode.pem: |-
+${ESNODE_CERT}
+  esnode-key.pem: |-
+${ESNODE_KEY_CERT}
+  root-ca.pem: |-
+${ROOT_CA_CERT}
   opensearch.yml: |
     cluster.name: opensearch-cluster
     # Bind to all interfaces because we don't know what IP address Docker will assign to us.
@@ -92,7 +98,7 @@ extraEnvs:
 #  - name: MY_ENVIRONMENT_VAR
 #    value: the_value_goes_here
   - name: DISABLE_INSTALL_DEMO_CONFIG
-    value: "false"
+    value: "true"
 
 # Allows you to load environment variables from kubernextes secret or config map
 envFrom: []
@@ -107,7 +113,7 @@ hostAliases: []
 image:
   repository: "opensearchproject/opensearch"
   # override image tag, which is .Chart.AppVersion by default
-  tag: ""
+  tag: "2.12.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -709,6 +715,7 @@ securityConfig:
             - cluster:admin/opensearch/securityanalytics/findings/get
             - cluster:admin/opensearch/securityanalytics/alerts/get
             - cluster:admin/opensearch/securityanalytics/detector/get
+            - cluster:admin/opensearch/securityanalytics/logtype/search
             # For using sql join query
             - "indices:data/read/scroll*"
           index_permissions:
