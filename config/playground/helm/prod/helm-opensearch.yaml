@@ -28,7 +28,7 @@ majorVersion: "7"
 opensearchHome: /usr/share/opensearch
 # such as opensearch.yml
 config:
- esnode.pem: |-
+  esnode.pem: |-
 ${ESNODE_CERT}
   esnode-key.pem: |-
 ${ESNODE_KEY_CERT}
