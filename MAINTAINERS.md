@@ -7,15 +7,16 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Maintainer     | GitHub ID                                           | Affiliation |
 | -------------- | --------------------------------------------------- | ----------- |
 | Huan Jiang     | [seraphjiang](https://github.com/seraphjiang)       | Amazon      |
-| Zhongnan Su    | [zhongnansu](https://github.com/zhongnansu)         | Amazon      |
-| Kristen Tian   | [kristenTian](https://github.com/kristenTian)       | Amazon      |
 | Tao Liu        | [Flyingliuhub](https://github.com/Flyingliuhub)     | Amazon      |
 | Lu Yu          | [BionIT](https://github.com/BionIT)                 | Amazon      |
 | Yan Zeng       | [zengyan-amazon](https://github.com/zengyan-amazon) | Amazon      |
-| Himanshu gupta | [himanshu1214](https://github.com/himanshu1214)     | Amazon      |
+
 
 ## Emeritus
 
-| Maintainer    | GitHub ID                               | Affiliation |
-| ------------- | --------------------------------------- | ----------- |
-| Huy Nguyen    | [huyaboo](https://github.com/huyaboo)   | Amazon      |
+| Maintainer    | GitHub ID                                           | Affiliation |
+| ------------- | --------------------------------------------------- | ----------- |
+| Huy Nguyen    | [huyaboo](https://github.com/huyaboo)               | Amazon      |
+| Himanshu gupta| [himanshu1214](https://github.com/himanshu1214)     | Amazon      |
+| Kristen Tian  | [kristenTian](https://github.com/kristenTian)       | Amazon      |
+| Zhongnan Su   | [zhongnansu](https://github.com/zhongnansu)         | Amazon      |
