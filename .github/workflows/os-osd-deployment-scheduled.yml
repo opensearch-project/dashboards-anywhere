@@ -74,7 +74,6 @@ jobs:
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
-      query_datasources_master_key: ${{ secrets.QUERY_DATASOURCES_MASTER_KEY }}
 
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment

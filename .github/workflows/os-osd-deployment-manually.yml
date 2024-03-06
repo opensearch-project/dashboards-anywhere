@@ -11,7 +11,7 @@ on:
 jobs:
 
   OS-OSD-Preview-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@2023reinvent
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: preview
@@ -30,9 +30,12 @@ jobs:
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
+      esnode_cert: ${{ secrets.ESNODE_CERT }}
+      esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
+      root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
 
   OS-OSD-SearchApps-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@main
+    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@2023reinvent
     with:
       helm-repo: https://opensearch-project.github.io/helm-charts/
       deploy-env: searchapps
@@ -51,6 +54,9 @@ jobs:
       otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
       otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
+      esnode_cert: ${{ secrets.ESNODE_CERT }}
+      esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
+      root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
 
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment
