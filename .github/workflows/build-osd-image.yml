@@ -1,5 +1,7 @@
 name: Build-OSD-Image
 on: 
+    push:
+        branches: [ ec2-runner ]
     workflow_dispatch:
         inputs:
             python_version:
