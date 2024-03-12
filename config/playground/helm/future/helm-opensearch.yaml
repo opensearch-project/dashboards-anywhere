@@ -110,7 +110,7 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: ${OS_IMAGE_REPOSITORY}
+  repository: ${OS_IMAGE_REPO}
   # override image tag, which is .Chart.AppVersion by default
   tag: ${OS_IMAGE_TAG}
   pullPolicy: "Always"

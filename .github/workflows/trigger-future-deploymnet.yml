@@ -5,32 +5,32 @@ on:
     branches: [ ec2-runner ]
   workflow_dispatch:
     inputs:
-      deploy-fresh:
+      deploy_fresh:
         required: false
         type: boolean
         description: 'Fresh Deploy OpenSearch and OpenSearch Dashboards'
         default: false
-      deploy-upgrade:
+      deploy_upgrade:
         required: false
         type: boolean
         description: 'Upgrade OpenSearch and OpenSearch Dashboards'
         default: true
-      osd-image-tag:
+      osd_image_tag:
         required: true
         type: string
         description: 'Image tag for OpenSearch Dashboards'
         default: '3.0.0-8219474312'
-      osd-image-repo:
+      osd_image_repo:
         required: true
         type: string
         description: 'Image repo for OpenSearch Dashboards'
         default: 'public.ecr.aws/y0r0d3v8/actionrunner'
-      os-image-tag:
+      os_image_tag:
         required: false
         type: string
         description: 'Image tag for OpenSearch'
         default: '3.0.0'
-      os-image-repo:
+      os_image_repo:
         required: false
         type: string
         description: 'Image repo for OpenSearch'
@@ -57,8 +57,8 @@ jobs:
           GA_TRACKING_ID: ${{ secrets.GA_TRACKING_ID_FUTURE }}
           CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN_FUTURE }}
           KIBANASERVER: ${{ secrets.KIBANASERVER }}
-          OSD-IMAGE-TAG: ${{ inputs.osd-image-tag }}
-          OSD-IMAGE-REPO: ${{ inputs.osd-image-repo }}
+          OSD_IMAGE_TAG: ${{ inputs.osd_image_tag }}
+          OSD_IMAGE_REPO: ${{ inputs.osd_image_repo }}
 
       - name: Replace Token in opensearch.yml
         uses: cschleiden/replace-tokens@v1
@@ -70,8 +70,8 @@ jobs:
           ESNODE_CERT: ${{ secrets.esnode_cert }}
           ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
           ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
-          OS-IMAGE-TAG: ${{ inputs.os-image-tag }}
-          OS-IMAGE-REPO: ${{ inputs.os-image-repo }}
+          OS_IMAGE_TAG: ${{ inputs.os_image_tag }}
+          OS_IMAGE_REPO: ${{ inputs.os_image_repo }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -80,7 +80,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION_PINK }}
 
       - name: Fresh Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
-        if: ${{ inputs.deploy-fresh }}
+        if: ${{ inputs.deploy_fresh }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
@@ -93,7 +93,7 @@ jobs:
             kubectl get nodes
 
       - name: Upgrade Deploy OpenSearch/OpenSearch Dashboards/ML By Helm Chart
-        if: ${{ inputs.deploy-upgrade }}
+        if: ${{ inputs.deploy_upgrade }}
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
