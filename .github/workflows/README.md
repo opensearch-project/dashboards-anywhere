@@ -9,6 +9,7 @@ The current workflows folder contains one deployment workflow(os-osd-deployment.
 - os-osd-deployment.yml
 - deployment-template.yml
 - functional-test-template.yml
+- trigger-build-osd-image.yml
 
 ## Prerequisites
 
@@ -37,6 +38,13 @@ The current workflows folder contains one deployment workflow(os-osd-deployment.
 >> - secrets: osd-user, the write access user of OpenSearch Dashboards.
 >> - secrets: osd-user-password, the write access user's password for OpenSearch Dashboards.
 
+> trigger-build-osd-image.yml:
+>> This GitHub Actions workflow triggers the OSD Build Image Workflow. It is triggered manually using the `workflow_dispatch` event and accepts several input parameters:
+>> - `python_version`: The Python version to use for the build. Default value is `'3.9.17'`.
+>> - `node_version`: The Node.js version to use for the build. Default value is `'18.19.0'`.
+>> - `osd_version`: The OpenSearch Dashboards version to use for the build. Default value is `'3.0.0'`.
+>> - `additional_args`: JSON string of additional options for the build. Default value is `'{}'`.
+>> - `build_number`: The build number. This parameter is optional.
 
 ## Appendix
 
