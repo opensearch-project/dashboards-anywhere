@@ -1,0 +1,107 @@
+name: OpenSearch and OpenSearch Dashboards Deployment Template
+
+on:
+  push:
+    branches: [ ec2-runner ]
+  workflow_dispatch:
+    inputs:
+      deploy-fresh:
+        required: false
+        type: boolean
+        description: 'Fresh Deploy OpenSearch and OpenSearch Dashboards'
+        default: false
+      deploy-upgrade:
+        required: false
+        type: boolean
+        description: 'Upgrade OpenSearch and OpenSearch Dashboards'
+        default: true
+      osd-image-tag:
+        required: true
+        type: string
+        description: 'Image tag for OpenSearch Dashboards'
+        default: '3.0.0-8219474312'
+      osd-image-repo:
+        required: true
+        type: string
+        description: 'Image repo for OpenSearch Dashboards'
+        default: 'public.ecr.aws/y0r0d3v8/actionrunner'
+      os-image-tag:
+        required: false
+        type: string
+        description: 'Image tag for OpenSearch'
+        default: '3.0.0'
+      os-image-repo:
+        required: false
+        type: string
+        description: 'Image repo for OpenSearch'
+        default: 'opensearchstaging/opensearch'
+
+jobs:
+
+  Future-OS-OSD-Deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Replace Tokens for opensearch-dashboards.yml
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/helm/future/helm-opensearch-dashboards.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+          OPENID_CLIENT_ID: ${{ secrets.OPENID_CLIENT_ID_FUTURE }}
+          OPENID_CLIENT_SECRET: ${{ secrets.OPENID_CLIENT_SECRET_FUTURE }}
+          OPENID_BASE_REDIRECT_URL: ${{ secrets.OPENID_BASE_REDIRECT_URL_FUTURE }}
+          OPENID_LOGOUT_URL: ${{ secrets.OPENID_LOGOUT_URL_FUTURE }}
+          GA_TRACKING_ID: ${{ secrets.GA_TRACKING_ID_FUTURE }}
+          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN_FUTURE }}
+          KIBANASERVER: ${{ secrets.KIBANASERVER }}
+          OSD-IMAGE-TAG: ${{ inputs.osd-image-tag }}
+          OSD-IMAGE-REPO: ${{ inputs.osd-image-repo }}
+
+      - name: Replace Token in opensearch.yml
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/helm/future/helm-opensearch.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+          ESNODE_CERT: ${{ secrets.esnode_cert }}
+          ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
+          ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
+          OS-IMAGE-TAG: ${{ inputs.os-image-tag }}
+          OS-IMAGE-REPO: ${{ inputs.os-image-repo }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PINK }}
+          aws-region: ${{ secrets.AWS_REGION_PINK }}
+
+      - name: Fresh Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
+        if: ${{ inputs.deploy-fresh }}
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
+        with:
+          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
+          # Teardown the current OS and OSD and then install the lastest version
+          # of OS and OSD as it only takes 23 seconds for the process, will add
+          # blue/green deployment later.
+          command: |
+            kubectl get nodes
+
+      - name: Upgrade Deploy OpenSearch/OpenSearch Dashboards/ML By Helm Chart
+        if: ${{ inputs.deploy-upgrade }}
+        uses: elastic-analytics/dashboards-action@main
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
+        with:
+          plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
+          # Teardown the current OS and OSD and then install the lastest version
+          # of OS and OSD as it only takes 23 seconds for the process, will add
+          # blue/green deployment later.
+          command: |
+            kubectl get nodes
+
