@@ -59,7 +59,6 @@ jobs:
           KIBANASERVER: ${{ secrets.KIBANASERVER }}
           OSD_IMAGE_TAG: ${{ inputs.osd_image_tag }}
           OSD_IMAGE_REPO: ${{ inputs.osd_image_repo }}
-
       - name: Replace Token in opensearch.yml
         uses: cschleiden/replace-tokens@v1
         with:
@@ -78,12 +77,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PINK }}
           aws-region: ${{ secrets.AWS_REGION_PINK }}
-
       - name: Fresh Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         if: ${{ inputs.deploy_fresh }}
         uses: elastic-analytics/dashboards-action@main
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PINK }}
         with:
           plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
           # Teardown the current OS and OSD and then install the lastest version
@@ -91,11 +89,10 @@ jobs:
           # blue/green deployment later.
           command: |
             kubectl get nodes
-
       - name: Upgrade Deploy OpenSearch/OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PINK }}
         with:
           plugins: "" # optional, list of Helm plugins. eg. helm-secrets or helm-diff.
           # Teardown the current OS and OSD and then install the lastest version
