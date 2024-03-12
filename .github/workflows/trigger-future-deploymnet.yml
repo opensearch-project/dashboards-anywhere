@@ -99,5 +99,5 @@ jobs:
           # of OS and OSD as it only takes 23 seconds for the process, will add
           # blue/green deployment later.
           command: |
-            kubectl get nodes
+            kubectl get pods
 
