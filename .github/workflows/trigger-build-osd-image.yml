@@ -1,6 +1,8 @@
 name: Trigger OSD Build Image Workflow
 
 on:
+    push:
+        branches: [ ec2-runner ]
     workflow_dispatch:
         inputs:
             repository:
