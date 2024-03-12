@@ -92,8 +92,7 @@ jobs:
           command: |
             kubectl get nodes
 
-      - name: Upgrade Deploy OpenSearch/OpenSearch Dashboards/ML By Helm Chart
-        if: ${{ inputs.deploy_upgrade }}
+      - name: Upgrade Deploy OpenSearch/OpenSearch Dashboards By Helm Chart
         uses: elastic-analytics/dashboards-action@main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
