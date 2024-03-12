@@ -1,0 +1,64 @@
+name: Trigger OSD Build Image Workflow
+
+on:
+    workflow_dispatch:
+        inputs:
+            repository:
+                description: Target repository
+                required: true
+            python_version:
+                description: Python version
+                type: string
+                default: '3.9.17'
+                required: true
+            Node_version:
+                description: Node version
+                type: string
+                default: '18.19.0'
+                required: true
+            OpenSearch-Dashboards_version:
+                description: OpenSearch-Dashboards version
+                type: string
+                default: '3.0.0'
+                required: true
+            additional_args:
+                description: JSON of additional options
+                type: string
+                default: '{}'
+                required: true
+            build_number:
+                description: Build number
+                type: string
+                default: ''
+                required: false
+
+jobs:
+  trigger-osd-build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Build-OSD-Image Workflow
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GH_ACCESS_TOKEN_RUNNER }}
+          script: |
+            const repositoryName = '${{ github.event.inputs.repository }}';
+            const pythonVersion = '${{ github.event.inputs.python_version }}';
+            const nodeVersion = '${{ github.event.inputs.Node_version }}';
+            const osdVersion = '${{ github.event.inputs.OpenSearch-Dashboards_version }}';
+            const additionalArgs = '${{ github.event.inputs.additional_args }}';
+            const buildNumber = '${{ github.event.inputs.build_number }}';
+
+            const response = await octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
+              owner: 'Flyingliuhub',
+              repo: repositoryName,
+              workflow_id: 'Build-OSD-Image', // Replace with the actual workflow ID
+              ref: 'main', // Replace with the branch you want to trigger
+              inputs: {
+                python_version: pythonVersion,
+                Node_version: nodeVersion,
+                OpenSearch-Dashboards_version: osdVersion,
+                additional_args: additionalArgs,
+                build_number: buildNumber,
+              },
+            });
+            console.log(response.data);
