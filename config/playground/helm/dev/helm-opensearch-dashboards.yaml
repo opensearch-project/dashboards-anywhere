@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "public.ecr.aws/y0r0d3v8/actionrunner"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.12.0"
+  tag: "2.13.0-8275462611"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -117,6 +117,17 @@ config:
         'ff00::/8',
        ]
 
+    # Set enabled false to hide authentication method in OpenSearch Dashboards.
+    # If this setting is commented then all 3 options will be available in OpenSearch Dashboards.
+    # Default value will be considered to True.
+    data_source.authTypes:
+       NoAuthentication:
+         enabled: true
+       UsernamePassword:
+         enabled: true
+       AWSSigV4:
+         enabled: false
+    data_source.hideLocalCluster: true
     #Content security policy(csp) settings
     csp.rules: [ "connect-src 'self' www.google-analytics.com vectors.maps.opensearch.org tiles.maps.opensearch.org maps.opensearch.org;" ]
     csp.warnLegacyBrowsers: false

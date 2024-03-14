@@ -112,9 +112,9 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: "opensearchproject/opensearch"
+  repository: "opensearchstaging/opensearch"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.12.0"
+  tag: "2.13.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
