@@ -47,9 +47,9 @@ jobs:
       kube-config: ${{ secrets.KUBE_CONFIG_DATA_DEV }}
       ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
       kibanaserver: ${{ secrets.KIBANASERVER }}
-      esnode_cert: ${{ secrets.ESNODE_CERT }}
+      esnode_cert: ${{ secrets.ESNODE_CERT_NEW }}
       esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
-      root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
+      root_ca_cert: ${{ secrets.ROOT_CA_CERT_NEW }}
 
   OS-OSD-Prod-Deployment:
     needs: Pre-Deployment

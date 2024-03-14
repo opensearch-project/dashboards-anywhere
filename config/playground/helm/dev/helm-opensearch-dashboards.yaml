@@ -117,9 +117,9 @@ config:
         'ff00::/8',
        ]
 
-    # Set enabled false to hide authentication method in OpenSearch Dashboards.
-    # If this setting is commented then all 3 options will be available in OpenSearch Dashboards.
-    # Default value will be considered to True.
+    # Set enabled to false to hide the authentication method from multiple data source in OpenSearch Dashboards.
+    # If this setting is commented out, then all three options will be available in OpenSearch Dashboards.
+    # The default value will be considered as true.
     data_source.authTypes:
        NoAuthentication:
          enabled: true
