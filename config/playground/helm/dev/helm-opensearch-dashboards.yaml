@@ -193,4 +193,4 @@ extraObjects: []
 # specify the external plugins to install.
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.13.0/googleAnalytics-2.13.0.zip", "https://github.com/Flyingliuhub/gademo/releases/download/2.13/queryAssistHero-2.13.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.13.0/googleAnalytics-2.13.0.zip", "https://github.com/Flyingliuhub/gademo/releases/download/2.13/queryAssistHero-2.13.0.zip"]
