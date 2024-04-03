@@ -9,9 +9,9 @@ opensearchHosts: "https://opensearch-cluster-leader:9200"
 replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: "opensearchplayground/opensearch-dashboards"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.13.0"
+  tag: "playground-2.13.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -186,4 +186,4 @@ extraObjects: []
 # specify the external plugins to install.
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.13.0/googleAnalytics-2.13.0.zip", "https://github.com/Flyingliuhub/queryAssistHero/releases/download/2.13.0/queryAssistHero-2.13.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.13.0/googleAnalytics-2.13.0.zip"]
