@@ -34,30 +34,6 @@ jobs:
       esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
       root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
 
-  OS-OSD-SearchApps-Scheduled-Deployment:
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/deployment-template.yml@2023reinvent
-    with:
-      helm-repo: https://opensearch-project.github.io/helm-charts/
-      deploy-env: searchapps
-    secrets:
-      access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_SEARCHAPPS }}
-      secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_SEARCHAPPS }}
-      region: ${{ secrets.AWS_REGION_SEARCHAPPS }}
-      kube-config: ${{ secrets.KUBE_CONFIG_DATA_SEARCHAPPS }}
-      openid_client_id: ${{ secrets.OPENID_CLIENT_ID_SEARCHAPPS }}
-      openid_client_secret: ${{ secrets.OPENID_CLIENT_SECRET_SEARCHAPPS }}
-      openid_base_redirect_url: ${{ secrets.OPENID_BASE_REDIRECT_URL_SEARCHAPPS }}
-      openid_logout_url: ${{ secrets.OPENID_LOGOUT_URL_SEARCHAPPS }}
-      ga-tracking-id: ${{ secrets.GA_TRACKING_ID }}
-      osd_user: ${{ secrets.OSD_USER_SEARCHAPPS }}
-      osd_user_password: ${{ secrets.OSD_USER_PASSWORD_SEARCHAPPS }}
-      otel_root_ca: ${{ secrets.OTEL_ROOT_CA }}
-      otel_data_prepper_cert: ${{ secrets.OTEL_DATA_PREPPER_CERT }}
-      kibanaserver: ${{ secrets.KIBANASERVER }}
-      esnode_cert: ${{ secrets.ESNODE_CERT }}
-      esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
-      root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
-
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment
     uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@previewchangefeature
@@ -67,11 +43,3 @@ jobs:
       osd-user: ${{ secrets.OSD_USER_PREVIEW }}
       osd-user-password: ${{ secrets.OSD_USER_PASSWORD_PREVIEW }}
 
-  OSD-Functional-Test-SearchApps:
-    needs: OS-OSD-SearchApps-Scheduled-Deployment
-    uses: opensearch-project/dashboards-anywhere/.github/workflows/functional-test-template.yml@searchapps
-    with:
-      endpoint: https://searchapps.playground.opensearch.org
-    secrets:
-      osd-user: ${{ secrets.OSD_USER_SEARCHAPPS }}
-      osd-user-password: ${{ secrets.OSD_USER_PASSWORD_SEARCHAPPS }}
