@@ -1,0 +1,166 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+---
+# Nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: otel-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 90
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: log-storage
+              mountPath: /var/log/nginx/
+        - name: fluent-bit
+          image: fluent/fluent-bit
+          env:
+            - name: OPENSEARCH_HOST
+              value: "opensearch-cluster-leader.default.svc"
+            - name: OPENSEARCH_USER
+              value: $USERNAME
+            - name: OPENSEARCH_PWD
+              value: $PASSWORD
+          volumeMounts:
+            - name: log-storage
+              mountPath: /var/log/
+            - name: fluent-bit-config
+              mountPath: /fluent-bit/etc/
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: nginx-config
+            items:
+              - key: default.conf
+                path: default.conf
+        - name: opentelemetry-volume
+          configMap:
+            name: nginx-config
+            items:
+              - key: opentelemetry_module.conf
+                path: opentelemetry_module.conf
+        - name: log-storage
+          emptyDir: {}
+        - name: fluent-bit-config
+          configMap:
+            name: fluent-bit-sidecar-config
+---
+# Nginx Config-map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: otel-demo
+data:
+  default.conf: |
+    server {
+      listen 90;
+      access_log /var/log/nginx/frontend.access.log;
+      error_log /var/log/nginx/frontend.error.log;
+      location / {
+         proxy_pass http://opentelemetry-demo-frontend:8080/;
+         proxy_set_header Host $host;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_set_header X-Forwarded-Proto $scheme;
+       }
+    }
+---
+# fluent-bit Config-map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-sidecar-config
+  namespace: otel-demo
+  labels:
+    app: nginx
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+        Log_Level     debug
+    @INCLUDE input-nginx.conf
+    @INCLUDE output-opensearch.conf
+  input-nginx.conf: |
+    [INPUT]
+        Name              tail
+        Tag               nginx.*
+        Path              /var/log/*.log
+        DB                /var/log/flb_kube.db
+        Parser            nginx
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+    [FILTER]
+        Name parser
+        Match nginx.access
+        Key_Name log
+        Parser nginx
+    [FILTER]
+        Name    lua
+        Match   nginx.access
+        code    function cb_filter(a,b,c)local d={}local e=os.date("!%Y-%m-%dT%H:%M:%S.000Z")d["observerTime"]=e;d["body"]=c.remote.." "..c.host.." "..c.user.." ["..os.date("%d/%b/%Y:%H:%M:%S %z").."] \""..c.method.." "..c.path.." HTTP/1.1\" "..c.code.." "..c.size.." \""..c.referer.."\" \""..c.agent.."\""d["trace_id"]="102981ABCD2901"d["span_id"]="abcdef1010"d["attributes"]={}d["attributes"]["data_stream"]={}d["attributes"]["data_stream"]["dataset"]="nginx.access"d["attributes"]["data_stream"]["namespace"]="production"d["attributes"]["data_stream"]["type"]="logs"d["event"]={}d["event"]["category"]={"web"}d["event"]["name"]="access"d["event"]["domain"]="nginx.access"d["event"]["kind"]="event"d["event"]["result"]="success"d["event"]["type"]={"access"}d["http"]={}d["http"]["request"]={}d["http"]["request"]["method"]=c.method;d["http"]["response"]={}d["http"]["response"]["bytes"]=tonumber(c.size)d["http"]["response"]["status_code"]=c.code;d["http"]["flavor"]="1.1"d["http"]["url"]=c.path;d["communication"]={}d["communication"]["source"]={}d["communication"]["source"]["address"]="127.0.0.1"d["communication"]["source"]["ip"]=c.remote;return 1,b,d end
+        call    cb_filter
+  output-opensearch.conf: |
+    [OUTPUT]
+        Name                opensearch
+        Match               *
+        Host                ${OPENSEARCH_HOST}
+        tls.verify          Off
+        tls                 On
+        HTTP_User           ${OPENSEARCH_USER}
+        HTTP_Passwd         ${OPENSEARCH_PWD}
+        Suppress_Type_Name  On
+        Generate_ID         On
+        Logstash_Format     On
+        Logstash_Prefix     sso_logs-nginx-prod
+    [OUTPUT]
+        Name stdout
+        Match nginx.access
+  parsers.conf: |
+    [PARSER]
+        Name        json
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+    [PARSER]
+        Name        nginx
+        Format      regex
+        Regex       ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")
+        Time_Key    time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+---
+# Nginx Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: otel-demo
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 90
+      targetPort: 90
