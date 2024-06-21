@@ -11,7 +11,7 @@ replicaCount: 2
 image:
   repository: "public.ecr.aws/y0r0d3v8/actionrunner"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.14.0-9084337273"
+  tag: "2.15.0-9606842751"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
@@ -186,4 +186,4 @@ extraObjects: []
 # specify the external plugins to install.
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.14.0/googleAnalytics-2.14.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.15.0/googleAnalytics-2.15.0.zip"]
