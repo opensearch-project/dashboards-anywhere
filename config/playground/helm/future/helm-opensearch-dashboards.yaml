@@ -154,10 +154,14 @@ config:
     opensearch_security.openid.client_secret: ${OPENID_CLIENT_SECRET}
     opensearch_security.openid.logout_url: ${OPENID_LOGOUT_URL}
 
+    data.enhancements.enabled: true
+
     uiSettings:
       overrides:
         "theme:next": true
         "theme:darkMode": false
+        "query:enhancements:enabled": true
+        "query:dataSource:readOnly": false
 
 priorityClassName: ""
 
@@ -243,4 +247,4 @@ extraObjects: []
 # specify the external plugins to install
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/3.0.0/googleAnalytics-3.0.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/3.0.0/googleAnalytics-3.0.0.zip","https://github.com/kavilla/queryEnhancements/releases/download/3.0.0/queryEnhancements-3.0.0.zip"]
