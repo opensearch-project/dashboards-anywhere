@@ -161,6 +161,7 @@ config:
         "theme:next": true
         "theme:darkMode": false
         "query:enhancements:enabled": true
+        "query:dataSourceReadOnly": false
         "query:dataSource:readOnly": false
 
 priorityClassName: ""
