@@ -110,7 +110,7 @@ hostAliases: []
 image:
   repository: "opensearchstaging/opensearch"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.15.0"
+  tag: "2.16.0"
   # Always/Never/IfNotPresent
   pullPolicy: "Always"
 
