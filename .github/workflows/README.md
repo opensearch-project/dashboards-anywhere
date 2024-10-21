@@ -9,6 +9,7 @@ The current workflows folder contains one deployment workflow(os-osd-deployment.
 - os-osd-deployment.yml
 - deployment-template.yml
 - functional-test-template.yml
+- trigger-build-osd-image.yml
 
 ## Prerequisites
 
@@ -37,6 +38,22 @@ The current workflows folder contains one deployment workflow(os-osd-deployment.
 >> - secrets: osd-user, the write access user of OpenSearch Dashboards.
 >> - secrets: osd-user-password, the write access user's password for OpenSearch Dashboards.
 
+> trigger-build-osd-image.yml:
+>> This GitHub Actions workflow triggers the OSD Build Image Workflow. It is triggered manually using the `workflow_dispatch` event and accepts several input parameters:
+>> - `python_version`: The Python version to use for the build. Default value is `'3.9.17'`.
+>> - `node_version`: The Node.js version to use for the build. Default value is `'18.19.0'`.
+>> - `osd_version`: The OpenSearch Dashboards version to use for the build. Default value is `'3.0.0'`.
+>> - `additional_args`: JSON string of additional options for the build. Default value is `'{}'`.
+>> - `build_number`: The build number. This parameter is optional.
+
+> trigger-future-deployment.yaml
+>> This GitHub Actions workflow is responsible for deploying OpenSearch and OpenSearch Dashboards in the future playground environment. It provides options for both fresh deployment and upgrade deployment. The input parameters as following:
+>> - `deploy_fresh`: Specifies whether to perform a fresh deployment of OpenSearch and OpenSearch Dashboards. Default is `false`.
+>> - `deploy_upgrade`: Specifies whether to perform an upgrade deployment of OpenSearch and OpenSearch Dashboards. Default is `true`.
+>> - `osd_image_tag`: The image tag for OpenSearch Dashboards.
+>> - `osd_image_repo`: The image repository for OpenSearch Dashboards.
+>> - `os_image_tag`: The image tag for OpenSearch.
+>> - `os_image_repo`: The image repository for OpenSearch.
 
 ## Appendix
 

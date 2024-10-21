@@ -1,21 +1,23 @@
 ---
 clusterName: "opensearch-cluster"
-nodeGroup: "machinelearning"
+nodeGroup: "leader"
 
 # The service that non master groups will try to connect to when joining the cluster
-# This should be set to clusterName + "-" + nodeGroup for your master group
+# This should be set to clusterName + "-" + nodeGroup for your master group.
 masterService: "opensearch-cluster-leader"
 
 # OpenSearch roles that will be applied to this nodeGroup
 # These will be set as environment variable "node.roles". E.g. node.roles=master,ingest,data,remote_cluster_client
 roles:
-  - ml
+  - master
+  - ingest
+  - data
+  - remote_cluster_client
 
-replicas: 2
-minimumMasterNodes: 2
+replicas: 3
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
-majorVersion: "7"
+majorVersion: ""
 
 #global:
   # Set if you want to change the default docker registry, e.g. a private one.
@@ -108,10 +110,9 @@ secretMounts: []
 hostAliases: []
 
 image:
-  repository: "opensearchproject/opensearch"
+  repository: ${OS_IMAGE_REPO}
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.17.0"
-  # Always/Never/IfNotPresent
+  tag: ${OS_IMAGE_TAG}
   pullPolicy: "Always"
 
 podAnnotations: {}
@@ -124,7 +125,15 @@ opensearchJavaOpts: "-Xmx2G -Xms2G"
 resources:
   requests:
     cpu: "2"
-    memory: "16Gi"
+    memory: "8Gi"
+
+autoscaling:
+  # This requires metrics server to be installed, to install use kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  # See https://github.com/kubernetes-sigs/metrics-server
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
 
 networkHost: "0.0.0.0"
 
@@ -172,7 +181,7 @@ persistence:
 
   accessModes:
     - ReadWriteOnce
-  size: 50Gi
+  size: 250Gi
   annotations: {}
 
 protocol: http
@@ -237,11 +246,11 @@ securityConfig:
             # Set filtered_alias_mode to 'nowarn' to allow more than 2 filtered aliases per index silently
             #filtered_alias_mode: warn
             #do_not_fail_on_forbidden: false
-            #kibana:
+            kibana:
             # Kibana multitenancy
-            #multitenancy_enabled: true
-            #server_username: kibanaserver
-            #index: '.kibana'
+              multitenancy_enabled: true
+              server_username: kibanaserver
+              index: '.kibana'
             http:
               anonymous_auth_enabled: true
               xff:
@@ -266,6 +275,19 @@ securityConfig:
                     krb_debug: false
                     # If true then the realm will be stripped from the user name
                     strip_realm_from_principal: true
+                authentication_backend:
+                  type: noop
+              openid_auth_domain:
+                http_enabled: true
+                transport_enabled: true
+                order: 1
+                http_authenticator:
+                  type: openid
+                  challenge: false
+                  config:
+                    subject_key: email
+                    roles_key: email
+                    openid_connect_url: https://accounts.google.com/.well-known/openid-configuration 
                 authentication_backend:
                   type: noop
               basic_internal_auth_domain:
@@ -700,6 +722,8 @@ securityConfig:
             - cluster:admin/opendistro/ism/managedindex/explain
             - cluster:admin/opendistro/rollup/search
             - cluster:admin/opendistro/transform/get_transforms
+            # To enable read access ml profile
+            - cluster:admin/opensearch/ml/profile/nodes
             # To enable read access to various ISM Jobs
             - cluster:admin/opendistro/rollup/explain
             - cluster:admin/opendistro/ism/policy/get
@@ -757,12 +781,97 @@ securityConfig:
               - '*'
               allowed_actions:
                 - "kibana_all_read"
+
+        # Google users access role
+        google_users_role:
+          reserved: true
+          cluster_permissions:
+            # For using _cat/indices
+            - 'cluster:monitor/state'
+            - 'cluster:monitor/health'
+            - 'cluster:monitor/nodes/info'
+            # For script
+            - 'cluster:admin/script/put'
+            # To enable read access to ISM
+            - cluster:admin/opendistro/ism/policy/search
+            - cluster:admin/opendistro/ism/managedindex/explain
+            - cluster:admin/opendistro/rollup/search
+            - cluster:admin/opendistro/transform/get_transforms
+            # To enable read access to various ISM Jobs
+            - cluster:admin/opendistro/rollup/explain
+            - cluster:admin/opendistro/ism/policy/get
+            - cluster:admin/opendistro/rollup/get
+            - cluster:admin/opendistro/transform/explain
+            - cluster:admin/opendistro/transform/get
+            # To enable read access to security analytics
+            - cluster:admin/opensearch/securityanalytics/rule/search
+            - cluster:admin/opensearch/securityanalytics/detector/search
+            - cluster:admin/opensearch/securityanalytics/findings/get
+            - cluster:admin/opensearch/securityanalytics/alerts/get
+            - cluster:admin/opensearch/securityanalytics/detector/get
+            # For using sql join query
+            - "indices:data/read/scroll*"
+            # For Observability sample
+            - cluster:admin/opensearch/observability/create
+            - cluster:admin/opensearch/observability/update
+            - cluster:admin/opensearch/observability/get
+            # For ML
+            - cluster:admin/opensearch/ml/trainAndPredict
+          index_permissions:
+            - index_patterns:
+              - ".kibana"
+              - ".kibana-6"
+              - ".kibana_*"
+              - ".opensearch_dashboards"
+              - ".opensearch_dashboards-6"
+              - ".opensearch_dashboards_*"
+              allowed_actions:
+                - "read"
+            - index_patterns:
+              - ".tasks"
+              - ".management-beats"
+              - "*:.tasks"
+              - "*:.management-beats"
+              allowed_actions:
+                - "read"
+            - index_patterns:
+              - 'opensearch_dashboards_sample_data_logs'
+              - 'opensearch_dashboards_sample_data_flights'
+              - 'opensearch_dashboards_sample_data_ecommerce'
+              allowed_actions:
+                - "*"
+            - index_patterns:
+              - '*'
+              allowed_actions:
+                - "read"
+                - "indices:data/read/mget"
+                - "indices:data/read/msearch"
+                - "indices:data/read/mtv"
+                - "indices:data/write*"
+                - "indices:admin/create"
+                - 'indices:admin/analyze'
+                - "indices:admin/get"
+                - "indices:admin/aliases/exists*"
+                - "indices:admin/aliases/get*"
+                - "indices:admin/mappings/get"
+                - "indices:monitor/settings/get"
+                - "indices:monitor/stats"
+          tenant_permissions:
+            - tenant_patterns:
+              - '*'
+              allowed_actions:
+                - "kibana_all_read"
       roles_mapping.yml: |
         _meta:
           type: "rolesmapping"
           config_version: 2
 
         # Define your roles mapping here
+        google_users_role:
+          backend_roles:
+          - "kibanauser"
+          users:
+          - "*@gmail.com"
 
         opendistro_security_anonymous_role:
           backend_roles:
@@ -771,42 +880,62 @@ securityConfig:
         alerting_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         anomaly_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         notebooks_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         observability_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         reports_instances_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         reports_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         asynchronous_search_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         ml_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         notifications_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         snapshot_management_read_access:
           backend_roles:
           - "opendistro_security_anonymous_backendrole"
+          users:
+          - "*@gmail.com"
 
         ## Demo roles mapping
 
@@ -860,9 +989,9 @@ securityConfig:
         # Define your tenants here
 
         ## Demo tenants
-        admin_tenant:
-          reserved: false
-          description: "Demo tenant for admin user"
+        # Demo:
+        #   reserved: false
+        #   description: "Demo tenant for admin user"
       whitelist.yml: |
         config:
           enabled: false
