@@ -6,14 +6,40 @@
 # Declare variables to be passed into your templates.
 
 opensearchHosts: "https://opensearch-cluster-leader:9200"
-replicaCount: 3
+replicaCount: 2
 
 image:
-  repository: "opensearchproject/opensearch-dashboards"
+  repository: ${OSD_IMAGE_REPO}
   # override image tag, which is .Chart.AppVersion by default
-  tag: "2.17.0"
-  # Always/Never/IfNotPresent
+  tag: ${OSD_IMAGE_TAG}
   pullPolicy: "Always"
+
+startupProbe:
+  tcpSocket:
+    port: 5601
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 20
+  successThreshold: 1
+  initialDelaySeconds: 10
+
+livenessProbe:
+  tcpSocket:
+    port: 5601
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  initialDelaySeconds: 10
+
+readinessProbe:
+  tcpSocket:
+    port: 5601
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  initialDelaySeconds: 10
 
 imagePullSecrets: []
 nameOverride: ""
@@ -69,14 +95,14 @@ config:
     opensearch.password: ${KIBANASERVER}
     opensearch.requestHeadersWhitelist: [authorization, securitytenant]
     opensearch_security.auth.anonymous_auth_enabled: true
-    opensearch_security.multitenancy.enabled: false
+    opensearch_security.multitenancy.enabled: true
+    opensearch_security.multitenancy.tenants.enable_global: true
+    opensearch_security.multitenancy.tenants.enable_private: true
     opensearch_security.multitenancy.tenants.preferred: [Global, Private]
     opensearch_security.readonly_mode.roles: [kibana_read_only]
     # Use this setting if you are running opensearch-dashboards without https
     opensearch_security.cookie.secure: false
     server.host: '0.0.0.0'
-    # The maximum payload size in bytes for incoming server requests.
-    server.maxPayloadBytes: 104857600
     # Use the consolidated menu and global header bar
     opensearchDashboards.branding.useExpandedHeader: false
     # Enable multiple datasource
@@ -105,15 +131,33 @@ config:
       '2001:db8::/32',
       'ff00::/8',
     ]
+    # Enable ml_commons_dashboards
+    # ml_commons_dashboards.enabled: true
     # Content security policy(csp) settings
     csp.rules: [ "connect-src 'self' www.google-analytics.com vectors.maps.opensearch.org tiles.maps.opensearch.org maps.opensearch.org;" ]
     csp.warnLegacyBrowsers: false
     google_analytics_plugin.trackingID: ${GA_TRACKING_ID}
 
+    # security plugin for openid
+    opensearch_security.auth.type: ['Basicauth','openid']
+    opensearch_security.auth.multiple_auth_enabled: true
+    opensearch_security.ui.openid.login.buttonname: "Log in with Google account"
+    opensearch_security.ui.openid.login.brandimage: "https://opensearch.org/assets/brand/PNG/Mark/opensearch_mark_default.png"
+    opensearch_security.ui.openid.login.showbrandimage: true
+    opensearch_security.openid.base_redirect_url: ${OPENID_REDIRECT_URL}
+    opensearch_security.openid.scope: 'openid profile email'
+    opensearch_security.openid.verify_hostnames: false
+    opensearch_security.openid.refresh_tokens: false
+
+    opensearch_security.openid.connect_url: "https://accounts.google.com/.well-known/openid-configuration"
+    opensearch_security.openid.client_id: ${OPENID_CLIENT_ID}
+    opensearch_security.openid.client_secret: ${OPENID_CLIENT_SECRET}
+    opensearch_security.openid.logout_url: ${OPENID_LOGOUT_URL}
+
     uiSettings:
       overrides:
         "theme:next": true
-        "theme:darkMode": true
+        "theme:darkMode": false
 
 priorityClassName: ""
 
@@ -129,8 +173,16 @@ hostAliases: []
 serverHost: "0.0.0.0"
 
 service:
-  type: ClusterIP
+  type: NodePort
+  # The IP family and IP families options are to set the behaviour in a dual-stack environment
+  # Omitting these values will let the service fall back to whatever the CNI dictates the defaults
+  # should be
+  #
+  # ipFamilyPolicy: SingleStack
+  # ipFamilies:
+  # - IPv4
   port: 5601
+  #targetPort: 5601
   loadBalancerIP: ""
   nodePort: ""
   labels: {}
@@ -140,18 +192,24 @@ service:
   httpPortName: http
 
 ingress:
-  enabled: false
-  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-  # ingressClassName: nginx
-  annotations: {}
+  enabled: true
+  ingressClassName: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: ${CERTIFICATE_ARN}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+  labels: {}
   hosts:
-    - host: chart-example.local
+    - host: future.playground.opensearch.org
       paths:
         - path: /
-          backend:
-            serviceName: chart-example.local
-            servicePort: 80
+          backend: 
+              service:
+                name: "dashboards-opensearch-dashboards"
+                port:
+                  number: 5601
   tls: []
 
 resources:
@@ -185,4 +243,4 @@ extraObjects: []
 # specify the external plugins to install
 plugins:
   enabled: true
-  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.17.0/googleAnalytics-2.17.0.zip"]
+  installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/3.0.0/googleAnalytics-3.0.0.zip"]

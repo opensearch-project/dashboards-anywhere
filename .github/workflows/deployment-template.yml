@@ -38,8 +38,12 @@ on:
         required: false
       kibanaserver:
         required: true
-      query_datasources_master_key:
-        required: false 
+      esnode_cert:
+        required: false
+      esnode_key_cert:
+        required: false
+      root_ca_cert:
+        required: false    
 jobs:
 
   OS-OSD-Deployment:
@@ -64,15 +68,29 @@ jobs:
           KIBANASERVER: ${{ secrets.kibanaserver }}
 
       - name: Step 2 - Replace Token in opensearch.yml
-        if: ${{ (inputs.deploy-env == 'observability') || (inputs.deploy-env == 'dev') }}
+        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml"]'
           tokenPrefix: '${'
           tokenSuffix: '}'
         env:
-          QUERY_DATASOURCES_MASTER_KEY: ${{ secrets.query_datasources_master_key }}
+          ESNODE_CERT: ${{ secrets.esnode_cert }}
+          ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
+          ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
 
+      - name: Step 2.1 - Replace Token in machinelearning.yml
+        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') }}
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-machinelearning.yaml"]'
+          tokenPrefix: '${'
+          tokenSuffix: '}'
+        env:
+            ESNODE_CERT: ${{ secrets.esnode_cert }}
+            ESNODE_KEY_CERT: ${{ secrets.esnode_key_cert }}
+            ROOT_CA_CERT: ${{ secrets.root_ca_cert }}
+            
       - name: Step 3 - Replace Tokens for dashboards
         uses: cschleiden/replace-tokens@v1
         with:

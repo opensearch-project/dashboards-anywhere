@@ -1,0 +1,57 @@
+name: Trigger OSD Build Image Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      python_version:
+        description: Python version
+        type: string
+        default: '3.9.17'
+        required: true
+      node_version:
+        description: Node version
+        type: string
+        default: '18.19.0'
+        required: true
+      osd_version:
+        description: OpenSearch Dashboards version
+        type: string
+        default: '3.0.0'
+        required: true
+      additional_args:
+        description: JSON of additional options
+        type: string
+        default: '{}'
+        required: true
+      build_number:
+        description: Build number
+        type: string
+        default: ''
+        required: false
+
+jobs:
+  trigger-osd-build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Build-OSD-Image Workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: '${{ secrets.GH_ACCESS_TOKEN_RUNNER }}'
+          script: |
+            const pythonVersion = '${{ github.event.inputs.python_version }}';
+            const nodeVersion = '${{ github.event.inputs.node_version }}';
+            const osdVersion = '${{ github.event.inputs.osd_version }}';
+            const additionalArgs = '${{ github.event.inputs.additional_args }}';
+            const buildNumber = '${{ github.event.inputs.build_number }}';
+
+            const dispatchResp = await github.request('POST /repos/Flyingliuhub/osd-build-image/actions/workflows/Build-OSD-Image.yml/dispatches', {
+              ref: 'main',
+              inputs: {
+                python_version: pythonVersion,
+                node_version: nodeVersion,
+                osd_version: osdVersion,
+                additional_args: additionalArgs,
+                build_number: buildNumber,
+              },
+            });
+            console.log(`Event dispatch for osd-build-image : ${dispatchResp.status}`)
