@@ -43,7 +43,7 @@ on:
       esnode_key_cert:
         required: false
       root_ca_cert:
-        required: false    
+        required: false
 jobs:
 
   OS-OSD-Deployment:
@@ -68,7 +68,7 @@ jobs:
           KIBANASERVER: ${{ secrets.kibanaserver }}
 
       - name: Step 2 - Replace Token in opensearch.yml
-        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') }}
+        if: ${{ (inputs.deploy-env == 'dev') || (inputs.deploy-env == 'prod') || (inputs.deploy-env == 'preview') }}
         uses: cschleiden/replace-tokens@v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/${{inputs.deploy-env}}/helm-opensearch.yaml"]'
