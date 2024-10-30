@@ -126,10 +126,9 @@ jobs:
           OTEL_DATA_PREPPER_CERT: ${{ secrets.otel_data_prepper_cert }}
 
       - name: Step 6 - Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.access-key-id }}
-          aws-secret-access-key: ${{ secrets.secret-access-key }}
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PREVIEW }}:role/ekspreviewadminrole-github
           aws-region: ${{ secrets.region }}
 
       - name: Step 7 - Delete Logstash
