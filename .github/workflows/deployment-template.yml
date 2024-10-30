@@ -135,6 +135,15 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.aws_account_id }}:role/eks${{inputs.deploy-env}}adminrole-github
           aws-region: ${{ secrets.region }}
+          output-credentials: true
+
+      - name: Step 6 - Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ steps.creds.outputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ steps.creds.outputs.aws-secret-access-key }}
+          aws-session-token: ${{ steps.creds.outputs.aws-session-token }}
+          aws-region: ${{ secrets.region }}
 
       - name: Step 7 - Delete Logstash
         if: ${{ (inputs.deploy-env == 'preview') || (inputs.deploy-env == 'searchapps') || (inputs.deploy-env == 'observability') }}
