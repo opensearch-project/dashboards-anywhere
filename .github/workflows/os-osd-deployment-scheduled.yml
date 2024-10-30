@@ -35,6 +35,7 @@ jobs:
       esnode_cert: ${{ secrets.ESNODE_CERT }}
       esnode_key_cert: ${{ secrets.ESNODE_KEY_CERT }}
       root_ca_cert: ${{ secrets.ROOT_CA_CERT }}
+      aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_PREVIEW }}
 
   OSD-Functional-Test-Preview:
     needs: OS-OSD-Preview-Scheduled-Deployment

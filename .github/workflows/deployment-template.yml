@@ -44,6 +44,8 @@ on:
         required: false
       root_ca_cert:
         required: false
+      aws_account_id:
+        required: false
 jobs:
 
   OS-OSD-Deployment:
@@ -131,7 +133,7 @@ jobs:
       - name: Step 6 - Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PREVIEW }}:role/ekspreviewadminrole-github
+          role-to-assume: arn:aws:iam::${{ secrets.aws_account_id }}:role/eks${{inputs.deploy-env}}adminrole-github
           aws-region: ${{ secrets.region }}
 
       - name: Step 7 - Delete Logstash
