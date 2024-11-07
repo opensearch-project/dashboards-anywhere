@@ -131,7 +131,7 @@ config:
         "query:enhancements:enabled": true
         "query:dataSource:readOnly": false
         "query:dataSourceReadOnly": false
-        # "home:useNewHomePage": true
+        "home:useNewHomePage": true
 
     # Workspace
     workspace.enabled: true
