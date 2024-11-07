@@ -1,0 +1,151 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+---
+# Data Prepper Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-prepper
+  namespace: otel-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-prepper
+  template:
+    metadata:
+      labels:
+        app: data-prepper
+    spec:
+      containers:
+        - name: data-prepper
+          image: opensearchproject/data-prepper:2.6.1
+          ports:
+            - containerPort: 21890
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/data-prepper/pipelines/pipelines.yaml
+              subPath: pipelines.yaml
+            - name: config-volume
+              mountPath: /usr/share/data-prepper/config/data-prepper-config.yaml
+              subPath: data-prepper-config.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: data-prepper-config
+      restartPolicy: Always
+---
+# Data Prepper config-map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-prepper-config
+  namespace: otel-demo
+data:
+  pipelines.yaml: |
+    otel-logs-pipeline:
+      workers: 5
+      delay: 10
+      source:
+        otel_logs_source:
+          ssl: false
+      buffer:
+        bounded_blocking:
+      sink:
+        - opensearch:
+            hosts: ["https://opensearch-cluster-leader.default.svc:9200"]
+            username: "admin"
+            password: "admin"
+            insecure: true
+            index_type: custom
+            index: otel-events-%{yyyy.MM.dd}
+            bulk_size: 4
+    
+    entry-pipeline:
+      delay: "100"
+      source:
+        otel_trace_source:
+          ssl: false
+      sink:
+        - pipeline:
+            name: "raw-pipeline"
+        - pipeline:
+            name: "service-map-pipeline"
+    raw-pipeline:
+      source:
+        pipeline:
+          name: "entry-pipeline"
+      processor:
+        - otel_trace_raw:
+      sink:
+        - opensearch:
+            hosts: [ "https://opensearch-cluster-leader.default.svc:9200" ]
+            insecure: true
+            username: "admin"
+            password: "admin"
+            index_type: trace-analytics-raw
+    service-map-pipeline:
+      delay: "100"
+      source:
+        pipeline:
+          name: "entry-pipeline"
+      processor:
+        - service_map_stateful:
+      sink:
+        - opensearch:
+            hosts: ["https://opensearch-cluster-leader.default.svc:9200"]
+            insecure: true
+            username: "admin"
+            password: "admin"
+            index_type: trace-analytics-service-map
+    otel-metrics-pipeline:
+      workers: 8
+      delay: 3000
+      source:
+        otel_metrics_source:
+          health_check_service: true
+          ssl: false
+      buffer:
+        bounded_blocking:
+          buffer_size: 1024 # max number of records the buffer accepts
+          batch_size: 1024 # max number of records the buffer drains after each read
+      processor:
+        - otel_metrics:
+            calculate_histogram_buckets: true
+            calculate_exponential_histogram_buckets: true
+            exponential_histogram_max_allowed_scale: 10
+            flatten_attributes: false
+      sink:
+        - opensearch:
+            hosts: ["https://opensearch-cluster-leader.default.svc:9200"]
+            username: "admin"
+            password: "admin"
+            insecure: true
+            index_type: custom
+            index: otel-metrics-%{yyyy.MM.dd}
+            bulk_size: 4
+  data-prepper-config.yaml: |
+    ssl: false
+---
+# Data Prepper Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-prepper-service
+  namespace: otel-demo
+spec:
+  selector:
+    app: data-prepper
+  ports:
+    - protocol: TCP
+      port: 21890
+      targetPort: 21890
+      name: data-prepper-21890
+    - protocol: TCP
+      port: 21891
+      targetPort: 21891
+      name: data-prepper-21891
+    - protocol: TCP
+      port: 21892
+      targetPort: 21892
+      name: data-prepper-21892
