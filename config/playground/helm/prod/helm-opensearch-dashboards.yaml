@@ -186,3 +186,11 @@ extraObjects: []
 plugins:
   enabled: true
   installList: ["https://github.com/BionIT/google-analytics-plugin/releases/download/2.18.0/googleAnalytics-2.18.0.zip"]
+
+# Olly II features
+assistant.enabled: true
+
+assistant.text2viz.enabled: true
+assistant.alertInsight.enabled: true
+assistant.smartAnomalyDetector.enabled: true
+queryEnhancements.queryAssist.summary.enabled: true
