@@ -19,8 +19,8 @@ jobs:
       config_change_ml: ${{steps.filter.outputs.ml}}
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2
         id: filter
         with:
           # creates filters to check if any dev or prod changes

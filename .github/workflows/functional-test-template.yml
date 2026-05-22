@@ -17,7 +17,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout functional test repo
-          uses: actions/checkout@v3
+          uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
           with:
             repository: elastic-analytics/opensearch-dashboards-functional-test
             ref: playground
@@ -48,7 +48,7 @@ jobs:
     steps:
     - run: echo Run ${{ matrix.run }}
     - name: Checkout functional test repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       with:
         repository: elastic-analytics/opensearch-dashboards-functional-test
         ref: playground
