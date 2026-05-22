@@ -40,9 +40,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Replace Tokens for opensearch-dashboards.yml
-        uses: cschleiden/replace-tokens@v1
+        uses: cschleiden/replace-tokens@63252851d87eb5cb853019ba8538b5c51813779d # v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/future/helm-opensearch-dashboards.yaml"]'
           tokenPrefix: '${'
@@ -58,7 +58,7 @@ jobs:
           OSD_IMAGE_TAG: ${{ inputs.osd_image_tag }}
           OSD_IMAGE_REPO: ${{ inputs.osd_image_repo }}
       - name: Replace Token in opensearch.yml
-        uses: cschleiden/replace-tokens@v1
+        uses: cschleiden/replace-tokens@63252851d87eb5cb853019ba8538b5c51813779d # v1
         with:
           files: '["${{ github.workspace }}/config/playground/helm/future/helm-opensearch.yaml"]'
           tokenPrefix: '${'
@@ -70,14 +70,14 @@ jobs:
           OS_IMAGE_TAG: ${{ inputs.os_image_tag }}
           OS_IMAGE_REPO: ${{ inputs.os_image_repo }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PINK }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PINK }}
           aws-region: ${{ secrets.AWS_REGION_PINK }}
       - name: Fresh Deploy OpenSearch and OpenSearch Dashboards By Helm Chart
         if: ${{ inputs.deploy_fresh }}
-        uses: elastic-analytics/dashboards-action@main
+        uses: elastic-analytics/dashboards-action@7f0b43ab03c40d59d7f817f33a6273757dcbdb7c # main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PINK }}
         with:
@@ -94,7 +94,7 @@ jobs:
 
       - name: Upgrade Deploy OpenSearch/OpenSearch Dashboards By Helm Chart
         if: ${{ inputs.deploy_upgrade }}
-        uses: elastic-analytics/dashboards-action@main
+        uses: elastic-analytics/dashboards-action@7f0b43ab03c40d59d7f817f33a6273757dcbdb7c # main
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PINK }}
         with:
