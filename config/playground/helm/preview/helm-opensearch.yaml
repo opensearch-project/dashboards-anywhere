@@ -660,7 +660,7 @@ securityConfig:
         ml_read_access:
           reserved: true
           cluster_permissions:
-            - 'cluster:admin/openserach/ml/stats'
+            - 'cluster:admin/opensearch/ml/stats/nodes'
             - 'cluster:admin/opensearch/ml/models/get'
             - 'cluster:admin/opensearch/ml/models/search'
             - 'cluster:admin/opensearch/ml/tasks/get'
